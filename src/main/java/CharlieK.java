@@ -13,6 +13,9 @@ public class CharlieK {
      */
     private static final String[] tasks = new String[MAX_TASKS];
 
+    /** Tracks whether each stored task has been completed. */
+    private static final boolean[] completedTasks = new boolean[MAX_TASKS];
+
     /** Number of tasks currently stored. */
     private static int taskCount = 0;
 
@@ -42,6 +45,8 @@ public class CharlieK {
 
             if (command.equals("list")) {
                 printTasks();
+            } else if (command.startsWith("mark ")) {
+                markTask(command.substring("mark ".length()));
             } else {
                 addTask(command);
                 System.out.println("     added: " + command);
@@ -62,10 +67,34 @@ public class CharlieK {
         }
     }
 
-    /** Displays all stored tasks in the order they were entered. */
+    /**
+     * Marks a task as done using its one-based position in the task list.
+     *
+     * @param taskNumberText the task number supplied after the {@code mark} command
+     */
+    private static void markTask(String taskNumberText) {
+        try {
+            int taskNumber = Integer.parseInt(taskNumberText);
+            if (taskNumber < 1 || taskNumber > taskCount) {
+                System.out.println("     That task does not exist.");
+                return;
+            }
+
+            int taskIndex = taskNumber - 1;
+            completedTasks[taskIndex] = true;
+            System.out.println("     Nice! I've marked this task as done:");
+            System.out.println("       [X] " + tasks[taskIndex]);
+        } catch (NumberFormatException exception) {
+            System.out.println("     Please provide a valid task number.");
+        }
+    }
+
+    /** Displays all stored tasks and their completion status. */
     private static void printTasks() {
+        System.out.println("     Here are the tasks in your list:");
         for (int i = 0; i < taskCount; i++) {
-            System.out.println("     " + (i + 1) + ". " + tasks[i]);
+            String status = completedTasks[i] ? "X" : " ";
+            System.out.println("     " + (i + 1) + ".[" + status + "] " + tasks[i]);
         }
     }
 }
