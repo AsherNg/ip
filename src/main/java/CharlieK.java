@@ -47,6 +47,8 @@ public class CharlieK {
                     markTask(command.substring("mark ".length()));
                 } else if (command.startsWith("unmark ")) {
                     unmarkTask(command.substring("unmark ".length()));
+                } else if (command.startsWith("delete ")) {
+                    deleteTask(command.substring("delete ".length()));
                 } else if (command.equals("todo") || command.startsWith("todo ")) {
                     addToDo(command.substring("todo".length()));
                 } else if (command.equals("deadline") || command.startsWith("deadline ")) {
@@ -208,6 +210,36 @@ public class CharlieK {
             task.markAsNotDone();
             System.out.println("     OK, I've marked this task as not done yet:");
             System.out.println("       " + task);
+        } catch (NumberFormatException exception) {
+            System.out.println("     Please provide a valid task number.");
+        }
+    }
+
+    /**
+     * Deletes a task using its one-based position in the task list.
+     * Later tasks are shifted left so that the list remains contiguous.
+     *
+     * @param taskNumberText the task number supplied after the {@code delete} command
+     */
+    private static void deleteTask(String taskNumberText) {
+        try {
+            int taskNumber = Integer.parseInt(taskNumberText);
+            if (taskNumber < 1 || taskNumber > taskCount) {
+                System.out.println("     That task does not exist.");
+                return;
+            }
+
+            int taskIndex = taskNumber - 1;
+            Task deletedTask = tasks[taskIndex];
+            for (int i = taskIndex; i < taskCount - 1; i++) {
+                tasks[i] = tasks[i + 1];
+            }
+            tasks[taskCount - 1] = null;
+            taskCount--;
+
+            System.out.println("     Noted. I've removed this task:");
+            System.out.println("       " + deletedTask);
+            System.out.println("     Now you have " + taskCount + " tasks in the list.");
         } catch (NumberFormatException exception) {
             System.out.println("     Please provide a valid task number.");
         }
