@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -5,16 +6,12 @@ import java.util.Scanner;
  */
 public class CharlieK {
     private static final String LINE = "____________________________________________________________";
-    private static final int MAX_TASKS = 100;
 
     /**
      * Stores the tasks entered during this run of the program.
      * The tasks are intentionally kept in memory only, as required.
      */
-    private static final Task[] tasks = new Task[MAX_TASKS];
-
-    /** Number of tasks currently stored. */
-    private static int taskCount = 0;
+    private static final ArrayList<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
         String banner = "  ____ _                _ _      _  __\n"
@@ -71,23 +68,15 @@ public class CharlieK {
      * @param task the task object to store
      */
     private static void addTask(Task task) {
-        if (taskCount < MAX_TASKS) {
-            tasks[taskCount] = task;
-            taskCount++;
-        }
+        tasks.add(task);
     }
 
     /** Adds a typed task and prints the confirmation shown by the user interface. */
     private static void addTypedTask(Task task) {
-        if (taskCount >= MAX_TASKS) {
-            System.out.println("     The task list is full.");
-            return;
-        }
-
         addTask(task);
         System.out.println("     Got it. I've added this task:");
         System.out.println("       " + task);
-        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+        System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
     }
 
     /** Parses and adds a to-do command. */
@@ -165,13 +154,13 @@ public class CharlieK {
     private static void markTask(String taskNumberText) {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
-            if (taskNumber < 1 || taskNumber > taskCount) {
+            if (taskNumber < 1 || taskNumber > tasks.size()) {
                 System.out.println("     That task does not exist.");
                 return;
             }
 
             int taskIndex = taskNumber - 1;
-            Task task = tasks[taskIndex];
+            Task task = tasks.get(taskIndex);
             if (task.isDone()) {
                 System.out.println("     This task is already marked:");
                 System.out.println("       " + task);
@@ -194,13 +183,13 @@ public class CharlieK {
     private static void unmarkTask(String taskNumberText) {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
-            if (taskNumber < 1 || taskNumber > taskCount) {
+            if (taskNumber < 1 || taskNumber > tasks.size()) {
                 System.out.println("     That task does not exist.");
                 return;
             }
 
             int taskIndex = taskNumber - 1;
-            Task task = tasks[taskIndex];
+            Task task = tasks.get(taskIndex);
             if (!task.isDone()) {
                 System.out.println("     This task is already unmarked:");
                 System.out.println("       " + task);
@@ -217,29 +206,23 @@ public class CharlieK {
 
     /**
      * Deletes a task using its one-based position in the task list.
-     * Later tasks are shifted left so that the list remains contiguous.
      *
      * @param taskNumberText the task number supplied after the {@code delete} command
      */
     private static void deleteTask(String taskNumberText) {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
-            if (taskNumber < 1 || taskNumber > taskCount) {
+            if (taskNumber < 1 || taskNumber > tasks.size()) {
                 System.out.println("     That task does not exist.");
                 return;
             }
 
             int taskIndex = taskNumber - 1;
-            Task deletedTask = tasks[taskIndex];
-            for (int i = taskIndex; i < taskCount - 1; i++) {
-                tasks[i] = tasks[i + 1];
-            }
-            tasks[taskCount - 1] = null;
-            taskCount--;
+            Task deletedTask = tasks.remove(taskIndex);
 
             System.out.println("     Noted. I've removed this task:");
             System.out.println("       " + deletedTask);
-            System.out.println("     Now you have " + taskCount + " tasks in the list.");
+            System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
         } catch (NumberFormatException exception) {
             System.out.println("     Please provide a valid task number.");
         }
@@ -248,8 +231,8 @@ public class CharlieK {
     /** Displays all stored tasks and their completion status. */
     private static void printTasks() {
         System.out.println("     Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println("     " + (i + 1) + "." + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println("     " + (i + 1) + "." + tasks.get(i));
         }
     }
 }
