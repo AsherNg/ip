@@ -24,6 +24,13 @@ Unless the user says otherwise, assume that you are assisting a student working 
 
 # Project-specific requirements
 
+## Console UI testing
+
+After each code update:
+
+1. Update `test/ui-test-plan.md` when the change affects an existing console behavior or adds a new one.
+2. Invoke the project-specific `$test-ui` skill and run the plan. The skill must show each console input/output transcript and stop at the first failure.
+
 ## Java version:
 
 Ensure that Java 25 is used when running the application or build tasks. On macOS, use `sdk use java 25.0.3.fx-zulu` to switch to Java 25 if needed.
