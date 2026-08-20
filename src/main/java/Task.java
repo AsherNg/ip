@@ -1,7 +1,7 @@
 /**
  * Represents a task entered into CharlieK's task list.
  */
-public class Task {
+public abstract class Task {
     /** The text describing this task. */
     protected String description;
 
@@ -33,9 +33,7 @@ public class Task {
      *
      * @return the task type icon
      */
-    protected String getTypeIcon() {
-        return "T";
-    }
+    protected abstract String getTypeIcon();
 
     /**
      * Returns any additional information shown after the task description.
@@ -44,6 +42,15 @@ public class Task {
      */
     protected String getDateDetails() {
         return "";
+    }
+
+    /**
+     * Checks whether this task has been marked as done.
+     *
+     * @return {@code true} when the task is done
+     */
+    public boolean isDone() {
+        return isDone;
     }
 
     /** Marks this task as done. */

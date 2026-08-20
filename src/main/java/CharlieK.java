@@ -53,8 +53,7 @@ public class CharlieK {
             } else if (command.startsWith("event ")) {
                 addEvent(command.substring("event ".length()));
             } else {
-                addTask(new ToDo(command));
-                System.out.println("     added: " + command);
+                System.out.println("     Please use todo, deadline, or event to add a task.");
             }
             System.out.println(LINE);
         }
@@ -63,7 +62,7 @@ public class CharlieK {
     /**
      * Adds a task to the in-memory task list.
      *
-     * @param task the text entered by the user
+     * @param task the task object to store
      */
     private static void addTask(Task task) {
         if (taskCount < MAX_TASKS) {
@@ -127,9 +126,16 @@ public class CharlieK {
             }
 
             int taskIndex = taskNumber - 1;
-            tasks[taskIndex].markAsDone();
+            Task task = tasks[taskIndex];
+            if (task.isDone()) {
+                System.out.println("     This task is already marked:");
+                System.out.println("       " + task);
+                return;
+            }
+
+            task.markAsDone();
             System.out.println("     Nice! I've marked this task as done:");
-            System.out.println("       " + tasks[taskIndex]);
+            System.out.println("       " + task);
         } catch (NumberFormatException exception) {
             System.out.println("     Please provide a valid task number.");
         }
@@ -149,9 +155,16 @@ public class CharlieK {
             }
 
             int taskIndex = taskNumber - 1;
-            tasks[taskIndex].markAsNotDone();
+            Task task = tasks[taskIndex];
+            if (!task.isDone()) {
+                System.out.println("     This task is already unmarked:");
+                System.out.println("       " + task);
+                return;
+            }
+
+            task.markAsNotDone();
             System.out.println("     OK, I've marked this task as not done yet:");
-            System.out.println("       " + tasks[taskIndex]);
+            System.out.println("       " + task);
         } catch (NumberFormatException exception) {
             System.out.println("     Please provide a valid task number.");
         }
