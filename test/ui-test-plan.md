@@ -9,7 +9,7 @@ This plan contains end-to-end console tests for `CharlieK`.
 - Compile before testing:
 
   ```
-  javac -d _temp/ui-test-classes src/main/java/CharlieK.java src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java
+  javac -d _temp/ui-test-classes src/main/java/CharlieK.java src/main/java/CharlieKException.java src/main/java/UnknownCommandException.java src/main/java/EmptyTaskDescriptionException.java src/main/java/EmptyParameterException.java src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java
   ```
 
 - Each test case starts a fresh process with:
@@ -329,7 +329,72 @@ Hello! I'm CharlieK.
 What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
-     Please use todo, deadline, or event to add a task.
+     I do not know what that command means, but I know how to carry the flame!
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-07 — Reject empty descriptions and parameters
+
+**Aim:** Verify that empty task descriptions, missing deadline parameters, and missing event parameters are caught and reported without adding malformed tasks.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes CharlieK
+```
+
+**Inputs:**
+
+```
+todo
+deadline
+event
+deadline return book
+deadline return book /by
+event project meeting
+event project meeting /from Mon 2pm /to
+list
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     The description is empty! Enter the description or I will carry the flame!
+____________________________________________________________
+____________________________________________________________
+     The description is empty! Enter the description or I will carry the flame!
+____________________________________________________________
+____________________________________________________________
+     The description is empty! Enter the description or I will carry the flame!
+____________________________________________________________
+____________________________________________________________
+     The parameter is empty! Enter the required parameters or I will carry the flame!
+____________________________________________________________
+____________________________________________________________
+     The parameter is empty! Enter the required parameters or I will carry the flame!
+____________________________________________________________
+____________________________________________________________
+     The parameter is empty! Enter the required parameters or I will carry the flame!
+____________________________________________________________
+____________________________________________________________
+     The parameter is empty! Enter the required parameters or I will carry the flame!
 ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:

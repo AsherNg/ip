@@ -34,26 +34,30 @@ public class CharlieK {
             String command = scanner.nextLine();
             System.out.println(LINE);
 
-            if (command.equals("bye")) {
-                System.out.println("     Bye. Hope to see you again soon!");
-                System.out.println(LINE);
-                break;
-            }
+            try {
+                if (command.equals("bye")) {
+                    System.out.println("     Bye. Hope to see you again soon!");
+                    System.out.println(LINE);
+                    break;
+                }
 
-            if (command.equals("list")) {
-                printTasks();
-            } else if (command.startsWith("mark ")) {
-                markTask(command.substring("mark ".length()));
-            } else if (command.startsWith("unmark ")) {
-                unmarkTask(command.substring("unmark ".length()));
-            } else if (command.startsWith("todo ")) {
-                addTypedTask(new ToDo(command.substring("todo ".length())));
-            } else if (command.startsWith("deadline ")) {
-                addDeadline(command.substring("deadline ".length()));
-            } else if (command.startsWith("event ")) {
-                addEvent(command.substring("event ".length()));
-            } else {
-                System.out.println("     Please use todo, deadline, or event to add a task.");
+                if (command.equals("list")) {
+                    printTasks();
+                } else if (command.startsWith("mark ")) {
+                    markTask(command.substring("mark ".length()));
+                } else if (command.startsWith("unmark ")) {
+                    unmarkTask(command.substring("unmark ".length()));
+                } else if (command.equals("todo") || command.startsWith("todo ")) {
+                    addToDo(command.substring("todo".length()));
+                } else if (command.equals("deadline") || command.startsWith("deadline ")) {
+                    addDeadline(command.substring("deadline".length()));
+                } else if (command.equals("event") || command.startsWith("event ")) {
+                    addEvent(command.substring("event".length()));
+                } else {
+                    throw new UnknownCommandException();
+                }
+            } catch (CharlieKException exception) {
+                System.out.println("     " + exception.getMessage());
             }
             System.out.println(LINE);
         }
@@ -84,31 +88,70 @@ public class CharlieK {
         System.out.println("     Now you have " + taskCount + " tasks in the list.");
     }
 
-    /** Parses and adds a deadline command. */
-    private static void addDeadline(String command) {
-        int markerIndex = command.indexOf(" /by ");
-        if (markerIndex < 0) {
-            addTypedTask(new Deadline(command, ""));
-            return;
+    /** Parses and adds a to-do command. */
+    private static void addToDo(String command) throws EmptyTaskDescriptionException {
+        String description = command.trim();
+        if (description.isEmpty()) {
+            throw new EmptyTaskDescriptionException();
         }
 
-        String description = command.substring(0, markerIndex);
-        String deadline = command.substring(markerIndex + " /by ".length());
+        addTypedTask(new ToDo(description));
+    }
+
+    /** Parses and adds a deadline command. */
+    private static void addDeadline(String command)
+            throws EmptyTaskDescriptionException, EmptyParameterException {
+        String commandText = command.trim();
+        if (commandText.isEmpty()) {
+            throw new EmptyTaskDescriptionException();
+        }
+
+        int markerIndex = commandText.indexOf(" /by ");
+        String description = markerIndex < 0
+                ? commandText
+                : commandText.substring(0, markerIndex).trim();
+        if (description.isEmpty()) {
+            throw new EmptyTaskDescriptionException();
+        }
+        if (markerIndex < 0) {
+            throw new EmptyParameterException();
+        }
+
+        String deadline = commandText.substring(markerIndex + " /by ".length()).trim();
+        if (deadline.isEmpty()) {
+            throw new EmptyParameterException();
+        }
+
         addTypedTask(new Deadline(description, deadline));
     }
 
     /** Parses and adds an event command. */
-    private static void addEvent(String command) {
-        int fromMarkerIndex = command.indexOf(" /from ");
-        int toMarkerIndex = command.indexOf(" /to ", fromMarkerIndex + 1);
-        if (fromMarkerIndex < 0 || toMarkerIndex < 0) {
-            addTypedTask(new Event(command, "", ""));
-            return;
+    private static void addEvent(String command)
+            throws EmptyTaskDescriptionException, EmptyParameterException {
+        String commandText = command.trim();
+        if (commandText.isEmpty()) {
+            throw new EmptyTaskDescriptionException();
         }
 
-        String description = command.substring(0, fromMarkerIndex);
-        String from = command.substring(fromMarkerIndex + " /from ".length(), toMarkerIndex);
-        String to = command.substring(toMarkerIndex + " /to ".length());
+        int fromMarkerIndex = commandText.indexOf(" /from ");
+        String description = fromMarkerIndex < 0
+                ? commandText
+                : commandText.substring(0, fromMarkerIndex).trim();
+        if (description.isEmpty()) {
+            throw new EmptyTaskDescriptionException();
+        }
+
+        int toMarkerIndex = commandText.indexOf(" /to ", fromMarkerIndex + 1);
+        if (fromMarkerIndex < 0 || toMarkerIndex < 0) {
+            throw new EmptyParameterException();
+        }
+
+        String from = commandText.substring(fromMarkerIndex + " /from ".length(), toMarkerIndex).trim();
+        String to = commandText.substring(toMarkerIndex + " /to ".length()).trim();
+        if (from.isEmpty() || to.isEmpty()) {
+            throw new EmptyParameterException();
+        }
+
         addTypedTask(new Event(description, from, to));
     }
 
