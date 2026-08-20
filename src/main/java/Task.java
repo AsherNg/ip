@@ -28,12 +28,12 @@ public abstract class Task {
     }
 
     /**
-     * Returns the letter used to identify this kind of task.
+     * Returns the type of this task.
      * Subclasses override this method to provide their own task type.
      *
-     * @return the task type icon
+     * @return this task's type
      */
-    protected abstract String getTypeIcon();
+    protected abstract TaskType getType();
 
     /**
      * Returns any additional information shown after the task description.
@@ -70,7 +70,7 @@ public abstract class Task {
      */
     @Override
     public String toString() {
-        return "[" + getTypeIcon() + "][" + getStatusIcon() + "] "
+        return "[" + getType().getIcon() + "][" + getStatusIcon() + "] "
                 + description + getDateDetails();
     }
 }

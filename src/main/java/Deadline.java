@@ -17,13 +17,13 @@ public class Deadline extends Task {
     }
 
     /**
-     * Returns the display icon for a deadline task.
+     * Returns the type of this task.
      *
-     * @return {@code D}
+     * @return {@link TaskType#DEADLINE}
      */
     @Override
-    protected String getTypeIcon() {
-        return "D";
+    protected TaskType getType() {
+        return TaskType.DEADLINE;
     }
 
     /**

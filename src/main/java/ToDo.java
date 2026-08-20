@@ -12,12 +12,12 @@ public class ToDo extends Task {
     }
 
     /**
-     * Returns the display icon for a to-do task.
+     * Returns the type of this task.
      *
-     * @return {@code T}
+     * @return {@link TaskType#TODO}
      */
     @Override
-    protected String getTypeIcon() {
-        return "T";
+    protected TaskType getType() {
+        return TaskType.TODO;
     }
 }

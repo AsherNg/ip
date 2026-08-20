@@ -22,13 +22,13 @@ public class Event extends Task {
     }
 
     /**
-     * Returns the display icon for an event task.
+     * Returns the type of this task.
      *
-     * @return {@code E}
+     * @return {@link TaskType#EVENT}
      */
     @Override
-    protected String getTypeIcon() {
-        return "E";
+    protected TaskType getType() {
+        return TaskType.EVENT;
     }
 
     /**

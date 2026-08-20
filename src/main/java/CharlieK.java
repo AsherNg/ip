@@ -32,27 +32,38 @@ public class CharlieK {
             System.out.println(LINE);
 
             try {
-                if (command.equals("bye")) {
+                Command commandType = Command.fromInput(command)
+                        .orElseThrow(UnknownCommandException::new);
+
+                if (commandType == Command.BYE) {
                     System.out.println("     Bye. Hope to see you again soon!");
                     System.out.println(LINE);
                     break;
                 }
 
-                if (command.equals("list")) {
+                switch (commandType) {
+                case LIST:
                     printTasks();
-                } else if (command.startsWith("mark ")) {
-                    markTask(command.substring("mark ".length()));
-                } else if (command.startsWith("unmark ")) {
-                    unmarkTask(command.substring("unmark ".length()));
-                } else if (command.startsWith("delete ")) {
-                    deleteTask(command.substring("delete ".length()));
-                } else if (command.equals("todo") || command.startsWith("todo ")) {
-                    addToDo(command.substring("todo".length()));
-                } else if (command.equals("deadline") || command.startsWith("deadline ")) {
-                    addDeadline(command.substring("deadline".length()));
-                } else if (command.equals("event") || command.startsWith("event ")) {
-                    addEvent(command.substring("event".length()));
-                } else {
+                    break;
+                case MARK:
+                    markTask(commandType.argumentFrom(command));
+                    break;
+                case UNMARK:
+                    unmarkTask(commandType.argumentFrom(command));
+                    break;
+                case DELETE:
+                    deleteTask(commandType.argumentFrom(command));
+                    break;
+                case TODO:
+                    addToDo(commandType.argumentFrom(command));
+                    break;
+                case DEADLINE:
+                    addDeadline(commandType.argumentFrom(command));
+                    break;
+                case EVENT:
+                    addEvent(commandType.argumentFrom(command));
+                    break;
+                default:
                     throw new UnknownCommandException();
                 }
             } catch (CharlieKException exception) {

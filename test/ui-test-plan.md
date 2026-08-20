@@ -9,7 +9,7 @@ This plan contains end-to-end console tests for `CharlieK`.
 - Compile before testing:
 
   ```
-  javac -d _temp/ui-test-classes src/main/java/CharlieK.java src/main/java/CharlieKException.java src/main/java/UnknownCommandException.java src/main/java/EmptyTaskDescriptionException.java src/main/java/EmptyParameterException.java src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java
+  javac -d _temp/ui-test-classes src/main/java/CharlieK.java src/main/java/Command.java src/main/java/TaskType.java src/main/java/CharlieKException.java src/main/java/UnknownCommandException.java src/main/java/EmptyTaskDescriptionException.java src/main/java/EmptyParameterException.java src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java
   ```
 
 - Each test case starts a fresh process with:
