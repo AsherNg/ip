@@ -47,6 +47,8 @@ public class CharlieK {
                 printTasks();
             } else if (command.startsWith("mark ")) {
                 markTask(command.substring("mark ".length()));
+            } else if (command.startsWith("unmark ")) {
+                unmarkTask(command.substring("unmark ".length()));
             } else {
                 addTask(command);
                 System.out.println("     added: " + command);
@@ -84,6 +86,28 @@ public class CharlieK {
             completedTasks[taskIndex] = true;
             System.out.println("     Nice! I've marked this task as done:");
             System.out.println("       [X] " + tasks[taskIndex]);
+        } catch (NumberFormatException exception) {
+            System.out.println("     Please provide a valid task number.");
+        }
+    }
+
+    /**
+     * Marks a task as not done using its one-based position in the task list.
+     *
+     * @param taskNumberText the task number supplied after the {@code unmark} command
+     */
+    private static void unmarkTask(String taskNumberText) {
+        try {
+            int taskNumber = Integer.parseInt(taskNumberText);
+            if (taskNumber < 1 || taskNumber > taskCount) {
+                System.out.println("     That task does not exist.");
+                return;
+            }
+
+            int taskIndex = taskNumber - 1;
+            completedTasks[taskIndex] = false;
+            System.out.println("     OK, I've marked this task as not done yet:");
+            System.out.println("       [ ] " + tasks[taskIndex]);
         } catch (NumberFormatException exception) {
             System.out.println("     Please provide a valid task number.");
         }
