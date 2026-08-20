@@ -46,8 +46,14 @@ public class CharlieK {
                 markTask(command.substring("mark ".length()));
             } else if (command.startsWith("unmark ")) {
                 unmarkTask(command.substring("unmark ".length()));
+            } else if (command.startsWith("todo ")) {
+                addTypedTask(new ToDo(command.substring("todo ".length())));
+            } else if (command.startsWith("deadline ")) {
+                addDeadline(command.substring("deadline ".length()));
+            } else if (command.startsWith("event ")) {
+                addEvent(command.substring("event ".length()));
             } else {
-                addTask(command);
+                addTask(new ToDo(command));
                 System.out.println("     added: " + command);
             }
             System.out.println(LINE);
@@ -59,11 +65,52 @@ public class CharlieK {
      *
      * @param task the text entered by the user
      */
-    private static void addTask(String task) {
+    private static void addTask(Task task) {
         if (taskCount < MAX_TASKS) {
-            tasks[taskCount] = new Task(task);
+            tasks[taskCount] = task;
             taskCount++;
         }
+    }
+
+    /** Adds a typed task and prints the confirmation shown by the user interface. */
+    private static void addTypedTask(Task task) {
+        if (taskCount >= MAX_TASKS) {
+            System.out.println("     The task list is full.");
+            return;
+        }
+
+        addTask(task);
+        System.out.println("     Got it. I've added this task:");
+        System.out.println("       " + task);
+        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+    }
+
+    /** Parses and adds a deadline command. */
+    private static void addDeadline(String command) {
+        int markerIndex = command.indexOf(" /by ");
+        if (markerIndex < 0) {
+            addTypedTask(new Deadline(command, ""));
+            return;
+        }
+
+        String description = command.substring(0, markerIndex);
+        String deadline = command.substring(markerIndex + " /by ".length());
+        addTypedTask(new Deadline(description, deadline));
+    }
+
+    /** Parses and adds an event command. */
+    private static void addEvent(String command) {
+        int fromMarkerIndex = command.indexOf(" /from ");
+        int toMarkerIndex = command.indexOf(" /to ", fromMarkerIndex + 1);
+        if (fromMarkerIndex < 0 || toMarkerIndex < 0) {
+            addTypedTask(new Event(command, "", ""));
+            return;
+        }
+
+        String description = command.substring(0, fromMarkerIndex);
+        String from = command.substring(fromMarkerIndex + " /from ".length(), toMarkerIndex);
+        String to = command.substring(toMarkerIndex + " /to ".length());
+        addTypedTask(new Event(description, from, to));
     }
 
     /**

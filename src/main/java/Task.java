@@ -27,6 +27,25 @@ public class Task {
         return isDone ? "X" : " ";
     }
 
+    /**
+     * Returns the letter used to identify this kind of task.
+     * Subclasses override this method to provide their own task type.
+     *
+     * @return the task type icon
+     */
+    protected String getTypeIcon() {
+        return "T";
+    }
+
+    /**
+     * Returns any additional information shown after the task description.
+     *
+     * @return additional task information, or an empty string
+     */
+    protected String getDateDetails() {
+        return "";
+    }
+
     /** Marks this task as done. */
     public void markAsDone() {
         isDone = true;
@@ -44,6 +63,7 @@ public class Task {
      */
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + getTypeIcon() + "][" + getStatusIcon() + "] "
+                + description + getDateDetails();
     }
 }
