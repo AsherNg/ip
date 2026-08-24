@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * A task that must be completed before a specified date or time.
  */
@@ -24,6 +26,16 @@ public class Deadline extends Task {
     @Override
     protected TaskType getType() {
         return TaskType.DEADLINE;
+    }
+
+    /**
+     * Returns the values stored for this deadline after the common task fields.
+     *
+     * @return the description and deadline values
+     */
+    @Override
+    public List<String> getStorageFields() {
+        return List.of(description, deadline);
     }
 
     /**

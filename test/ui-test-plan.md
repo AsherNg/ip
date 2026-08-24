@@ -19,7 +19,8 @@ This plan contains end-to-end console tests for `CharlieK`.
   ```
 
 - Compare output exactly after normalizing only platform line endings. The skill must stop at the first failure and show the complete console transcript.
-- Remove `data/charliek.txt` before each test case to keep cases isolated. For UI-10, create the file with the contents specified in that test's setup first.
+- Remove `data/charliek.csv` before each test case to keep cases isolated. For setup-based cases, create the CSV file with the contents specified in that test's setup first.
+- The CSV file has no header row. Columns are `type,status,description`, followed by `deadline` for `D` tasks or `from,to` for `E` tasks; status `0` means incomplete and `1` means complete.
 
 ## Shared startup output
 
@@ -508,7 +509,7 @@ ____________________________________________________________
 
 ### UI-09 — Save the task list after changes
 
-**Aim:** Exercise the task-list mutation commands that trigger automatic saving to `data/charliek.txt`.
+**Aim:** Exercise the task-list mutation commands that trigger automatic saving to `data/charliek.csv`.
 
 **Command:**
 
@@ -576,12 +577,12 @@ ____________________________________________________________
 
 **Aim:** Verify that to-do, deadline, and event tasks, including their completion status, are reconstructed from the saved file when the chatbot starts.
 
-**Setup:** Before starting the application, create `data/charliek.txt` with exactly:
+**Setup:** Before starting the application, create `data/charliek.csv` with exactly:
 
 ```
-[T][X] persisted to-do
-[D][ ] persisted deadline (by: tomorrow)
-[E][ ] persisted event (from: 2pm to: 3pm)
+T,1,persisted to-do
+D,0,persisted deadline,tomorrow
+E,0,persisted event,2pm,3pm
 ```
 
 **Command:**
@@ -624,7 +625,7 @@ ____________________________________________________________
 
 **Aim:** Verify that a user with no existing `data/` directory can add and list a task without a file-system error.
 
-**Setup:** Before starting the application, ensure that `data/charliek.txt` does not exist. The application must create the missing parent directory and file when the task is added.
+**Setup:** Before starting the application, ensure that `data/charliek.csv` does not exist. The application must create the missing parent directory and CSV file when the task is added.
 
 **Command:**
 
@@ -670,12 +671,12 @@ ____________________________________________________________
 
 **Aim:** Verify that malformed lines in the task file do not crash startup or prevent valid records from loading.
 
-**Setup:** Before starting the application, create `data/charliek.txt` with exactly:
+**Setup:** Before starting the application, create `data/charliek.csv` with exactly:
 
 ```
-not a task record
-[T][X] valid saved task
-[D][ ] valid saved deadline (by: tomorrow)
+not a CSV record
+T,1,valid saved task
+D,0,valid saved deadline,tomorrow
 ```
 
 **Command:**
@@ -717,7 +718,7 @@ ____________________________________________________________
 
 **Aim:** Verify that an unusable task path produces a helpful error and that a failed save does not leave an unsaved task in memory.
 
-**Setup:** Before starting the application, create a directory named `data/charliek.txt` instead of a regular file.
+**Setup:** Before starting the application, create a directory named `data/charliek.csv` instead of a regular file.
 
 **Command:**
 
@@ -752,6 +753,54 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-14 — Preserve commas and quotes in CSV fields
+
+**Aim:** Verify that commas and quotes inside descriptions and timing values are escaped when saved and reconstructed correctly when loaded.
+
+**Setup:** Before starting the application, create `data/charliek.csv` with exactly:
+
+```
+T,0,"buy, milk"
+D,1,"return, book","June, 6th"
+E,0,"project ""sync""","Aug 6th, 2pm","4pm, maybe"
+```
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes CharlieK
+```
+
+**Inputs:**
+
+```
+list
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] buy, milk
+     2.[D][X] return, book (by: June, 6th)
+     3.[E][ ] project "sync" (from: Aug 6th, 2pm to: 4pm, maybe)
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
