@@ -10,4 +10,14 @@ public class CharlieKException extends Exception {
     public CharlieKException(String message) {
         super(message);
     }
+
+    /**
+     * Creates a chatbot exception with a message and underlying cause.
+     *
+     * @param message the custom error message
+     * @param cause the underlying cause of the error
+     */
+    public CharlieKException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
