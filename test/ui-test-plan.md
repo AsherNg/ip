@@ -19,6 +19,7 @@ This plan contains end-to-end console tests for `CharlieK`.
   ```
 
 - Compare output exactly after normalizing only platform line endings. The skill must stop at the first failure and show the complete console transcript.
+- Remove `data/charliek.txt` before each test case to keep cases isolated. For UI-10, create the file with the contents specified in that test's setup first.
 
 ## Shared startup output
 
@@ -565,6 +566,54 @@ ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][ ] save me
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-10 — Load the saved task list at startup
+
+**Aim:** Verify that to-do, deadline, and event tasks, including their completion status, are reconstructed from the saved file when the chatbot starts.
+
+**Setup:** Before starting the application, create `data/charliek.txt` with exactly:
+
+```
+[T][X] persisted to-do
+[D][ ] persisted deadline (by: tomorrow)
+[E][ ] persisted event (from: 2pm to: 3pm)
+```
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes CharlieK
+```
+
+**Inputs:**
+
+```
+list
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][X] persisted to-do
+     2.[D][ ] persisted deadline (by: tomorrow)
+     3.[E][ ] persisted event (from: 2pm to: 3pm)
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
