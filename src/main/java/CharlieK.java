@@ -116,9 +116,7 @@ public class CharlieK {
     /** Adds a typed task and prints the confirmation shown by the user interface. */
     private static void addTypedTask(Task task) throws TaskStorageException {
         addTask(task);
-        System.out.println("     Got it. I've added this task:");
-        System.out.println("       " + task);
-        System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
+        UI.showTaskAdded(task, tasks.size());
     }
 
     /**
@@ -130,15 +128,14 @@ public class CharlieK {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                System.out.println("     That task does not exist.");
+                UI.showTaskDoesNotExist();
                 return;
             }
 
             int taskIndex = taskNumber - 1;
             Task task = tasks.get(taskIndex);
             if (task.isDone()) {
-                System.out.println("     This task is already marked:");
-                System.out.println("       " + task);
+                UI.showTaskAlreadyMarked(task);
                 return;
             }
 
@@ -152,10 +149,9 @@ public class CharlieK {
                 task.markAsNotDone();
                 throw exception;
             }
-            System.out.println("     Nice! I've marked this task as done:");
-            System.out.println("       " + task);
+            UI.showTaskMarked(task);
         } catch (NumberFormatException exception) {
-            System.out.println("     Please provide a valid task number.");
+            UI.showInvalidTaskNumber();
         }
     }
 
@@ -168,15 +164,14 @@ public class CharlieK {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                System.out.println("     That task does not exist.");
+                UI.showTaskDoesNotExist();
                 return;
             }
 
             int taskIndex = taskNumber - 1;
             Task task = tasks.get(taskIndex);
             if (!task.isDone()) {
-                System.out.println("     This task is already unmarked:");
-                System.out.println("       " + task);
+                UI.showTaskAlreadyUnmarked(task);
                 return;
             }
 
@@ -190,10 +185,9 @@ public class CharlieK {
                 task.markAsDone();
                 throw exception;
             }
-            System.out.println("     OK, I've marked this task as not done yet:");
-            System.out.println("       " + task);
+            UI.showTaskUnmarked(task);
         } catch (NumberFormatException exception) {
-            System.out.println("     Please provide a valid task number.");
+            UI.showInvalidTaskNumber();
         }
     }
 
@@ -206,7 +200,7 @@ public class CharlieK {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                System.out.println("     That task does not exist.");
+                UI.showTaskDoesNotExist();
                 return;
             }
 
@@ -222,11 +216,9 @@ public class CharlieK {
                 throw exception;
             }
 
-            System.out.println("     Noted. I've removed this task:");
-            System.out.println("       " + deletedTask);
-            System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
+            UI.showTaskDeleted(deletedTask, tasks.size());
         } catch (NumberFormatException exception) {
-            System.out.println("     Please provide a valid task number.");
+            UI.showInvalidTaskNumber();
         }
     }
 
@@ -249,9 +241,6 @@ public class CharlieK {
                     task -> task.getSortDateTime().orElse(null), dateTimeComparator));
         }
 
-        System.out.println("     Here are the tasks in your list:");
-        for (int i = 0; i < tasksToDisplay.size(); i++) {
-            System.out.println("     " + (i + 1) + "." + tasksToDisplay.get(i));
-        }
+        UI.showTasks(tasksToDisplay);
     }
 }

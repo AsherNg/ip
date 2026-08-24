@@ -1,10 +1,11 @@
 import java.util.Scanner;
+import java.util.List;
 
 /**
  * Handles CharlieK's basic interaction with the user.
  *
- * <p>This class owns console input and the common session messages. More
- * specific task messages can be moved here in a later extraction.</p>
+ * <p>This class owns console input and all user-facing messages. It does not
+ * decide how tasks are mutated or sorted.</p>
  */
 public class Ui {
     /** The separator printed between console messages. */
@@ -83,5 +84,91 @@ public class Ui {
     /** Shows the fallback message used for unexpected command-processing failures. */
     public void showProcessingError() {
         showError("I couldn't process that command. Please check the input and try again.");
+    }
+
+    /**
+     * Shows confirmation that a task was added.
+     *
+     * @param task the added task
+     * @param taskCount the number of tasks after adding it
+     */
+    public void showTaskAdded(Task task, int taskCount) {
+        System.out.println("     Got it. I've added this task:");
+        System.out.println("       " + task);
+        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+    }
+
+    /** Shows that the requested task number does not exist. */
+    public void showTaskDoesNotExist() {
+        showError("That task does not exist.");
+    }
+
+    /** Shows that the supplied task number is not a valid number. */
+    public void showInvalidTaskNumber() {
+        showError("Please provide a valid task number.");
+    }
+
+    /**
+     * Shows confirmation that a task was marked as done.
+     *
+     * @param task the marked task
+     */
+    public void showTaskMarked(Task task) {
+        System.out.println("     Nice! I've marked this task as done:");
+        System.out.println("       " + task);
+    }
+
+    /**
+     * Shows that a task was already marked as done.
+     *
+     * @param task the already marked task
+     */
+    public void showTaskAlreadyMarked(Task task) {
+        System.out.println("     This task is already marked:");
+        System.out.println("       " + task);
+    }
+
+    /**
+     * Shows confirmation that a task was marked as not done.
+     *
+     * @param task the unmarked task
+     */
+    public void showTaskUnmarked(Task task) {
+        System.out.println("     OK, I've marked this task as not done yet:");
+        System.out.println("       " + task);
+    }
+
+    /**
+     * Shows that a task was already marked as not done.
+     *
+     * @param task the already unmarked task
+     */
+    public void showTaskAlreadyUnmarked(Task task) {
+        System.out.println("     This task is already unmarked:");
+        System.out.println("       " + task);
+    }
+
+    /**
+     * Shows confirmation that a task was deleted.
+     *
+     * @param task the deleted task
+     * @param taskCount the number of tasks after deleting it
+     */
+    public void showTaskDeleted(Task task, int taskCount) {
+        System.out.println("     Noted. I've removed this task:");
+        System.out.println("       " + task);
+        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+    }
+
+    /**
+     * Shows the supplied tasks in their display order.
+     *
+     * @param tasks the tasks to display
+     */
+    public void showTasks(List<Task> tasks) {
+        System.out.println("     Here are the tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println("     " + (i + 1) + "." + tasks.get(i));
+        }
     }
 }
