@@ -9,7 +9,7 @@ This plan contains end-to-end console tests for `CharlieK`.
 - Compile before testing:
 
   ```
-  javac -d _temp/ui-test-classes src/main/java/CharlieK.java src/main/java/Command.java src/main/java/TaskType.java src/main/java/CharlieKException.java src/main/java/UnknownCommandException.java src/main/java/EmptyTaskDescriptionException.java src/main/java/EmptyParameterException.java src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java
+    javac -d _temp/ui-test-classes src/main/java/CharlieK.java src/main/java/Command.java src/main/java/TaskType.java src/main/java/CharlieKException.java src/main/java/TaskStorageException.java src/main/java/Storage.java src/main/java/UnknownCommandException.java src/main/java/EmptyTaskDescriptionException.java src/main/java/EmptyParameterException.java src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java
   ```
 
 - Each test case starts a fresh process with:
@@ -614,6 +614,144 @@ ____________________________________________________________
      1.[T][X] persisted to-do
      2.[D][ ] persisted deadline (by: tomorrow)
      3.[E][ ] persisted event (from: 2pm to: 3pm)
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-11 — Create storage for a new user
+
+**Aim:** Verify that a user with no existing `data/` directory can add and list a task without a file-system error.
+
+**Setup:** Before starting the application, ensure that `data/charliek.txt` does not exist. The application must create the missing parent directory and file when the task is added.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes CharlieK
+```
+
+**Inputs:**
+
+```
+todo create data path
+list
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] create data path
+     Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] create data path
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-12 — Ignore malformed saved records
+
+**Aim:** Verify that malformed lines in the task file do not crash startup or prevent valid records from loading.
+
+**Setup:** Before starting the application, create `data/charliek.txt` with exactly:
+
+```
+not a task record
+[T][X] valid saved task
+[D][ ] valid saved deadline (by: tomorrow)
+```
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes CharlieK
+```
+
+**Inputs:**
+
+```
+list
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][X] valid saved task
+     2.[D][ ] valid saved deadline (by: tomorrow)
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-13 — Report an unusable task path and roll back changes
+
+**Aim:** Verify that an unusable task path produces a helpful error and that a failed save does not leave an unsaved task in memory.
+
+**Setup:** Before starting the application, create a directory named `data/charliek.txt` instead of a regular file.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes CharlieK
+```
+
+**Inputs:**
+
+```
+todo should not save
+list
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+     I couldn't load saved tasks because the task file path is not a regular file.
+____________________________________________________________
+____________________________________________________________
+     I couldn't save tasks. Please check that the data folder is writable.
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
