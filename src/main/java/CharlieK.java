@@ -20,6 +20,9 @@ public class CharlieK {
     /** Provides the task list's file-system persistence. */
     private static final Storage STORAGE = new Storage(TASK_FILE);
 
+    /** Interprets command lines entered by the user. */
+    private static final Parser PARSER = new Parser();
+
     public static void main(String[] args) {
         String loadingError = null;
         try {
@@ -52,8 +55,9 @@ public class CharlieK {
             System.out.println(LINE);
 
             try {
-                Command commandType = Command.fromInput(command)
-                        .orElseThrow(UnknownCommandException::new);
+                Parser.ParsedCommand parsedCommand = PARSER.parse(command);
+                Command commandType = parsedCommand.command();
+                String argument = parsedCommand.argument();
 
                 if (commandType == Command.BYE) {
                     System.out.println("     Bye. Hope to see you again soon!");
@@ -63,25 +67,25 @@ public class CharlieK {
 
                 switch (commandType) {
                 case LIST:
-                    printTasks(commandType.argumentFrom(command).trim());
+                    printTasks(argument.trim());
                     break;
                 case MARK:
-                    markTask(commandType.argumentFrom(command));
+                    markTask(argument);
                     break;
                 case UNMARK:
-                    unmarkTask(commandType.argumentFrom(command));
+                    unmarkTask(argument);
                     break;
                 case DELETE:
-                    deleteTask(commandType.argumentFrom(command));
+                    deleteTask(argument);
                     break;
                 case TODO:
-                    addToDo(commandType.argumentFrom(command));
+                    addToDo(argument);
                     break;
                 case DEADLINE:
-                    addDeadline(commandType.argumentFrom(command));
+                    addDeadline(argument);
                     break;
                 case EVENT:
-                    addEvent(commandType.argumentFrom(command));
+                    addEvent(argument);
                     break;
                 default:
                     throw new UnknownCommandException();
