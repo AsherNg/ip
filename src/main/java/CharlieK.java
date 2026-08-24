@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -7,11 +10,11 @@ import java.util.Scanner;
 public class CharlieK {
     private static final String LINE = "____________________________________________________________";
 
-    /**
-     * Stores the tasks entered during this run of the program.
-     * The tasks are intentionally kept in memory only, as required.
-     */
+    /** Stores the tasks entered during this run of the program. */
     private static final ArrayList<Task> tasks = new ArrayList<>();
+
+    /** The relative path where the current task list is saved. */
+    private static final Path TASK_FILE = Path.of("data", "charliek.txt");
 
     public static void main(String[] args) {
         String banner = "  ____ _                _ _      _  __\n"
@@ -80,6 +83,22 @@ public class CharlieK {
      */
     private static void addTask(Task task) {
         tasks.add(task);
+        saveTasks();
+    }
+
+    /**
+     * Saves the current task list as one human-readable task per line.
+     *
+     * <p>Loading is deliberately not implemented yet; this method only covers
+     * the first incremental persistence step required by the application.</p>
+     */
+    private static void saveTasks() {
+        try {
+            Files.createDirectories(TASK_FILE.getParent());
+            Files.write(TASK_FILE, tasks.stream().map(Task::toString).toList());
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to save tasks.", exception);
+        }
     }
 
     /** Adds a typed task and prints the confirmation shown by the user interface. */
@@ -179,6 +198,7 @@ public class CharlieK {
             }
 
             task.markAsDone();
+            saveTasks();
             System.out.println("     Nice! I've marked this task as done:");
             System.out.println("       " + task);
         } catch (NumberFormatException exception) {
@@ -208,6 +228,7 @@ public class CharlieK {
             }
 
             task.markAsNotDone();
+            saveTasks();
             System.out.println("     OK, I've marked this task as not done yet:");
             System.out.println("       " + task);
         } catch (NumberFormatException exception) {
@@ -230,6 +251,7 @@ public class CharlieK {
 
             int taskIndex = taskNumber - 1;
             Task deletedTask = tasks.remove(taskIndex);
+            saveTasks();
 
             System.out.println("     Noted. I've removed this task:");
             System.out.println("       " + deletedTask);
