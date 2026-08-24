@@ -12,7 +12,7 @@ public class CharlieK {
     private static final ArrayList<Task> tasks = new ArrayList<>();
 
     /** The relative path where the current task list is saved. */
-    private static final Path TASK_FILE = Path.of("data", "charliek.txt");
+    private static final Path TASK_FILE = Path.of("data", "charliek.csv");
 
     /** Provides the task list's file-system persistence. */
     private static final Storage STORAGE = new Storage(TASK_FILE);
@@ -103,7 +103,7 @@ public class CharlieK {
         }
     }
 
-    /** Saves the current task list as one human-readable task per line. */
+    /** Saves the current task list as one CSV row per task. */
     private static void saveTasks() throws TaskStorageException {
         STORAGE.save(tasks);
     }

@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Represents a task entered into CharlieK's task list.
  */
@@ -34,6 +36,25 @@ public abstract class Task {
      * @return this task's type
      */
     protected abstract TaskType getType();
+
+    /**
+     * Returns this task's type marker used in the CSV file.
+     *
+     * @return the one-letter task type marker
+     */
+    public String getStorageType() {
+        return getType().getIcon();
+    }
+
+    /**
+     * Returns the task values stored after the type and completion columns.
+     * Subclasses add their type-specific parameters.
+     *
+     * @return this task's CSV data values
+     */
+    public List<String> getStorageFields() {
+        return List.of(description);
+    }
 
     /**
      * Returns any additional information shown after the task description.

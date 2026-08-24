@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * A task with a specified starting date or time and ending date or time.
  */
@@ -29,6 +31,16 @@ public class Event extends Task {
     @Override
     protected TaskType getType() {
         return TaskType.EVENT;
+    }
+
+    /**
+     * Returns the values stored for this event after the common task fields.
+     *
+     * @return the description, starting time, and ending time values
+     */
+    @Override
+    public List<String> getStorageFields() {
+        return List.of(description, from, to);
     }
 
     /**
