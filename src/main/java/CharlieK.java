@@ -1,5 +1,4 @@
 import java.nio.file.Path;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -79,13 +78,13 @@ public class CharlieK {
                     deleteTask(argument);
                     break;
                 case TODO:
-                    addToDo(argument);
+                    addTypedTask(PARSER.parseToDo(argument));
                     break;
                 case DEADLINE:
-                    addDeadline(argument);
+                    addTypedTask(PARSER.parseDeadline(argument));
                     break;
                 case EVENT:
-                    addEvent(argument);
+                    addTypedTask(PARSER.parseEvent(argument));
                     break;
                 default:
                     throw new UnknownCommandException();
@@ -137,85 +136,6 @@ public class CharlieK {
         System.out.println("     Got it. I've added this task:");
         System.out.println("       " + task);
         System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
-    }
-
-    /** Parses and adds a to-do command. */
-    private static void addToDo(String command)
-            throws EmptyTaskDescriptionException, TaskStorageException {
-        String description = command.trim();
-        if (description.isEmpty()) {
-            throw new EmptyTaskDescriptionException();
-        }
-
-        addTypedTask(new ToDo(description));
-    }
-
-    /** Parses and adds a deadline command. */
-    private static void addDeadline(String command)
-            throws EmptyTaskDescriptionException, EmptyParameterException,
-            InvalidDateTimeException, TaskStorageException {
-        String commandText = command.trim();
-        if (commandText.isEmpty()) {
-            throw new EmptyTaskDescriptionException();
-        }
-
-        int markerIndex = commandText.indexOf(" /by ");
-        String description = markerIndex < 0
-                ? commandText
-                : commandText.substring(0, markerIndex).trim();
-        if (description.isEmpty()) {
-            throw new EmptyTaskDescriptionException();
-        }
-        if (markerIndex < 0) {
-            throw new EmptyParameterException();
-        }
-
-        String deadline = commandText.substring(markerIndex + " /by ".length()).trim();
-        if (deadline.isEmpty()) {
-            throw new EmptyParameterException();
-        }
-
-        try {
-            addTypedTask(new Deadline(description, DateTimeParser.parseUserInput(deadline)));
-        } catch (DateTimeException exception) {
-            throw new InvalidDateTimeException();
-        }
-    }
-
-    /** Parses and adds an event command. */
-    private static void addEvent(String command)
-            throws EmptyTaskDescriptionException, EmptyParameterException,
-            InvalidDateTimeException, TaskStorageException {
-        String commandText = command.trim();
-        if (commandText.isEmpty()) {
-            throw new EmptyTaskDescriptionException();
-        }
-
-        int fromMarkerIndex = commandText.indexOf(" /from ");
-        String description = fromMarkerIndex < 0
-                ? commandText
-                : commandText.substring(0, fromMarkerIndex).trim();
-        if (description.isEmpty()) {
-            throw new EmptyTaskDescriptionException();
-        }
-
-        int toMarkerIndex = commandText.indexOf(" /to ", fromMarkerIndex + 1);
-        if (fromMarkerIndex < 0 || toMarkerIndex < 0) {
-            throw new EmptyParameterException();
-        }
-
-        String from = commandText.substring(fromMarkerIndex + " /from ".length(), toMarkerIndex).trim();
-        String to = commandText.substring(toMarkerIndex + " /to ".length()).trim();
-        if (from.isEmpty() || to.isEmpty()) {
-            throw new EmptyParameterException();
-        }
-
-        try {
-            addTypedTask(new Event(description,
-                    DateTimeParser.parseUserInput(from), DateTimeParser.parseUserInput(to)));
-        } catch (DateTimeException exception) {
-            throw new InvalidDateTimeException();
-        }
     }
 
     /**
