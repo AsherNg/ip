@@ -5,17 +5,32 @@ public class AddCommand extends Command {
     /** The task to add. */
     private final Task task;
 
+    /** The task list to update. */
+    private final TaskList tasks;
+
+    /** The UI used to show the result. */
+    private final Ui ui;
+
+    /** The storage used to persist the updated list. */
+    private final Storage storage;
+
     /**
      * Creates an add command for a parsed task.
      *
+     * @param tasks the task list to update
+     * @param ui the UI used to show the result
+     * @param storage the storage used to persist the updated list
      * @param task the task to add
      */
-    public AddCommand(Task task) {
+    public AddCommand(TaskList tasks, Ui ui, Storage storage, Task task) {
+        this.tasks = tasks;
+        this.ui = ui;
+        this.storage = storage;
         this.task = task;
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws TaskStorageException {
+    public void execute() throws TaskStorageException {
         tasks.add(task);
         try {
             storage.save(tasks.toList());

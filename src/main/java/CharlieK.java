@@ -20,8 +20,8 @@ public class CharlieK {
     public CharlieK(String filePath) {
         storage = new Storage(Path.of(filePath));
         tasks = new TaskList();
-        parser = new Parser();
         ui = new Ui();
+        parser = new Parser(tasks, ui, storage);
     }
 
     /** Starts the application session. */
@@ -42,9 +42,8 @@ public class CharlieK {
             ui.showLine();
 
             try {
-                Parser.ParsedCommand parsedCommand = parser.parse(command);
-                Command executableCommand = createCommand(parsedCommand);
-                executableCommand.execute(tasks, ui, storage);
+                Command executableCommand = parser.parse(command);
+                executableCommand.execute();
                 if (executableCommand.isExit()) {
                     break;
                 }
@@ -59,29 +58,6 @@ public class CharlieK {
 
     public static void main(String[] args) {
         new CharlieK("data/charliek.csv").run();
-    }
-
-    /**
-     * Creates an executable command from the parser's keyword and argument.
-     *
-     * @param parsedCommand the parser result for one user input line
-     * @return the executable command
-     * @throws CharlieKException when a task argument cannot be parsed
-     */
-    private Command createCommand(Parser.ParsedCommand parsedCommand)
-            throws CharlieKException {
-        CommandType commandType = parsedCommand.command();
-        String argument = parsedCommand.argument();
-        return switch (commandType) {
-        case BYE -> new ExitCommand();
-        case LIST -> new ListCommand(argument.trim());
-        case MARK -> new MarkCommand(argument);
-        case UNMARK -> new UnmarkCommand(argument);
-        case DELETE -> new DeleteCommand(argument);
-        case TODO -> new AddCommand(parser.parseToDo(argument));
-        case DEADLINE -> new AddCommand(parser.parseDeadline(argument));
-        case EVENT -> new AddCommand(parser.parseEvent(argument));
-        };
     }
 
     /**

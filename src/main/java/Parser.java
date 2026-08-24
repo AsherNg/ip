@@ -1,4 +1,5 @@
 import java.time.DateTimeException;
+import java.util.Objects;
 
 /**
  * Interprets complete lines entered by the user.
@@ -8,17 +9,49 @@ import java.time.DateTimeException;
  * it does not execute commands or persist tasks.</p>
  */
 public class Parser {
+    /** The task list used by commands created by this parser. */
+    private final TaskList tasks;
+
+    /** The UI used by commands created by this parser. */
+    private final Ui ui;
+
+    /** The storage used by commands created by this parser. */
+    private final Storage storage;
+
+    /**
+     * Creates a parser that can construct executable commands.
+     *
+     * @param tasks the task list commands will operate on
+     * @param ui the UI commands will use for output
+     * @param storage the storage commands will use for persistence
+     */
+    public Parser(TaskList tasks, Ui ui, Storage storage) {
+        this.tasks = Objects.requireNonNull(tasks);
+        this.ui = Objects.requireNonNull(ui);
+        this.storage = Objects.requireNonNull(storage);
+    }
+
     /**
      * Parses one complete user input line.
      *
      * @param input the line entered by the user
-     * @return the identified command and its argument
-     * @throws UnknownCommandException when the input does not start with a known command
+     * @return an executable command for the input
+     * @throws CharlieKException when the command or its arguments are invalid
      */
-    public ParsedCommand parse(String input) throws UnknownCommandException {
+    public Command parse(String input) throws CharlieKException {
         CommandType command = CommandType.fromInput(input)
                 .orElseThrow(UnknownCommandException::new);
-        return new ParsedCommand(command, command.argumentFrom(input));
+        String argument = command.argumentFrom(input);
+        return switch (command) {
+        case BYE -> new ExitCommand(ui);
+        case LIST -> new ListCommand(tasks, ui, argument.trim());
+        case MARK -> new MarkCommand(tasks, ui, storage, argument);
+        case UNMARK -> new UnmarkCommand(tasks, ui, storage, argument);
+        case DELETE -> new DeleteCommand(tasks, ui, storage, argument);
+        case TODO -> new AddCommand(tasks, ui, storage, parseToDo(argument));
+        case DEADLINE -> new AddCommand(tasks, ui, storage, parseDeadline(argument));
+        case EVENT -> new AddCommand(tasks, ui, storage, parseEvent(argument));
+        };
     }
 
     /**
@@ -120,41 +153,4 @@ public class Parser {
         }
     }
 
-    /** Represents the result of parsing one user input line. */
-    public static class ParsedCommand {
-        /** The command identified in the input. */
-        private final CommandType command;
-
-        /** The text following the command keyword. */
-        private final String argument;
-
-        /**
-         * Creates a parsed command result.
-         *
-         * @param command the identified command
-         * @param argument the text following the command keyword
-         */
-        public ParsedCommand(CommandType command, String argument) {
-            this.command = command;
-            this.argument = argument;
-        }
-
-        /**
-         * Returns the identified command.
-         *
-         * @return the command
-         */
-        public CommandType command() {
-            return command;
-        }
-
-        /**
-         * Returns the text following the command keyword.
-         *
-         * @return the command argument, possibly empty
-         */
-        public String argument() {
-            return argument;
-        }
-    }
 }
