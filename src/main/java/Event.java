@@ -1,14 +1,23 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A task with a specified starting date or time and ending date or time.
  */
 public class Event extends Task {
-    /** The date or time at which the event starts. */
-    private final String from;
+    /** The event start date, when no start time was supplied. */
+    private final LocalDate fromDate;
 
-    /** The date or time at which the event ends. */
-    private final String to;
+    /** The event start date and time, when a start time was supplied. */
+    private final LocalDateTime fromDateTime;
+
+    /** The event end date, when no end time was supplied. */
+    private final LocalDate toDate;
+
+    /** The event end date and time, when an end time was supplied. */
+    private final LocalDateTime toDateTime;
 
     /**
      * Creates an incomplete event task.
@@ -18,9 +27,20 @@ public class Event extends Task {
      * @param to the date or time at which the event ends
      */
     public Event(String description, String from, String to) {
+        this(description, DateTimeParser.parseUserInput(from), DateTimeParser.parseUserInput(to));
+    }
+
+    /** Creates an event from date-only or date-time values. */
+    public Event(String description, DateTimeParser.ParsedDateTime from,
+            DateTimeParser.ParsedDateTime to) {
         super(description);
-        this.from = from;
-        this.to = to;
+        if (from == null || to == null) {
+            throw new IllegalArgumentException("Both event date/times are required.");
+        }
+        this.fromDate = from.date();
+        this.fromDateTime = from.dateTime();
+        this.toDate = to.date();
+        this.toDateTime = to.dateTime();
     }
 
     /**
@@ -40,7 +60,9 @@ public class Event extends Task {
      */
     @Override
     public List<String> getStorageFields() {
-        return List.of(description, from, to);
+        return List.of(description,
+                DateTimeParser.formatForStorage(new DateTimeParser.ParsedDateTime(fromDate, fromDateTime)),
+                DateTimeParser.formatForStorage(new DateTimeParser.ParsedDateTime(toDate, toDateTime)));
     }
 
     /**
@@ -50,6 +72,20 @@ public class Event extends Task {
      */
     @Override
     protected String getDateDetails() {
-        return " (from: " + from + " to: " + to + ")";
+        return " (from: " + format(fromDate, fromDateTime)
+                + " to: " + format(toDate, toDateTime) + ")";
+    }
+
+    /** Returns the event start as the task's chronological ordering key. */
+    @Override
+    public Optional<LocalDateTime> getSortDateTime() {
+        LocalDateTime sortDateTime = fromDateTime == null
+                ? fromDate.atStartOfDay()
+                : fromDateTime;
+        return Optional.of(sortDateTime);
+    }
+
+    private String format(LocalDate date, LocalDateTime dateTime) {
+        return DateTimeParser.formatForDisplay(new DateTimeParser.ParsedDateTime(date, dateTime));
     }
 }

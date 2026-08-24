@@ -7,8 +7,8 @@ public enum Command {
     /** Exits the application. */
     BYE("bye", false),
 
-    /** Displays all tasks. */
-    LIST("list", false),
+    /** Displays all tasks, optionally sorted by time. */
+    LIST("list", true),
 
     /** Marks a task as done. */
     MARK("mark", true),
@@ -52,6 +52,9 @@ public enum Command {
      * @return the matching command, or an empty result for an unknown command
      */
     public static Optional<Command> fromInput(String input) {
+        if (input == null) {
+            return Optional.empty();
+        }
         for (Command command : values()) {
             boolean isExactMatch = input.equals(command.keyword);
             boolean isArgumentMatch = command.acceptsArguments
@@ -70,6 +73,9 @@ public enum Command {
      * @return the text after the keyword and its separating space
      */
     public String argumentFrom(String input) {
+        if (input == null) {
+            return "";
+        }
         int argumentStart = keyword.length();
         if (input.length() > argumentStart && input.charAt(argumentStart) == ' ') {
             argumentStart++;

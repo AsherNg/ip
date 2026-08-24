@@ -1,4 +1,6 @@
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents a task entered into CharlieK's task list.
@@ -16,6 +18,9 @@ public abstract class Task {
      * @param description the text describing the task
      */
     public Task(String description) {
+        if (description == null || description.isBlank()) {
+            throw new IllegalArgumentException("A task description must not be blank.");
+        }
         this.description = description;
         this.isDone = false;
     }
@@ -63,6 +68,16 @@ public abstract class Task {
      */
     protected String getDateDetails() {
         return "";
+    }
+
+    /**
+     * Returns the date/time used to order this task in a chronological list.
+     * Undated tasks return an empty value and are placed after dated tasks.
+     *
+     * @return this task's chronological ordering key, when it has one
+     */
+    public Optional<LocalDateTime> getSortDateTime() {
+        return Optional.empty();
     }
 
     /**

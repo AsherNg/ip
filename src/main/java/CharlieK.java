@@ -1,5 +1,9 @@
 import java.nio.file.Path;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -23,6 +27,8 @@ public class CharlieK {
             loadTasks();
         } catch (TaskStorageException exception) {
             loadingError = exception.getMessage();
+        } catch (RuntimeException exception) {
+            loadingError = "I couldn't load saved tasks because the saved data is invalid.";
         }
 
         String banner = "  ____ _                _ _      _  __\n"
@@ -58,7 +64,7 @@ public class CharlieK {
 
                 switch (commandType) {
                 case LIST:
-                    printTasks();
+                    printTasks(commandType.argumentFrom(command).trim());
                     break;
                 case MARK:
                     markTask(commandType.argumentFrom(command));
@@ -83,6 +89,9 @@ public class CharlieK {
                 }
             } catch (CharlieKException exception) {
                 System.out.println("     " + exception.getMessage());
+            } catch (RuntimeException exception) {
+                System.out.println(
+                        "     I couldn't process that command. Please check the input and try again.");
             }
             System.out.println(LINE);
         }
@@ -98,6 +107,9 @@ public class CharlieK {
         try {
             saveTasks();
         } catch (TaskStorageException exception) {
+            tasks.remove(tasks.size() - 1);
+            throw exception;
+        } catch (RuntimeException exception) {
             tasks.remove(tasks.size() - 1);
             throw exception;
         }
@@ -139,7 +151,8 @@ public class CharlieK {
 
     /** Parses and adds a deadline command. */
     private static void addDeadline(String command)
-            throws EmptyTaskDescriptionException, EmptyParameterException, TaskStorageException {
+            throws EmptyTaskDescriptionException, EmptyParameterException,
+            InvalidDateTimeException, TaskStorageException {
         String commandText = command.trim();
         if (commandText.isEmpty()) {
             throw new EmptyTaskDescriptionException();
@@ -161,12 +174,17 @@ public class CharlieK {
             throw new EmptyParameterException();
         }
 
-        addTypedTask(new Deadline(description, deadline));
+        try {
+            addTypedTask(new Deadline(description, DateTimeParser.parseUserInput(deadline)));
+        } catch (DateTimeException exception) {
+            throw new InvalidDateTimeException();
+        }
     }
 
     /** Parses and adds an event command. */
     private static void addEvent(String command)
-            throws EmptyTaskDescriptionException, EmptyParameterException, TaskStorageException {
+            throws EmptyTaskDescriptionException, EmptyParameterException,
+            InvalidDateTimeException, TaskStorageException {
         String commandText = command.trim();
         if (commandText.isEmpty()) {
             throw new EmptyTaskDescriptionException();
@@ -191,7 +209,12 @@ public class CharlieK {
             throw new EmptyParameterException();
         }
 
-        addTypedTask(new Event(description, from, to));
+        try {
+            addTypedTask(new Event(description,
+                    DateTimeParser.parseUserInput(from), DateTimeParser.parseUserInput(to)));
+        } catch (DateTimeException exception) {
+            throw new InvalidDateTimeException();
+        }
     }
 
     /**
@@ -219,6 +242,9 @@ public class CharlieK {
             try {
                 saveTasks();
             } catch (TaskStorageException exception) {
+                task.markAsNotDone();
+                throw exception;
+            } catch (RuntimeException exception) {
                 task.markAsNotDone();
                 throw exception;
             }
@@ -256,6 +282,9 @@ public class CharlieK {
             } catch (TaskStorageException exception) {
                 task.markAsDone();
                 throw exception;
+            } catch (RuntimeException exception) {
+                task.markAsDone();
+                throw exception;
             }
             System.out.println("     OK, I've marked this task as not done yet:");
             System.out.println("       " + task);
@@ -284,6 +313,9 @@ public class CharlieK {
             } catch (TaskStorageException exception) {
                 tasks.add(taskIndex, deletedTask);
                 throw exception;
+            } catch (RuntimeException exception) {
+                tasks.add(taskIndex, deletedTask);
+                throw exception;
             }
 
             System.out.println("     Noted. I've removed this task:");
@@ -295,10 +327,27 @@ public class CharlieK {
     }
 
     /** Displays all stored tasks and their completion status. */
-    private static void printTasks() {
+    private static void printTasks(String listOption) throws UnknownCommandException {
+        boolean sortByTime;
+        if (listOption.isEmpty()) {
+            sortByTime = false;
+        } else if ("time".equals(listOption)) {
+            sortByTime = true;
+        } else {
+            throw new UnknownCommandException();
+        }
+
+        List<Task> tasksToDisplay = new ArrayList<>(tasks);
+        if (sortByTime) {
+            Comparator<LocalDateTime> dateTimeComparator =
+                    Comparator.nullsLast(Comparator.naturalOrder());
+            tasksToDisplay.sort(Comparator.comparing(
+                    task -> task.getSortDateTime().orElse(null), dateTimeComparator));
+        }
+
         System.out.println("     Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println("     " + (i + 1) + "." + tasks.get(i));
+        for (int i = 0; i < tasksToDisplay.size(); i++) {
+            System.out.println("     " + (i + 1) + "." + tasksToDisplay.get(i));
         }
     }
 }

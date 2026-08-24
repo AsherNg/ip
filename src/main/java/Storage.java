@@ -8,6 +8,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,10 +68,13 @@ public class Storage {
         } catch (NoSuchFileException exception) {
             // A new user may create the file between the existence check and the read.
             return new ArrayList<>();
-        } catch (IOException | SecurityException exception) {
+        } catch (IOException exception) {
             throw new TaskStorageException(
                     "I couldn't load saved tasks. Please check that data/charliek.csv exists and is readable.",
                     exception);
+        } catch (RuntimeException exception) {
+            throw new TaskStorageException(
+                    "I couldn't load saved tasks because the saved data is invalid.", exception);
         }
     }
 
@@ -88,15 +92,15 @@ public class Storage {
         }
 
         ArrayList<String> lines = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task == null) {
-                throw new IllegalArgumentException("The task list cannot contain null tasks.");
-            }
-            lines.add(toCsvLine(task));
-        }
-
         Path temporaryFile = null;
         try {
+            for (Task task : tasks) {
+                if (task == null) {
+                    throw new IllegalArgumentException("The task list cannot contain null tasks.");
+                }
+                lines.add(toCsvLine(task));
+            }
+
             Path parent = taskFile.getParent();
             Files.createDirectories(parent);
             if (Files.exists(taskFile) && !Files.isRegularFile(taskFile)) {
@@ -108,7 +112,11 @@ public class Storage {
                     StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             moveIntoPlace(temporaryFile);
             temporaryFile = null;
-        } catch (IOException | SecurityException exception) {
+        } catch (IOException exception) {
+            throw new TaskStorageException(
+                    "I couldn't save tasks. Please check that the data folder is writable.",
+                    exception);
+        } catch (RuntimeException exception) {
             throw new TaskStorageException(
                     "I couldn't save tasks. Please check that the data folder is writable.",
                     exception);
@@ -159,35 +167,41 @@ public class Storage {
         String type = fields.get(0);
         String status = fields.get(1);
         String description = fields.get(2);
-        if (!("0".equals(status) || "1".equals(status)) || description.isEmpty()) {
+        if (!("0".equals(status) || "1".equals(status)) || description.isBlank()) {
             return null;
         }
 
-        Task task;
-        switch (type) {
-        case "T":
-            if (fields.size() != 3) {
+        try {
+            Task task;
+            switch (type) {
+            case "T":
+                if (fields.size() != 3) {
+                    return null;
+                }
+                task = new ToDo(description);
+                break;
+            case "D":
+                if (fields.size() != 4 || fields.get(3).isEmpty()) {
+                    return null;
+                }
+                task = new Deadline(description, DateTimeParser.parseStored(fields.get(3)));
+                break;
+            case "E":
+                if (fields.size() != 5 || fields.get(3).isEmpty() || fields.get(4).isEmpty()) {
+                    return null;
+                }
+                task = new Event(description,
+                        DateTimeParser.parseStored(fields.get(3)),
+                        DateTimeParser.parseStored(fields.get(4)));
+                break;
+            default:
                 return null;
             }
-            task = new ToDo(description);
-            break;
-        case "D":
-            if (fields.size() != 4 || fields.get(3).isEmpty()) {
-                return null;
-            }
-            task = new Deadline(description, fields.get(3));
-            break;
-        case "E":
-            if (fields.size() != 5 || fields.get(3).isEmpty() || fields.get(4).isEmpty()) {
-                return null;
-            }
-            task = new Event(description, fields.get(3), fields.get(4));
-            break;
-        default:
+            return restoreStatus(task, status);
+        } catch (DateTimeException | IllegalArgumentException exception) {
+            // A dated task with a malformed persisted value is not loadable.
             return null;
         }
-
-        return restoreStatus(task, status);
     }
 
     /** Restores completion status after constructing a task from its CSV row. */
@@ -258,6 +272,9 @@ public class Storage {
 
     /** Escapes a value when CSV syntax requires quoting. */
     private String escapeCsv(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("A task CSV field cannot be null.");
+        }
         if (value.indexOf(',') < 0 && value.indexOf('"') < 0
                 && value.indexOf('\n') < 0 && value.indexOf('\r') < 0) {
             return value;
