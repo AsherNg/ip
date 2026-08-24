@@ -1,3 +1,5 @@
+package charliek.exception;
+
 /**
  * Indicates that a task command does not include a description.
  */

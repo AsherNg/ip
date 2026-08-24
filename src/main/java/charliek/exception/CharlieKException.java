@@ -1,3 +1,5 @@
+package charliek.exception;
+
 /**
  * Base class for errors that can be reported by the CharlieK chatbot.
  */

@@ -1,3 +1,5 @@
+package charliek.exception;
+
 /**
  * Indicates that CharlieK does not recognize the user's command.
  */

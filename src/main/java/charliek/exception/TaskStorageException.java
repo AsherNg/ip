@@ -1,3 +1,5 @@
+package charliek.exception;
+
 /**
  * Indicates that CharlieK could not read or write its task file.
  */

@@ -1,7 +1,15 @@
+package charliek.command;
+
+import charliek.exception.TaskStorageException;
+import charliek.model.Task;
+import charliek.model.TaskList;
+import charliek.storage.Storage;
+import charliek.ui.Ui;
+
 /**
- * Deletes a selected task and persists the updated list.
+ * Marks a selected task as done and persists the updated list.
  */
-public class DeleteCommand extends Command {
+public class MarkCommand extends Command {
     /** The task list to update. */
     private final TaskList tasks;
 
@@ -15,14 +23,14 @@ public class DeleteCommand extends Command {
     private final String taskNumberText;
 
     /**
-     * Creates a delete command.
+     * Creates a mark command.
      *
      * @param tasks the task list to update
      * @param ui the UI used to show the result
      * @param storage the storage used to persist the updated list
      * @param taskNumberText the task number supplied by the user
      */
-    public DeleteCommand(TaskList tasks, Ui ui, Storage storage, String taskNumberText) {
+    public MarkCommand(TaskList tasks, Ui ui, Storage storage, String taskNumberText) {
         this.tasks = tasks;
         this.ui = ui;
         this.storage = storage;
@@ -39,18 +47,23 @@ public class DeleteCommand extends Command {
             }
 
             int taskIndex = taskNumber - 1;
-            Task deletedTask = tasks.remove(taskIndex);
+            Task task = tasks.get(taskIndex);
+            if (task.isDone()) {
+                ui.showTaskAlreadyMarked(task);
+                return;
+            }
+
+            task.markAsDone();
             try {
                 storage.save(tasks.toList());
             } catch (TaskStorageException exception) {
-                tasks.add(taskIndex, deletedTask);
+                task.markAsNotDone();
                 throw exception;
             } catch (RuntimeException exception) {
-                tasks.add(taskIndex, deletedTask);
+                task.markAsNotDone();
                 throw exception;
             }
-
-            ui.showTaskDeleted(deletedTask, tasks.size());
+            ui.showTaskMarked(task);
         } catch (NumberFormatException exception) {
             ui.showInvalidTaskNumber();
         }

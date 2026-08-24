@@ -1,3 +1,8 @@
+package charliek.command;
+
+import charliek.CharlieK;
+import charliek.exception.CharlieKException;
+
 /**
  * Represents an executable command in the application.
  *

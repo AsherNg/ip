@@ -1,3 +1,5 @@
+package charliek.model;
+
 /**
  * A task that has no date or time attached to it.
  */

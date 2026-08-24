@@ -1,3 +1,5 @@
+package charliek.exception;
+
 /**
  * Indicates that a deadline or event command is missing a required parameter.
  */
