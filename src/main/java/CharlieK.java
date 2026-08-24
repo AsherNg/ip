@@ -1,3 +1,4 @@
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -7,13 +8,23 @@ import java.util.Scanner;
 public class CharlieK {
     private static final String LINE = "____________________________________________________________";
 
-    /**
-     * Stores the tasks entered during this run of the program.
-     * The tasks are intentionally kept in memory only, as required.
-     */
+    /** Stores the tasks entered during this run of the program. */
     private static final ArrayList<Task> tasks = new ArrayList<>();
 
+    /** The relative path where the current task list is saved. */
+    private static final Path TASK_FILE = Path.of("data", "charliek.csv");
+
+    /** Provides the task list's file-system persistence. */
+    private static final Storage STORAGE = new Storage(TASK_FILE);
+
     public static void main(String[] args) {
+        String loadingError = null;
+        try {
+            loadTasks();
+        } catch (TaskStorageException exception) {
+            loadingError = exception.getMessage();
+        }
+
         String banner = "  ____ _                _ _      _  __\n"
                         + " / ___| |__   __ _ _ __| (_) ___| |/ /\n"
                         + "| |   | '_ \\ / _` | '__| | |/ _ \\ ' / \n"
@@ -25,6 +36,10 @@ public class CharlieK {
         System.out.println("Hello! I'm CharlieK.");
         System.out.println("What can I do for you?");
         System.out.println(LINE);
+        if (loadingError != null) {
+            System.out.println("     " + loadingError);
+            System.out.println(LINE);
+        }
 
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -78,12 +93,33 @@ public class CharlieK {
      *
      * @param task the task object to store
      */
-    private static void addTask(Task task) {
+    private static void addTask(Task task) throws TaskStorageException {
         tasks.add(task);
+        try {
+            saveTasks();
+        } catch (TaskStorageException exception) {
+            tasks.remove(tasks.size() - 1);
+            throw exception;
+        }
+    }
+
+    /** Saves the current task list as one CSV row per task. */
+    private static void saveTasks() throws TaskStorageException {
+        STORAGE.save(tasks);
+    }
+
+    /**
+     * Loads task lines saved by {@link #saveTasks()} when the application starts.
+     * Missing files represent a new, empty task list.
+     */
+    private static void loadTasks() throws TaskStorageException {
+        ArrayList<Task> loadedTasks = STORAGE.load();
+        tasks.clear();
+        tasks.addAll(loadedTasks);
     }
 
     /** Adds a typed task and prints the confirmation shown by the user interface. */
-    private static void addTypedTask(Task task) {
+    private static void addTypedTask(Task task) throws TaskStorageException {
         addTask(task);
         System.out.println("     Got it. I've added this task:");
         System.out.println("       " + task);
@@ -91,7 +127,8 @@ public class CharlieK {
     }
 
     /** Parses and adds a to-do command. */
-    private static void addToDo(String command) throws EmptyTaskDescriptionException {
+    private static void addToDo(String command)
+            throws EmptyTaskDescriptionException, TaskStorageException {
         String description = command.trim();
         if (description.isEmpty()) {
             throw new EmptyTaskDescriptionException();
@@ -102,7 +139,7 @@ public class CharlieK {
 
     /** Parses and adds a deadline command. */
     private static void addDeadline(String command)
-            throws EmptyTaskDescriptionException, EmptyParameterException {
+            throws EmptyTaskDescriptionException, EmptyParameterException, TaskStorageException {
         String commandText = command.trim();
         if (commandText.isEmpty()) {
             throw new EmptyTaskDescriptionException();
@@ -129,7 +166,7 @@ public class CharlieK {
 
     /** Parses and adds an event command. */
     private static void addEvent(String command)
-            throws EmptyTaskDescriptionException, EmptyParameterException {
+            throws EmptyTaskDescriptionException, EmptyParameterException, TaskStorageException {
         String commandText = command.trim();
         if (commandText.isEmpty()) {
             throw new EmptyTaskDescriptionException();
@@ -162,7 +199,7 @@ public class CharlieK {
      *
      * @param taskNumberText the task number supplied after the {@code mark} command
      */
-    private static void markTask(String taskNumberText) {
+    private static void markTask(String taskNumberText) throws TaskStorageException {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
@@ -179,6 +216,12 @@ public class CharlieK {
             }
 
             task.markAsDone();
+            try {
+                saveTasks();
+            } catch (TaskStorageException exception) {
+                task.markAsNotDone();
+                throw exception;
+            }
             System.out.println("     Nice! I've marked this task as done:");
             System.out.println("       " + task);
         } catch (NumberFormatException exception) {
@@ -191,7 +234,7 @@ public class CharlieK {
      *
      * @param taskNumberText the task number supplied after the {@code unmark} command
      */
-    private static void unmarkTask(String taskNumberText) {
+    private static void unmarkTask(String taskNumberText) throws TaskStorageException {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
@@ -208,6 +251,12 @@ public class CharlieK {
             }
 
             task.markAsNotDone();
+            try {
+                saveTasks();
+            } catch (TaskStorageException exception) {
+                task.markAsDone();
+                throw exception;
+            }
             System.out.println("     OK, I've marked this task as not done yet:");
             System.out.println("       " + task);
         } catch (NumberFormatException exception) {
@@ -220,7 +269,7 @@ public class CharlieK {
      *
      * @param taskNumberText the task number supplied after the {@code delete} command
      */
-    private static void deleteTask(String taskNumberText) {
+    private static void deleteTask(String taskNumberText) throws TaskStorageException {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
@@ -230,6 +279,12 @@ public class CharlieK {
 
             int taskIndex = taskNumber - 1;
             Task deletedTask = tasks.remove(taskIndex);
+            try {
+                saveTasks();
+            } catch (TaskStorageException exception) {
+                tasks.add(taskIndex, deletedTask);
+                throw exception;
+            }
 
             System.out.println("     Noted. I've removed this task:");
             System.out.println("       " + deletedTask);
