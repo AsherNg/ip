@@ -9,13 +9,13 @@ This plan contains end-to-end console tests for `CharlieK`.
 - Compile before testing:
 
   ```
-    javac -d _temp/ui-test-classes src/main/java/*.java
+    javac -d _temp/ui-test-classes (Get-ChildItem -Path src/main/java -Recurse -Filter *.java | ForEach-Object { $_.FullName })
   ```
 
 - Each test case starts a fresh process with:
 
   ```
-  java -cp _temp/ui-test-classes CharlieK
+  java -cp _temp/ui-test-classes charliek.CharlieK
   ```
 
 - Compare output exactly after normalizing only platform line endings. The skill must stop at the first failure and show the complete console transcript.
@@ -47,7 +47,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -80,7 +80,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -154,7 +154,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -199,7 +199,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -257,7 +257,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -314,7 +314,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -355,7 +355,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -420,7 +420,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -521,7 +521,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -595,7 +595,7 @@ E,0,persisted event,2019-12-02T14:00,2019-12-02T15:00
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -637,7 +637,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -689,7 +689,7 @@ D,0,valid saved deadline,2019-12-02
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -730,7 +730,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -781,7 +781,7 @@ E,0,"project ""sync""","2019-08-06T14:00","2019-08-06T16:00"
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -821,7 +821,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -866,7 +866,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**
@@ -939,7 +939,7 @@ ____________________________________________________________
 **Command:**
 
 ```
-java -cp _temp/ui-test-classes CharlieK
+java -cp _temp/ui-test-classes charliek.CharlieK
 ```
 
 **Inputs:**

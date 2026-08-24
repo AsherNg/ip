@@ -1,3 +1,5 @@
+package charliek.model;
+
 /**
  * Represents the supported kinds of task and their display icons.
  */

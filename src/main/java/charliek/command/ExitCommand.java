@@ -1,3 +1,7 @@
+package charliek.command;
+
+import charliek.ui.Ui;
+
 /**
  * Handles the command that ends the current application session.
  */

@@ -1,3 +1,5 @@
+package charliek.exception;
+
 /** Indicates that a deadline or event date/time is not in a supported format. */
 public class InvalidDateTimeException extends CharlieKException {
     /** The message displayed when a date/time cannot be parsed. */

@@ -1,3 +1,6 @@
+package charliek.ui;
+
+import charliek.model.Task;
 import java.util.Scanner;
 import java.util.List;
 

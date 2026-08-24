@@ -1,3 +1,11 @@
+package charliek.command;
+
+import charliek.exception.TaskStorageException;
+import charliek.model.Task;
+import charliek.model.TaskList;
+import charliek.storage.Storage;
+import charliek.ui.Ui;
+
 /**
  * Adds a parsed task to the task list and persists the updated list.
  */

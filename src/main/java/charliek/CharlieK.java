@@ -1,3 +1,12 @@
+package charliek;
+
+import charliek.command.Command;
+import charliek.exception.CharlieKException;
+import charliek.exception.TaskStorageException;
+import charliek.model.TaskList;
+import charliek.parser.Parser;
+import charliek.storage.Storage;
+import charliek.ui.Ui;
 import java.nio.file.Path;
 
 /**
