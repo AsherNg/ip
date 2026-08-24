@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A task that must be completed before a specified date or time.
@@ -35,6 +36,9 @@ public class Deadline extends Task {
     /** Creates a deadline from a parsed date or date-time value. */
     public Deadline(String description, DateTimeParser.ParsedDateTime deadline) {
         super(description);
+        if (deadline == null) {
+            throw new IllegalArgumentException("A deadline date/time is required.");
+        }
         this.deadlineDate = deadline.date();
         this.deadlineDateTime = deadline.dateTime();
     }
@@ -67,6 +71,15 @@ public class Deadline extends Task {
     @Override
     protected String getDateDetails() {
         return " (by: " + DateTimeParser.formatForDisplay(toParsedDateTime()) + ")";
+    }
+
+    /** Returns the deadline as the task's chronological ordering key. */
+    @Override
+    public Optional<LocalDateTime> getSortDateTime() {
+        LocalDateTime sortDateTime = deadlineDateTime == null
+                ? deadlineDate.atStartOfDay()
+                : deadlineDateTime;
+        return Optional.of(sortDateTime);
     }
 
     /** Returns this deadline as the date/time value used by the parser and formatter. */

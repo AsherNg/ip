@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A task with a specified starting date or time and ending date or time.
@@ -33,6 +34,9 @@ public class Event extends Task {
     public Event(String description, DateTimeParser.ParsedDateTime from,
             DateTimeParser.ParsedDateTime to) {
         super(description);
+        if (from == null || to == null) {
+            throw new IllegalArgumentException("Both event date/times are required.");
+        }
         this.fromDate = from.date();
         this.fromDateTime = from.dateTime();
         this.toDate = to.date();
@@ -70,6 +74,15 @@ public class Event extends Task {
     protected String getDateDetails() {
         return " (from: " + format(fromDate, fromDateTime)
                 + " to: " + format(toDate, toDateTime) + ")";
+    }
+
+    /** Returns the event start as the task's chronological ordering key. */
+    @Override
+    public Optional<LocalDateTime> getSortDateTime() {
+        LocalDateTime sortDateTime = fromDateTime == null
+                ? fromDate.atStartOfDay()
+                : fromDateTime;
+        return Optional.of(sortDateTime);
     }
 
     private String format(LocalDate date, LocalDateTime dateTime) {

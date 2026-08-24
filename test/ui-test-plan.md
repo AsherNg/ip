@@ -858,3 +858,113 @@ ____________________________________________________________
      Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+### UI-16 — Sort tasks chronologically with `list time`
+
+**Aim:** Verify that `list time` sorts dated tasks by their deadline or event start, places undated to-dos last, and leaves ordinary `list` order unchanged.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes CharlieK
+```
+
+**Inputs:**
+
+```
+todo no date
+deadline later /by 2026-12-31
+event early /from 2026-01-01 /to 2026-01-02
+deadline middle /by 2026-06-01 1200
+list time
+list
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] no date
+     Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [D][ ] later (by: 31 Dec 2026)
+     Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [E][ ] early (from: 1 Jan 2026 to: 2 Jan 2026)
+     Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [D][ ] middle (by: 1 Jun 2026, 12:00)
+     Now you have 4 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[E][ ] early (from: 1 Jan 2026 to: 2 Jan 2026)
+     2.[D][ ] middle (by: 1 Jun 2026, 12:00)
+     3.[D][ ] later (by: 31 Dec 2026)
+     4.[T][ ] no date
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
+     1.[T][ ] no date
+     2.[D][ ] later (by: 31 Dec 2026)
+     3.[E][ ] early (from: 1 Jan 2026 to: 2 Jan 2026)
+     4.[D][ ] middle (by: 1 Jun 2026, 12:00)
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-17 — Handle an unsupported `list` option
+
+**Aim:** Verify that an unsupported argument to `list` is reported without terminating the application.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes CharlieK
+```
+
+**Inputs:**
+
+```
+list unsupported
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     I do not know what that command means, but I know how to carry the flame!
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```

@@ -97,6 +97,7 @@ public final class DateTimeParser {
 
     /** Formats a parsed value for display in a task description. */
     public static String formatForDisplay(ParsedDateTime value) {
+        requireValue(value);
         if (value.hasTime()) {
             return DISPLAY_DATE_TIME.format(value.dateTime());
         }
@@ -105,6 +106,7 @@ public final class DateTimeParser {
 
     /** Formats a parsed value for stable CSV persistence. */
     public static String formatForStorage(ParsedDateTime value) {
+        requireValue(value);
         if (value.hasTime()) {
             return DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(value.dateTime());
         }
@@ -135,6 +137,12 @@ public final class DateTimeParser {
             return "";
         }
         return input.trim().replaceAll("\\s+", " ");
+    }
+
+    private static void requireValue(ParsedDateTime value) {
+        if (value == null) {
+            throw new IllegalArgumentException("A date/time value is required.");
+        }
     }
 
     /** Holds either a date-only value or a value that includes a time. */
