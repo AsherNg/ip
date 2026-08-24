@@ -3,6 +3,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Runs the CharlieK command-line chatbot.
@@ -16,7 +18,16 @@ public class CharlieK {
     /** The relative path where the current task list is saved. */
     private static final Path TASK_FILE = Path.of("data", "charliek.txt");
 
+    /** Patterns for the human-readable task lines written by {@link #saveTasks()}. */
+    private static final Pattern TODO_LINE = Pattern.compile("^\\[T\\]\\[( |X)\\] (.*)$");
+    private static final Pattern DEADLINE_LINE =
+            Pattern.compile("^\\[D\\]\\[( |X)\\] (.*) \\(by: (.*)\\)$");
+    private static final Pattern EVENT_LINE =
+            Pattern.compile("^\\[E\\]\\[( |X)\\] (.*) \\(from: (.*) to: (.*)\\)$");
+
     public static void main(String[] args) {
+        loadTasks();
+
         String banner = "  ____ _                _ _      _  __\n"
                         + " / ___| |__   __ _ _ __| (_) ___| |/ /\n"
                         + "| |   | '_ \\ / _` | '__| | |/ _ \\ ' / \n"
@@ -86,12 +97,7 @@ public class CharlieK {
         saveTasks();
     }
 
-    /**
-     * Saves the current task list as one human-readable task per line.
-     *
-     * <p>Loading is deliberately not implemented yet; this method only covers
-     * the first incremental persistence step required by the application.</p>
-     */
+    /** Saves the current task list as one human-readable task per line. */
     private static void saveTasks() {
         try {
             Files.createDirectories(TASK_FILE.getParent());
@@ -99,6 +105,57 @@ public class CharlieK {
         } catch (IOException exception) {
             throw new IllegalStateException("Unable to save tasks.", exception);
         }
+    }
+
+    /**
+     * Loads task lines saved by {@link #saveTasks()} when the application starts.
+     * Missing files represent a new, empty task list.
+     */
+    private static void loadTasks() {
+        if (!Files.exists(TASK_FILE)) {
+            return;
+        }
+
+        try {
+            for (String line : Files.readAllLines(TASK_FILE)) {
+                Task task = parseTask(line);
+                if (task != null) {
+                    tasks.add(task);
+                }
+            }
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to load tasks.", exception);
+        }
+    }
+
+    /** Parses one saved task line, ignoring blank or malformed lines. */
+    private static Task parseTask(String line) {
+        Matcher todoMatcher = TODO_LINE.matcher(line);
+        if (todoMatcher.matches()) {
+            return restoreStatus(new ToDo(todoMatcher.group(2)), todoMatcher.group(1));
+        }
+
+        Matcher deadlineMatcher = DEADLINE_LINE.matcher(line);
+        if (deadlineMatcher.matches()) {
+            return restoreStatus(new Deadline(
+                    deadlineMatcher.group(2), deadlineMatcher.group(3)), deadlineMatcher.group(1));
+        }
+
+        Matcher eventMatcher = EVENT_LINE.matcher(line);
+        if (eventMatcher.matches()) {
+            return restoreStatus(new Event(
+                    eventMatcher.group(2), eventMatcher.group(3), eventMatcher.group(4)), eventMatcher.group(1));
+        }
+
+        return null;
+    }
+
+    /** Restores completion status after constructing a task from its saved line. */
+    private static Task restoreStatus(Task task, String status) {
+        if (status.equals("X")) {
+            task.markAsDone();
+        }
+        return task;
     }
 
     /** Adds a typed task and prints the confirmation shown by the user interface. */
