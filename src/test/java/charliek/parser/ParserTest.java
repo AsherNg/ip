@@ -93,6 +93,8 @@ class ParserTest {
         assertThrows(EmptyParameterException.class,
                 () -> parser.parseEvent("project meeting /to 2019-12-03"));
         assertThrows(EmptyParameterException.class,
+                () -> parser.parseEvent("project meeting /from /to 2019-12-03"));
+        assertThrows(EmptyParameterException.class,
                 () -> parser.parseEvent("project meeting /from 2019-12-02 /to"));
         assertThrows(InvalidDateTimeException.class,
                 () -> parser.parseEvent("project meeting /from invalid /to 2019-12-03"));
