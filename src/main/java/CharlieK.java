@@ -8,21 +8,27 @@ import java.util.List;
  */
 public class CharlieK {
     /** Stores the tasks entered during this run of the program. */
-    private static final TaskList tasks = new TaskList();
-
-    /** The relative path where the current task list is saved. */
-    private static final Path TASK_FILE = Path.of("data", "charliek.csv");
+    private final TaskList tasks;
 
     /** Provides the task list's file-system persistence. */
-    private static final Storage STORAGE = new Storage(TASK_FILE);
+    private final Storage storage;
 
     /** Interprets command lines entered by the user. */
-    private static final Parser PARSER = new Parser();
+    private final Parser parser;
 
     /** Handles console input and common session messages. */
-    private static final Ui UI = new Ui();
+    private final Ui ui;
 
-    public static void main(String[] args) {
+    /** Creates an application instance using the supplied task-file path. */
+    public CharlieK(String filePath) {
+        storage = new Storage(Path.of(filePath));
+        tasks = new TaskList();
+        parser = new Parser();
+        ui = new Ui();
+    }
+
+    /** Starts the application session. */
+    public void run() {
         String loadingError = null;
         try {
             loadTasks();
@@ -32,19 +38,19 @@ public class CharlieK {
             loadingError = "I couldn't load saved tasks because the saved data is invalid.";
         }
 
-        UI.showWelcome(loadingError);
+        ui.showWelcome(loadingError);
 
-        while (UI.hasNextCommand()) {
-            String command = UI.readCommand();
-            UI.showLine();
+        while (ui.hasNextCommand()) {
+            String command = ui.readCommand();
+            ui.showLine();
 
             try {
-                Parser.ParsedCommand parsedCommand = PARSER.parse(command);
+                Parser.ParsedCommand parsedCommand = parser.parse(command);
                 Command commandType = parsedCommand.command();
                 String argument = parsedCommand.argument();
 
                 if (commandType == Command.BYE) {
-                    UI.showGoodbye();
+                    ui.showGoodbye();
                     break;
                 }
 
@@ -62,24 +68,28 @@ public class CharlieK {
                     deleteTask(argument);
                     break;
                 case TODO:
-                    addTypedTask(PARSER.parseToDo(argument));
+                    addTypedTask(parser.parseToDo(argument));
                     break;
                 case DEADLINE:
-                    addTypedTask(PARSER.parseDeadline(argument));
+                    addTypedTask(parser.parseDeadline(argument));
                     break;
                 case EVENT:
-                    addTypedTask(PARSER.parseEvent(argument));
+                    addTypedTask(parser.parseEvent(argument));
                     break;
                 default:
                     throw new UnknownCommandException();
                 }
             } catch (CharlieKException exception) {
-                UI.showError(exception.getMessage());
+                ui.showError(exception.getMessage());
             } catch (RuntimeException exception) {
-                UI.showProcessingError();
+                ui.showProcessingError();
             }
-            UI.showLine();
+            ui.showLine();
         }
+    }
+
+    public static void main(String[] args) {
+        new CharlieK("data/charliek.csv").run();
     }
 
     /**
@@ -87,7 +97,7 @@ public class CharlieK {
      *
      * @param task the task object to store
      */
-    private static void addTask(Task task) throws TaskStorageException {
+    private void addTask(Task task) throws TaskStorageException {
         tasks.add(task);
         try {
             saveTasks();
@@ -101,22 +111,22 @@ public class CharlieK {
     }
 
     /** Saves the current task list as one CSV row per task. */
-    private static void saveTasks() throws TaskStorageException {
-        STORAGE.save(tasks.toList());
+    private void saveTasks() throws TaskStorageException {
+        storage.save(tasks.toList());
     }
 
     /**
      * Loads task lines saved by {@link #saveTasks()} when the application starts.
      * Missing files represent a new, empty task list.
      */
-    private static void loadTasks() throws TaskStorageException {
-        tasks.replaceWith(STORAGE.load());
+    private void loadTasks() throws TaskStorageException {
+        tasks.replaceWith(storage.load());
     }
 
     /** Adds a typed task and prints the confirmation shown by the user interface. */
-    private static void addTypedTask(Task task) throws TaskStorageException {
+    private void addTypedTask(Task task) throws TaskStorageException {
         addTask(task);
-        UI.showTaskAdded(task, tasks.size());
+        ui.showTaskAdded(task, tasks.size());
     }
 
     /**
@@ -124,18 +134,18 @@ public class CharlieK {
      *
      * @param taskNumberText the task number supplied after the {@code mark} command
      */
-    private static void markTask(String taskNumberText) throws TaskStorageException {
+    private void markTask(String taskNumberText) throws TaskStorageException {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                UI.showTaskDoesNotExist();
+                ui.showTaskDoesNotExist();
                 return;
             }
 
             int taskIndex = taskNumber - 1;
             Task task = tasks.get(taskIndex);
             if (task.isDone()) {
-                UI.showTaskAlreadyMarked(task);
+                ui.showTaskAlreadyMarked(task);
                 return;
             }
 
@@ -149,9 +159,9 @@ public class CharlieK {
                 task.markAsNotDone();
                 throw exception;
             }
-            UI.showTaskMarked(task);
+            ui.showTaskMarked(task);
         } catch (NumberFormatException exception) {
-            UI.showInvalidTaskNumber();
+            ui.showInvalidTaskNumber();
         }
     }
 
@@ -160,18 +170,18 @@ public class CharlieK {
      *
      * @param taskNumberText the task number supplied after the {@code unmark} command
      */
-    private static void unmarkTask(String taskNumberText) throws TaskStorageException {
+    private void unmarkTask(String taskNumberText) throws TaskStorageException {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                UI.showTaskDoesNotExist();
+                ui.showTaskDoesNotExist();
                 return;
             }
 
             int taskIndex = taskNumber - 1;
             Task task = tasks.get(taskIndex);
             if (!task.isDone()) {
-                UI.showTaskAlreadyUnmarked(task);
+                ui.showTaskAlreadyUnmarked(task);
                 return;
             }
 
@@ -185,9 +195,9 @@ public class CharlieK {
                 task.markAsDone();
                 throw exception;
             }
-            UI.showTaskUnmarked(task);
+            ui.showTaskUnmarked(task);
         } catch (NumberFormatException exception) {
-            UI.showInvalidTaskNumber();
+            ui.showInvalidTaskNumber();
         }
     }
 
@@ -196,11 +206,11 @@ public class CharlieK {
      *
      * @param taskNumberText the task number supplied after the {@code delete} command
      */
-    private static void deleteTask(String taskNumberText) throws TaskStorageException {
+    private void deleteTask(String taskNumberText) throws TaskStorageException {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                UI.showTaskDoesNotExist();
+                ui.showTaskDoesNotExist();
                 return;
             }
 
@@ -216,14 +226,14 @@ public class CharlieK {
                 throw exception;
             }
 
-            UI.showTaskDeleted(deletedTask, tasks.size());
+            ui.showTaskDeleted(deletedTask, tasks.size());
         } catch (NumberFormatException exception) {
-            UI.showInvalidTaskNumber();
+            ui.showInvalidTaskNumber();
         }
     }
 
     /** Displays all stored tasks and their completion status. */
-    private static void printTasks(String listOption) throws UnknownCommandException {
+    private void printTasks(String listOption) throws UnknownCommandException {
         boolean sortByTime;
         if (listOption.isEmpty()) {
             sortByTime = false;
@@ -241,6 +251,6 @@ public class CharlieK {
                     task -> task.getSortDateTime().orElse(null), dateTimeComparator));
         }
 
-        UI.showTasks(tasksToDisplay);
+        ui.showTasks(tasksToDisplay);
     }
 }
