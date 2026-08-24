@@ -48,7 +48,11 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    // Package dependencies and application classes into the distributable JAR.
+    archiveFileName = 'CharlieK.jar'
+    manifest {
+        attributes 'Main-Class': application.mainClass.get()
+    }
 }
 
 run {
