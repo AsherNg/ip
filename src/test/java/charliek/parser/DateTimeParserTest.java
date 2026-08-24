@@ -47,6 +47,31 @@ class DateTimeParserTest {
         assertEquals(LocalDateTime.of(2019, 12, 2, 18, 0), result.dateTime());
     }
 
+    /** Verifies textual dates, case-insensitive month names, and seconds. */
+    @Test
+    void parseUserInput_textualAndSecondPrecisionForms_returnsDateTime() {
+        DateTimeParser.ParsedDateTime textual =
+                DateTimeParser.parseUserInput("december 2 2019 6:05 PM");
+        DateTimeParser.ParsedDateTime numeric =
+                DateTimeParser.parseUserInput("2019.12.2 23:05:06");
+
+        assertAll(
+                () -> assertEquals(LocalDateTime.of(2019, 12, 2, 18, 5), textual.dateTime()),
+                () -> assertEquals(LocalDateTime.of(2019, 12, 2, 23, 5, 6), numeric.dateTime()));
+    }
+
+    /** Verifies that invalid calendar dates and clock values are rejected strictly. */
+    @Test
+    void parseUserInput_invalidDateOrTime_throwsDateTimeParseException() {
+        assertAll(
+                () -> assertThrows(DateTimeParseException.class,
+                        () -> DateTimeParser.parseUserInput("2019-02-30")),
+                () -> assertThrows(DateTimeParseException.class,
+                        () -> DateTimeParser.parseUserInput("2019-12-02 25:00")),
+                () -> assertThrows(DateTimeParseException.class,
+                        () -> DateTimeParser.parseUserInput("2019-12-02 13:60:00")));
+    }
+
     /** Verifies that null, blank, and unsupported inputs are rejected. */
     @Test
     void parseUserInput_invalidInput_throwsDateTimeParseException() {
@@ -64,7 +89,7 @@ class DateTimeParserTest {
     /** Verifies that stored ISO date and date-time values are restored correctly. */
     @Test
     void parseStored_isoValues_returnsCorrespondingDateOrDateTime() {
-        DateTimeParser.ParsedDateTime date = DateTimeParser.parseStored("2019-12-02");
+        DateTimeParser.ParsedDateTime date = DateTimeParser.parseStored(" 2019-12-02 ");
         DateTimeParser.ParsedDateTime dateTime =
                 DateTimeParser.parseStored("2019-12-02T18:00:00");
 

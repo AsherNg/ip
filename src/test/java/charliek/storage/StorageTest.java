@@ -72,6 +72,19 @@ class StorageTest {
         assertEquals("second", storage.load().get(0).getStorageFields().get(0));
     }
 
+    /** Verifies that saving an empty list creates a readable empty task file. */
+    @Test
+    void save_emptyList_createsEmptyFile() throws Exception {
+        Path taskFile = tempDirectory.resolve("tasks.csv");
+        Storage storage = new Storage(taskFile);
+
+        storage.save(List.of());
+
+        assertTrue(Files.isRegularFile(taskFile));
+        assertTrue(Files.readAllLines(taskFile).isEmpty());
+        assertTrue(storage.load().isEmpty());
+    }
+
     /** Verifies that malformed rows are ignored while valid rows remain loadable. */
     @Test
     void load_malformedAndValidRows_returnsOnlyValidTasks() throws Exception {
@@ -90,6 +103,25 @@ class StorageTest {
         assertEquals(2, loaded.size());
         assertEquals("[T][X] valid saved task", loaded.get(0).toString());
         assertEquals("[T][ ] valid, quoted task", loaded.get(1).toString());
+    }
+
+    /** Verifies that unsupported types, statuses, and field counts are ignored. */
+    @Test
+    void load_invalidRecordMetadata_returnsOnlySupportedRecords() throws Exception {
+        Path taskFile = tempDirectory.resolve("tasks.csv");
+        Files.writeString(taskFile, String.join(System.lineSeparator(),
+                "X,0,unknown type",
+                "T,2,invalid status",
+                "T,0,too,many,fields",
+                "D,0,missing deadline",
+                "E,0,missing end,2019-12-02T14:00:00",
+                "T,0,valid task",
+                ""));
+
+        List<Task> loaded = new Storage(taskFile).load();
+
+        assertEquals(1, loaded.size());
+        assertEquals("[T][ ] valid task", loaded.get(0).toString());
     }
 
     /** Verifies that invalid file paths are reported as storage exceptions. */

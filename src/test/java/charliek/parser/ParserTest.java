@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import charliek.command.AddCommand;
 import charliek.command.Command;
+import charliek.command.DeleteCommand;
 import charliek.command.ExitCommand;
 import charliek.command.ListCommand;
+import charliek.command.MarkCommand;
+import charliek.command.UnmarkCommand;
 import charliek.exception.EmptyParameterException;
 import charliek.exception.EmptyTaskDescriptionException;
 import charliek.exception.InvalidDateTimeException;
@@ -105,6 +108,9 @@ class ParserTest {
     void parse_supportedCommands_returnsMatchingCommandObjects() throws Exception {
         assertInstanceOf(ExitCommand.class, parser.parse("bye"));
         assertInstanceOf(ListCommand.class, parser.parse("list time"));
+        assertInstanceOf(MarkCommand.class, parser.parse("mark 1"));
+        assertInstanceOf(UnmarkCommand.class, parser.parse("unmark 1"));
+        assertInstanceOf(DeleteCommand.class, parser.parse("delete 1"));
         assertInstanceOf(AddCommand.class, parser.parse("todo read book"));
         assertInstanceOf(AddCommand.class,
                 parser.parse("deadline return book /by 2019-12-02"));
@@ -116,5 +122,6 @@ class ParserTest {
     @Test
     void parse_unknownCommand_throwsUnknownCommandException() {
         assertThrows(UnknownCommandException.class, () -> parser.parse("unknown"));
+        assertThrows(UnknownCommandException.class, () -> parser.parse(null));
     }
 }
