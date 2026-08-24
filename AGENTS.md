@@ -24,6 +24,14 @@ Unless the user says otherwise, assume that you are assisting a student working 
 
 # Project-specific requirements
 
+## JUnit test coverage
+
+Target JUnit coverage for the top approximately 50% of methods, prioritizing
+complex, core, and business-critical logic over trivial accessors or boilerplate.
+After every code change, review the relevant JUnit tests and add or update them
+to cover the changed behavior so that the target remains satisfied. Run the
+Gradle test task after updating the tests.
+
 ## Console UI testing
 
 After each code update:

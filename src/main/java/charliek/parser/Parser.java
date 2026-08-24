@@ -160,7 +160,12 @@ public class Parser {
             throw new EmptyParameterException();
         }
 
-        String from = commandText.substring(fromMarkerIndex + " /from ".length(), toMarkerIndex).trim();
+        int fromValueStart = fromMarkerIndex + " /from ".length();
+        if (toMarkerIndex <= fromValueStart) {
+            throw new EmptyParameterException();
+        }
+
+        String from = commandText.substring(fromValueStart, toMarkerIndex).trim();
         String to = commandText.substring(toMarkerIndex + " /to ".length()).trim();
         if (from.isEmpty() || to.isEmpty()) {
             throw new EmptyParameterException();

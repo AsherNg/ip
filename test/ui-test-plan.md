@@ -367,6 +367,7 @@ event
 deadline return book
 deadline return book /by
 event project meeting
+event project meeting /from /to 2026-06-06
 event project meeting /from Mon 2pm /to
 list
 bye
@@ -392,6 +393,9 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
      The description is empty! Enter the description or I will carry the flame!
+____________________________________________________________
+____________________________________________________________
+     The parameter is empty! Enter the required parameters or I will carry the flame!
 ____________________________________________________________
 ____________________________________________________________
      The parameter is empty! Enter the required parameters or I will carry the flame!
