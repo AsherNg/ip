@@ -2,14 +2,11 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Runs the CharlieK command-line chatbot.
  */
 public class CharlieK {
-    private static final String LINE = "____________________________________________________________";
-
     /** Stores the tasks entered during this run of the program. */
     private static final TaskList tasks = new TaskList();
 
@@ -22,6 +19,9 @@ public class CharlieK {
     /** Interprets command lines entered by the user. */
     private static final Parser PARSER = new Parser();
 
+    /** Handles console input and common session messages. */
+    private static final Ui UI = new Ui();
+
     public static void main(String[] args) {
         String loadingError = null;
         try {
@@ -32,26 +32,11 @@ public class CharlieK {
             loadingError = "I couldn't load saved tasks because the saved data is invalid.";
         }
 
-        String banner = "  ____ _                _ _      _  __\n"
-                        + " / ___| |__   __ _ _ __| (_) ___| |/ /\n"
-                        + "| |   | '_ \\ / _` | '__| | |/ _ \\ ' / \n"
-                        + "| |___| | | | (_| | |  | | |  __/ . \\ \n"
-                        + " \\____|_| |_|\\__,_|_|  |_|_|\\___|_|\\_\\\n";
-                        
-        System.out.println(LINE);
-        System.out.print(banner);
-        System.out.println("Hello! I'm CharlieK.");
-        System.out.println("What can I do for you?");
-        System.out.println(LINE);
-        if (loadingError != null) {
-            System.out.println("     " + loadingError);
-            System.out.println(LINE);
-        }
+        UI.showWelcome(loadingError);
 
-        Scanner scanner = new Scanner(System.in);
-        while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
-            System.out.println(LINE);
+        while (UI.hasNextCommand()) {
+            String command = UI.readCommand();
+            UI.showLine();
 
             try {
                 Parser.ParsedCommand parsedCommand = PARSER.parse(command);
@@ -59,8 +44,7 @@ public class CharlieK {
                 String argument = parsedCommand.argument();
 
                 if (commandType == Command.BYE) {
-                    System.out.println("     Bye. Hope to see you again soon!");
-                    System.out.println(LINE);
+                    UI.showGoodbye();
                     break;
                 }
 
@@ -90,12 +74,11 @@ public class CharlieK {
                     throw new UnknownCommandException();
                 }
             } catch (CharlieKException exception) {
-                System.out.println("     " + exception.getMessage());
+                UI.showError(exception.getMessage());
             } catch (RuntimeException exception) {
-                System.out.println(
-                        "     I couldn't process that command. Please check the input and try again.");
+                UI.showProcessingError();
             }
-            System.out.println(LINE);
+            UI.showLine();
         }
     }
 
