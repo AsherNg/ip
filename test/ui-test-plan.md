@@ -9,7 +9,7 @@ This plan contains end-to-end console tests for `CharlieK`.
 - Compile before testing:
 
   ```
-    javac -d _temp/ui-test-classes src/main/java/CharlieK.java src/main/java/Command.java src/main/java/TaskType.java src/main/java/CharlieKException.java src/main/java/TaskStorageException.java src/main/java/Storage.java src/main/java/UnknownCommandException.java src/main/java/EmptyTaskDescriptionException.java src/main/java/EmptyParameterException.java src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java
+    javac -d _temp/ui-test-classes src/main/java/*.java
   ```
 
 - Each test case starts a fresh process with:
@@ -20,7 +20,7 @@ This plan contains end-to-end console tests for `CharlieK`.
 
 - Compare output exactly after normalizing only platform line endings. The skill must stop at the first failure and show the complete console transcript.
 - Remove `data/charliek.csv` before each test case to keep cases isolated. For setup-based cases, create the CSV file with the contents specified in that test's setup first.
-- The CSV file has no header row. Columns are `type,status,description`, followed by `deadline` for `D` tasks or `from,to` for `E` tasks; status `0` means incomplete and `1` means complete.
+- The CSV file has no header row. Columns are `type,status,description`, followed by `deadline` for `D` tasks or `from,to` for `E` tasks; status `0` means incomplete and `1` means complete. Dates are stored as `yyyy-MM-dd`, and date-times as ISO local date-times such as `yyyy-MM-ddTHH:mm:ss`.
 
 ## Shared startup output
 
@@ -206,8 +206,8 @@ java -cp _temp/ui-test-classes CharlieK
 
 ```
 todo borrow book
-deadline return book /by Sunday
-event project meeting /from Mon 2pm /to 4pm
+deadline return book /by 2026-06-07
+event project meeting /from 2026-08-06 14:00 /to 2026-08-06 16:00
 list
 bye
 ```
@@ -231,28 +231,28 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] return book (by: Sunday)
+       [D][ ] return book (by: 7 Jun 2026)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
      Got it. I've added this task:
-       [E][ ] project meeting (from: Mon 2pm to: 4pm)
+       [E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
      Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][ ] borrow book
-     2.[D][ ] return book (by: Sunday)
-     3.[E][ ] project meeting (from: Mon 2pm to: 4pm)
+     2.[D][ ] return book (by: 7 Jun 2026)
+     3.[E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
-### UI-05 — Preserve date and time text literally
+### UI-05 — Parse and normalize date/time variations
 
-**Aim:** Verify that deadline and event date/time values are treated as strings and are not validated or reformatted.
+**Aim:** Verify that common numeric, ISO, compact-time, and 12-hour date/time inputs are parsed and printed consistently.
 
 **Command:**
 
@@ -263,8 +263,9 @@ java -cp _temp/ui-test-classes CharlieK
 **Inputs:**
 
 ```
-deadline do homework /by no idea :-p
-event orientation week /from 4/10/2019 /to 11/10/2019
+deadline review report /by 2/12/2019 1800
+event orientation week /from 2/12/2019 6pm /to 2019-12-2 23:00
+deadline holiday /by 2-12-2019
 list
 bye
 ```
@@ -283,18 +284,24 @@ What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] do homework (by: no idea :-p)
+       [D][ ] review report (by: 2 Dec 2019, 18:00)
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
      Got it. I've added this task:
-       [E][ ] orientation week (from: 4/10/2019 to: 11/10/2019)
+       [E][ ] orientation week (from: 2 Dec 2019, 18:00 to: 2 Dec 2019, 23:00)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
+     Got it. I've added this task:
+       [D][ ] holiday (by: 2 Dec 2019)
+     Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
      Here are the tasks in your list:
-     1.[D][ ] do homework (by: no idea :-p)
-     2.[E][ ] orientation week (from: 4/10/2019 to: 11/10/2019)
+     1.[D][ ] review report (by: 2 Dec 2019, 18:00)
+     2.[E][ ] orientation week (from: 2 Dec 2019, 18:00 to: 2 Dec 2019, 23:00)
+     3.[D][ ] holiday (by: 2 Dec 2019)
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
@@ -421,9 +428,9 @@ java -cp _temp/ui-test-classes CharlieK
 ```
 todo read book
 mark 1
-deadline return book /by June 6th
+deadline return book /by 2026-06-06
 mark 2
-event project meeting /from Aug 6th 2pm /to 4pm
+event project meeting /from 2026-08-06 14:00 /to 2026-08-06 16:00
 todo join sports club
 mark 4
 todo borrow book
@@ -456,16 +463,16 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] return book (by: June 6th)
+       [D][ ] return book (by: 6 Jun 2026)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
      Nice! I've marked this task as done:
-       [D][X] return book (by: June 6th)
+       [D][X] return book (by: 6 Jun 2026)
 ____________________________________________________________
 ____________________________________________________________
      Got it. I've added this task:
-       [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+       [E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
      Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -485,20 +492,20 @@ ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][X] read book
-     2.[D][X] return book (by: June 6th)
-     3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+     2.[D][X] return book (by: 6 Jun 2026)
+     3.[E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
      4.[T][X] join sports club
      5.[T][ ] borrow book
 ____________________________________________________________
 ____________________________________________________________
      Noted. I've removed this task:
-       [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+       [E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
      Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][X] read book
-     2.[D][X] return book (by: June 6th)
+     2.[D][X] return book (by: 6 Jun 2026)
      3.[T][X] join sports club
      4.[T][ ] borrow book
 ____________________________________________________________
@@ -521,7 +528,7 @@ java -cp _temp/ui-test-classes CharlieK
 
 ```
 todo save me
-deadline keep me /by tomorrow
+deadline keep me /by 2026-06-06
 mark 1
 unmark 1
 delete 2
@@ -548,7 +555,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
      Got it. I've added this task:
-       [D][ ] keep me (by: tomorrow)
+       [D][ ] keep me (by: 6 Jun 2026)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -561,7 +568,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
      Noted. I've removed this task:
-       [D][ ] keep me (by: tomorrow)
+       [D][ ] keep me (by: 6 Jun 2026)
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -581,8 +588,8 @@ ____________________________________________________________
 
 ```
 T,1,persisted to-do
-D,0,persisted deadline,tomorrow
-E,0,persisted event,2pm,3pm
+D,0,persisted deadline,2019-12-02
+E,0,persisted event,2019-12-02T14:00,2019-12-02T15:00
 ```
 
 **Command:**
@@ -613,8 +620,8 @@ ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][X] persisted to-do
-     2.[D][ ] persisted deadline (by: tomorrow)
-     3.[E][ ] persisted event (from: 2pm to: 3pm)
+     2.[D][ ] persisted deadline (by: 2 Dec 2019)
+     3.[E][ ] persisted event (from: 2 Dec 2019, 14:00 to: 2 Dec 2019, 15:00)
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
@@ -676,7 +683,7 @@ ____________________________________________________________
 ```
 not a CSV record
 T,1,valid saved task
-D,0,valid saved deadline,tomorrow
+D,0,valid saved deadline,2019-12-02
 ```
 
 **Command:**
@@ -707,7 +714,7 @@ ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][X] valid saved task
-     2.[D][ ] valid saved deadline (by: tomorrow)
+     2.[D][ ] valid saved deadline (by: 2 Dec 2019)
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
@@ -767,8 +774,8 @@ ____________________________________________________________
 
 ```
 T,0,"buy, milk"
-D,1,"return, book","June, 6th"
-E,0,"project ""sync""","Aug 6th, 2pm","4pm, maybe"
+D,1,"return, book","2019-06-06"
+E,0,"project ""sync""","2019-08-06T14:00","2019-08-06T16:00"
 ```
 
 **Command:**
@@ -799,8 +806,53 @@ ____________________________________________________________
 ____________________________________________________________
      Here are the tasks in your list:
      1.[T][ ] buy, milk
-     2.[D][X] return, book (by: June, 6th)
-     3.[E][ ] project "sync" (from: Aug 6th, 2pm to: 4pm, maybe)
+     2.[D][X] return, book (by: 6 Jun 2019)
+     3.[E][ ] project "sync" (from: 6 Aug 2019, 14:00 to: 6 Aug 2019, 16:00)
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-15 — Reject unsupported date/time formats
+
+**Aim:** Verify that malformed deadline and event date/time values are reported without terminating the application or adding tasks.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes CharlieK
+```
+
+**Inputs:**
+
+```
+deadline submit report /by not a date
+event planning /from 2/12/2019 /to invalid
+list
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     I couldn't understand that date/time! Try 2/12/2019 or 2/12/2019 6pm.
+____________________________________________________________
+____________________________________________________________
+     I couldn't understand that date/time! Try 2/12/2019 or 2/12/2019 6pm.
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!

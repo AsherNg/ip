@@ -1,4 +1,5 @@
 import java.nio.file.Path;
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -139,7 +140,8 @@ public class CharlieK {
 
     /** Parses and adds a deadline command. */
     private static void addDeadline(String command)
-            throws EmptyTaskDescriptionException, EmptyParameterException, TaskStorageException {
+            throws EmptyTaskDescriptionException, EmptyParameterException,
+            InvalidDateTimeException, TaskStorageException {
         String commandText = command.trim();
         if (commandText.isEmpty()) {
             throw new EmptyTaskDescriptionException();
@@ -161,12 +163,17 @@ public class CharlieK {
             throw new EmptyParameterException();
         }
 
-        addTypedTask(new Deadline(description, deadline));
+        try {
+            addTypedTask(new Deadline(description, DateTimeParser.parseUserInput(deadline)));
+        } catch (DateTimeException exception) {
+            throw new InvalidDateTimeException();
+        }
     }
 
     /** Parses and adds an event command. */
     private static void addEvent(String command)
-            throws EmptyTaskDescriptionException, EmptyParameterException, TaskStorageException {
+            throws EmptyTaskDescriptionException, EmptyParameterException,
+            InvalidDateTimeException, TaskStorageException {
         String commandText = command.trim();
         if (commandText.isEmpty()) {
             throw new EmptyTaskDescriptionException();
@@ -191,7 +198,12 @@ public class CharlieK {
             throw new EmptyParameterException();
         }
 
-        addTypedTask(new Event(description, from, to));
+        try {
+            addTypedTask(new Event(description,
+                    DateTimeParser.parseUserInput(from), DateTimeParser.parseUserInput(to)));
+        } catch (DateTimeException exception) {
+            throw new InvalidDateTimeException();
+        }
     }
 
     /**

@@ -8,6 +8,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,31 +164,37 @@ public class Storage {
             return null;
         }
 
-        Task task;
-        switch (type) {
-        case "T":
-            if (fields.size() != 3) {
+        try {
+            Task task;
+            switch (type) {
+            case "T":
+                if (fields.size() != 3) {
+                    return null;
+                }
+                task = new ToDo(description);
+                break;
+            case "D":
+                if (fields.size() != 4 || fields.get(3).isEmpty()) {
+                    return null;
+                }
+                task = new Deadline(description, DateTimeParser.parseStored(fields.get(3)));
+                break;
+            case "E":
+                if (fields.size() != 5 || fields.get(3).isEmpty() || fields.get(4).isEmpty()) {
+                    return null;
+                }
+                task = new Event(description,
+                        DateTimeParser.parseStored(fields.get(3)),
+                        DateTimeParser.parseStored(fields.get(4)));
+                break;
+            default:
                 return null;
             }
-            task = new ToDo(description);
-            break;
-        case "D":
-            if (fields.size() != 4 || fields.get(3).isEmpty()) {
-                return null;
-            }
-            task = new Deadline(description, fields.get(3));
-            break;
-        case "E":
-            if (fields.size() != 5 || fields.get(3).isEmpty() || fields.get(4).isEmpty()) {
-                return null;
-            }
-            task = new Event(description, fields.get(3), fields.get(4));
-            break;
-        default:
+            return restoreStatus(task, status);
+        } catch (DateTimeException | IllegalArgumentException exception) {
+            // A dated task with a malformed persisted value is not loadable.
             return null;
         }
-
-        return restoreStatus(task, status);
     }
 
     /** Restores completion status after constructing a task from its CSV row. */
