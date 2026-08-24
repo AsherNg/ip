@@ -1,7 +1,6 @@
 import java.nio.file.Path;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
@@ -13,7 +12,7 @@ public class CharlieK {
     private static final String LINE = "____________________________________________________________";
 
     /** Stores the tasks entered during this run of the program. */
-    private static final ArrayList<Task> tasks = new ArrayList<>();
+    private static final TaskList tasks = new TaskList();
 
     /** The relative path where the current task list is saved. */
     private static final Path TASK_FILE = Path.of("data", "charliek.csv");
@@ -117,7 +116,7 @@ public class CharlieK {
 
     /** Saves the current task list as one CSV row per task. */
     private static void saveTasks() throws TaskStorageException {
-        STORAGE.save(tasks);
+        STORAGE.save(tasks.toList());
     }
 
     /**
@@ -125,9 +124,7 @@ public class CharlieK {
      * Missing files represent a new, empty task list.
      */
     private static void loadTasks() throws TaskStorageException {
-        ArrayList<Task> loadedTasks = STORAGE.load();
-        tasks.clear();
-        tasks.addAll(loadedTasks);
+        tasks.replaceWith(STORAGE.load());
     }
 
     /** Adds a typed task and prints the confirmation shown by the user interface. */
@@ -337,7 +334,7 @@ public class CharlieK {
             throw new UnknownCommandException();
         }
 
-        List<Task> tasksToDisplay = new ArrayList<>(tasks);
+        List<Task> tasksToDisplay = tasks.toList();
         if (sortByTime) {
             Comparator<LocalDateTime> dateTimeComparator =
                     Comparator.nullsLast(Comparator.naturalOrder());
