@@ -16,7 +16,7 @@ public class Parser {
      * @throws UnknownCommandException when the input does not start with a known command
      */
     public ParsedCommand parse(String input) throws UnknownCommandException {
-        Command command = Command.fromInput(input)
+        CommandType command = CommandType.fromInput(input)
                 .orElseThrow(UnknownCommandException::new);
         return new ParsedCommand(command, command.argumentFrom(input));
     }
@@ -123,7 +123,7 @@ public class Parser {
     /** Represents the result of parsing one user input line. */
     public static class ParsedCommand {
         /** The command identified in the input. */
-        private final Command command;
+        private final CommandType command;
 
         /** The text following the command keyword. */
         private final String argument;
@@ -134,7 +134,7 @@ public class Parser {
          * @param command the identified command
          * @param argument the text following the command keyword
          */
-        public ParsedCommand(Command command, String argument) {
+        public ParsedCommand(CommandType command, String argument) {
             this.command = command;
             this.argument = argument;
         }
@@ -144,7 +144,7 @@ public class Parser {
          *
          * @return the command
          */
-        public Command command() {
+        public CommandType command() {
             return command;
         }
 
