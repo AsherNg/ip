@@ -33,7 +33,14 @@ public class Event extends Task {
         this(description, DateTimeParser.parseUserInput(from), DateTimeParser.parseUserInput(to));
     }
 
-    /** Creates an event from date-only or date-time values. */
+    /**
+     * Creates an event from date-only or date-time values.
+     *
+     * @param description the text describing the event
+     * @param from the parsed date or date-time at which the event starts
+     * @param to the parsed date or date-time at which the event ends
+     * @throws IllegalArgumentException if either date/time is {@code null}
+     */
     public Event(String description, DateTimeParser.ParsedDateTime from,
             DateTimeParser.ParsedDateTime to) {
         super(description);
@@ -88,6 +95,7 @@ public class Event extends Task {
         return Optional.of(sortDateTime);
     }
 
+    /** Formats one endpoint of the event's time range for display. */
     private String format(LocalDate date, LocalDateTime dateTime) {
         return DateTimeParser.formatForDisplay(new DateTimeParser.ParsedDateTime(date, dateTime));
     }

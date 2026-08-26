@@ -10,7 +10,15 @@ import charliek.exception.CharlieKException;
  * that command-specific behavior can be moved out of {@link CharlieK}.</p>
  */
 public abstract class Command {
-    /** Executes this command. */
+    /** Creates a command base instance for use by a concrete command. */
+    protected Command() {
+    }
+
+    /**
+     * Executes this command.
+     *
+     * @throws CharlieKException if the command cannot complete normally
+     */
     public abstract void execute() throws CharlieKException;
 
     /**

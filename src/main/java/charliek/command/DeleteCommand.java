@@ -37,6 +37,11 @@ public class DeleteCommand extends Command {
         this.taskNumberText = taskNumberText;
     }
 
+    /**
+     * Deletes the selected task, saves the updated list, and reports the deletion.
+     *
+     * @throws TaskStorageException if the updated task list cannot be saved
+     */
     @Override
     public void execute() throws TaskStorageException {
         try {

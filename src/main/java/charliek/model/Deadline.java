@@ -26,17 +26,33 @@ public class Deadline extends Task {
         this(description, DateTimeParser.parseUserInput(deadline));
     }
 
-    /** Creates a deadline with a date-only value. */
+    /**
+     * Creates a deadline with a date-only value.
+     *
+     * @param description the text describing the task
+     * @param deadline the date by which the task should be completed
+     */
     public Deadline(String description, LocalDate deadline) {
         this(description, DateTimeParser.ParsedDateTime.ofDate(deadline));
     }
 
-    /** Creates a deadline with a date and time value. */
+    /**
+     * Creates a deadline with a date and time value.
+     *
+     * @param description the text describing the task
+     * @param deadline the date and time by which the task should be completed
+     */
     public Deadline(String description, LocalDateTime deadline) {
         this(description, DateTimeParser.ParsedDateTime.ofDateTime(deadline));
     }
 
-    /** Creates a deadline from a parsed date or date-time value. */
+    /**
+     * Creates a deadline from a parsed date or date-time value.
+     *
+     * @param description the text describing the task
+     * @param deadline the parsed date or date-time by which the task should be completed
+     * @throws IllegalArgumentException if {@code deadline} is {@code null}
+     */
     public Deadline(String description, DateTimeParser.ParsedDateTime deadline) {
         super(description);
         if (deadline == null) {

@@ -37,6 +37,11 @@ public class AddCommand extends Command {
         this.task = task;
     }
 
+    /**
+     * Adds the task, saves the updated list, and reports the successful addition.
+     *
+     * @throws TaskStorageException if the updated task list cannot be saved
+     */
     @Override
     public void execute() throws TaskStorageException {
         tasks.add(task);

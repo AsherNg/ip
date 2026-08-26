@@ -37,6 +37,11 @@ public class MarkCommand extends Command {
         this.taskNumberText = taskNumberText;
     }
 
+    /**
+     * Marks the selected task as done, saves the updated list, and reports the result.
+     *
+     * @throws TaskStorageException if the updated task list cannot be saved
+     */
     @Override
     public void execute() throws TaskStorageException {
         try {
