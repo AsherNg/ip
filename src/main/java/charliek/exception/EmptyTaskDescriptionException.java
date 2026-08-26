@@ -5,11 +5,11 @@ package charliek.exception;
  */
 public class EmptyTaskDescriptionException extends CharlieKException {
     /** The message displayed when a task description is missing. */
-    private static final String MESSAGE =
+    private static final String message =
             "The description is empty! Enter the description or I will carry the flame!";
 
     /** Creates an exception for a missing task description. */
     public EmptyTaskDescriptionException() {
-        super(MESSAGE);
+        super(message);
     }
 }
