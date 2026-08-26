@@ -12,6 +12,7 @@ import charliek.model.Event;
 import charliek.model.Task;
 import charliek.model.TaskList;
 import charliek.model.ToDo;
+import charliek.command.FindCommand;
 import charliek.storage.Storage;
 import charliek.ui.Ui;
 import java.io.ByteArrayInputStream;
@@ -262,5 +263,34 @@ class CommandTest {
     /** Creates storage at an isolated temporary path. */
     private Storage storageAt(String fileName) {
         return new Storage(tempDirectory.resolve(fileName));
+    }
+
+    /** Verifies that find command returns tasks matching a keyword. */
+    @Test
+    void findCommand_execute_findsMatchingTasks() throws Exception {
+        TaskList tasks = new TaskList(List.of(
+                new ToDo("read book"),
+                new Deadline("return book", LocalDate.of(2026, 6, 6)),
+                new ToDo("buy food")));
+
+        new FindCommand(tasks, new Ui()).execute();
+
+        String output = capturedOutput.toString();
+        assertTrue(output.contains("read book"));
+        assertTrue(output.contains("return book"));
+        assertFalse(output.contains("buy food"));
+    }
+
+    /** Verifies that find command handles no matches. */
+    @Test
+    void findCommand_noMatches_showsEmptyList() throws Exception {
+        TaskList tasks = new TaskList(List.of(
+                new ToDo("read book"),
+                new ToDo("buy food")));
+
+        new FindCommand(tasks, new Ui()).execute();
+
+        String output = capturedOutput.toString();
+        assertTrue(output.contains("Here are the matching tasks"));
     }
 }
