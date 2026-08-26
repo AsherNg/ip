@@ -18,11 +18,17 @@ public class ExitCommand extends Command {
         this.ui = ui;
     }
 
+    /** Shows the goodbye message for the current application session. */
     @Override
     public void execute() {
         ui.showGoodbye();
     }
 
+    /**
+     * Indicates that executing this command should end the application session.
+     *
+     * @return {@code true} because this is the exit command
+     */
     @Override
     public boolean isExit() {
         return true;

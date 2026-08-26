@@ -25,7 +25,11 @@ public class CharlieK {
     /** Handles console input and common session messages. */
     private final Ui ui;
 
-    /** Creates an application instance using the supplied task-file path. */
+    /**
+     * Creates an application instance using the supplied task-file path.
+     *
+     * @param filePath the path to the file used for task persistence
+     */
     public CharlieK(String filePath) {
         storage = new Storage(Path.of(filePath));
         tasks = new TaskList();
@@ -65,6 +69,11 @@ public class CharlieK {
         }
     }
 
+    /**
+     * Starts CharlieK using the default task-file location.
+     *
+     * @param args command-line arguments, which are currently ignored
+     */
     public static void main(String[] args) {
         new CharlieK("data/charliek.csv").run();
     }

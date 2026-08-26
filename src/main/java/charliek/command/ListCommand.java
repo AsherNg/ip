@@ -34,6 +34,11 @@ public class ListCommand extends Command {
         this.listOption = listOption;
     }
 
+    /**
+     * Displays the tasks in insertion order or chronological order.
+     *
+     * @throws UnknownCommandException if the list option is not supported
+     */
     @Override
     public void execute() throws UnknownCommandException {
         boolean sortByTime;
