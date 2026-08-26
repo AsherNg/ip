@@ -1,4 +1,4 @@
-# Project context
+﻿# Project context
 
 This repository is a starter template for a greenfield Java project used in an introductory software engineering course in an undergraduate computer science program. Students use it as the starting point for their own projects.
 
@@ -45,6 +45,13 @@ Ensure that Java 25 is used when running the application or build tasks. On macO
 
 ## Git
 
-Use lightweight tags unless the user requests an annotated tag.
+Use the $seedu-git-standard skill for all git operations. Enforce the SE-EDU conventions:
+
+* **Commit subject**: 50 chars max (72 hard), imperative mood, capitalized, no trailing period, optional scope prefix.
+* **Commit body**: Blank line after subject, 72-char wrap, explain WHAT and WHY, not HOW.
+* **Branch names**: Kebab-case, e.g. 
+efactor-ui-tests or 1234-ui-freeze-error.
+* **Tags**: Lightweight unless annotated tags are explicitly requested.
+
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
