@@ -1,4 +1,4 @@
-# Project context
+﻿# Project context
 
 This repository is a starter template for a greenfield Java project used in an introductory software engineering course in an undergraduate computer science program. Students use it as the starting point for their own projects.
 
@@ -36,15 +36,32 @@ Gradle test task after updating the tests.
 
 After each code update:
 
-1. Update `test/ui-test-plan.md` when the change affects an existing console behavior or adds a new one.
-2. Invoke the project-specific `$test-ui` skill and run the plan. The skill must show each console input/output transcript and stop at the first failure.
+1. Update 	est/ui-test-plan.md when the change affects an existing console behavior or adds a new one.
+2. Invoke the project-specific $test-ui skill and run the plan. The skill must show each console input/output transcript and stop at the first failure.
 
 ## Java version:
 
-Ensure that Java 25 is used when running the application or build tasks. On macOS, use `sdk use java 25.0.3.fx-zulu` to switch to Java 25 if needed.
+Ensure that Java 25 is used when running the application or build tasks. On macOS, use sdk use java 25.0.3.fx-zulu to switch to Java 25 if needed.
 
 ## Git
 
-Use lightweight tags unless the user requests an annotated tag.
+Use the $seedu-git-standard skill for all git operations. Enforce the SE-EDU conventions:
+
+* **Commit subject**: 50 chars max (72 hard), imperative mood, capitalized, no trailing period, optional scope prefix.
+* **Commit body**: Blank line after subject, 72-char wrap, explain WHAT and WHY, not HOW.
+* **Branch names**: Kebab-case, e.g. efactor-ui-tests or 1234-ui-freeze-error.
+* **Tags**: Lightweight unless annotated tags are explicitly requested.
+
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
+
+## Java coding standard
+
+Use the $seedu-java-coding-standard skill for all Java code in this project. Enforce the SE-EDU conventions:
+
+* **Naming**: Classes PascalCase, methods/fields camelCase, constants UPPER_SNAKE_CASE
+* **Formatting**: 4-space indentation, 120-char line width, braces on same line
+* **Documentation**: Javadoc for all public members, inline comments for WHY
+* **Code organization**: Proper visibility, avoid magic numbers, fail fast with validation
+
+All Java code must follow these conventions.
