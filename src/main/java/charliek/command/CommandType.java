@@ -28,7 +28,10 @@ public enum CommandType {
     DEADLINE("deadline", true),
 
     /** Adds an event task. */
-    EVENT("event", true);
+    EVENT("event", true),
+
+    /** Finds tasks matching a keyword. */
+    FIND("find", true);
 
     /** The text the user types for this command. */
     private final String keyword;
@@ -85,3 +88,4 @@ public enum CommandType {
         return input.substring(argumentStart);
     }
 }
+
