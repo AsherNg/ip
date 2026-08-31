@@ -6,12 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import charliek.exception.TaskStorageException;
-import charliek.model.Deadline;
-import charliek.model.Event;
-import charliek.model.Task;
-import charliek.model.ToDo;
-import charliek.parser.DateTimeParser;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,8 +13,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import charliek.exception.TaskStorageException;
+import charliek.model.Deadline;
+import charliek.model.Event;
+import charliek.model.Task;
+import charliek.model.ToDo;
+import charliek.parser.DateTimeParser;
 
 /** Tests CSV persistence, recovery of valid records, and storage failures. */
 class StorageTest {
@@ -130,8 +132,8 @@ class StorageTest {
         Path taskPath = tempDirectory.resolve("tasks.csv");
         Files.createDirectory(taskPath);
 
-        TaskStorageException exception = assertThrows(TaskStorageException.class,
-                () -> new Storage(taskPath).load());
+        TaskStorageException exception = assertThrows(TaskStorageException.class, () -> new Storage(
+                taskPath).load());
 
         assertEquals("I couldn't load saved tasks because the task file path is not a regular file.",
                 exception.getMessage());
@@ -143,8 +145,7 @@ class StorageTest {
         Storage storage = new Storage(tempDirectory.resolve("tasks.csv"));
 
         assertThrows(IllegalArgumentException.class, () -> storage.save(null));
-        assertThrows(TaskStorageException.class,
-                () -> storage.save(Collections.singletonList(null)));
+        assertThrows(TaskStorageException.class, () -> storage.save(Collections.singletonList(null)));
     }
 
     /** Verifies that saving to an existing directory does not replace that directory. */
@@ -153,8 +154,8 @@ class StorageTest {
         Path taskPath = tempDirectory.resolve("tasks.csv");
         Files.createDirectory(taskPath);
 
-        TaskStorageException exception = assertThrows(TaskStorageException.class,
-                () -> new Storage(taskPath).save(List.of(new ToDo("cannot save"))));
+        TaskStorageException exception = assertThrows(TaskStorageException.class, () -> new Storage(
+                taskPath).save(List.of(new ToDo("cannot save"))));
 
         assertEquals("I couldn't save tasks. Please check that the data folder is writable.",
                 exception.getMessage());

@@ -11,15 +11,6 @@ public abstract class Task {
     /** The text describing this task. */
     protected String description;
 
-    /**
-     * Returns this task description.
-     *
-     * @return the task description
-     */
-    public String getDescription() {
-        return description;
-    }
-
     /** Whether this task has been marked as done. */
     protected boolean isDone;
 
@@ -34,6 +25,15 @@ public abstract class Task {
         }
         this.description = description;
         this.isDone = false;
+    }
+
+    /**
+     * Returns this task description.
+     *
+     * @return the task description
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**

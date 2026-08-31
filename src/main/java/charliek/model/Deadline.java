@@ -1,10 +1,11 @@
 package charliek.model;
 
-import charliek.parser.DateTimeParser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import charliek.parser.DateTimeParser;
 
 /**
  * A task that must be completed before a specified date or time.

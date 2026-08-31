@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 /** Tests task-list storage, ordering, replacement, and snapshot behavior. */
@@ -44,7 +45,7 @@ class TaskListTest {
 
     /** Verifies append and indexed insertion behavior. */
     @Test
-    void taskList_add_appendAndIndexedInsertion_preservesExpectedOrder() {
+    void taskList_add_preservesExpectedOrder() {
         TaskList tasks = new TaskList();
         Task first = new ToDo("first");
         Task second = new ToDo("second");

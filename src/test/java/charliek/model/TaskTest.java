@@ -5,11 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import charliek.parser.DateTimeParser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
+
+import charliek.parser.DateTimeParser;
 
 /** Tests the common task behavior and the three concrete task types. */
 class TaskTest {
@@ -94,14 +96,12 @@ class TaskTest {
     /** Verifies that dated task constructors reject missing parsed values. */
     @Test
     void datedTask_missingDateTime_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Deadline("return book", (DateTimeParser.ParsedDateTime) null));
-        assertThrows(IllegalArgumentException.class,
-                () -> new Event("meeting", null,
-                        DateTimeParser.ParsedDateTime.ofDate(LocalDate.of(2019, 12, 2))));
-        assertThrows(IllegalArgumentException.class,
-                () -> new Event("meeting",
-                        DateTimeParser.ParsedDateTime.ofDate(LocalDate.of(2019, 12, 2)), null));
+        assertThrows(IllegalArgumentException.class, () -> new Deadline(
+                "return book", (DateTimeParser.ParsedDateTime) null));
+        assertThrows(IllegalArgumentException.class, () -> new Event(
+                "meeting", null, DateTimeParser.ParsedDateTime.ofDate(LocalDate.of(2019, 12, 2))));
+        assertThrows(IllegalArgumentException.class, () -> new Event(
+                "meeting", DateTimeParser.ParsedDateTime.ofDate(LocalDate.of(2019, 12, 2)), null));
     }
 
 }

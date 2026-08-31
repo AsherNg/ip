@@ -1,24 +1,25 @@
 package charliek.storage;
 
-import charliek.exception.TaskStorageException;
-import charliek.model.Deadline;
-import charliek.model.Event;
-import charliek.model.Task;
-import charliek.model.ToDo;
-import charliek.parser.DateTimeParser;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.List;
+
+import charliek.exception.TaskStorageException;
+import charliek.model.Deadline;
+import charliek.model.Event;
+import charliek.model.Task;
+import charliek.model.ToDo;
+import charliek.parser.DateTimeParser;
 
 /**
  * Encapsulates reading and writing CharlieK's task data.
@@ -182,28 +183,28 @@ public class Storage {
         try {
             Task task;
             switch (type) {
-            case "T":
-                if (fields.size() != 3) {
+                case "T":
+                    if (fields.size() != 3) {
+                        return null;
+                    }
+                    task = new ToDo(description);
+                    break;
+                case "D":
+                    if (fields.size() != 4 || fields.get(3).isEmpty()) {
+                        return null;
+                    }
+                    task = new Deadline(description, DateTimeParser.parseStored(fields.get(3)));
+                    break;
+                case "E":
+                    if (fields.size() != 5 || fields.get(3).isEmpty() || fields.get(4).isEmpty()) {
+                        return null;
+                    }
+                    task = new Event(description,
+                            DateTimeParser.parseStored(fields.get(3)),
+                            DateTimeParser.parseStored(fields.get(4)));
+                    break;
+                default:
                     return null;
-                }
-                task = new ToDo(description);
-                break;
-            case "D":
-                if (fields.size() != 4 || fields.get(3).isEmpty()) {
-                    return null;
-                }
-                task = new Deadline(description, DateTimeParser.parseStored(fields.get(3)));
-                break;
-            case "E":
-                if (fields.size() != 5 || fields.get(3).isEmpty() || fields.get(4).isEmpty()) {
-                    return null;
-                }
-                task = new Event(description,
-                        DateTimeParser.parseStored(fields.get(3)),
-                        DateTimeParser.parseStored(fields.get(4)));
-                break;
-            default:
-                return null;
             }
             return restoreStatus(task, status);
         } catch (DateTimeException | IllegalArgumentException exception) {

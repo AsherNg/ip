@@ -1,10 +1,11 @@
 package charliek.model;
 
-import charliek.parser.DateTimeParser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import charliek.parser.DateTimeParser;
 
 /**
  * A task with a specified starting date or time and ending date or time.
