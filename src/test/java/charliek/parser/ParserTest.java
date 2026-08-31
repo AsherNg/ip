@@ -4,8 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import charliek.command.AddCommand;
-import charliek.command.Command;
 import charliek.command.DeleteCommand;
 import charliek.command.ExitCommand;
 import charliek.command.FindCommand;
@@ -22,13 +30,6 @@ import charliek.model.TaskList;
 import charliek.model.ToDo;
 import charliek.storage.Storage;
 import charliek.ui.Ui;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /** Tests command parsing and validation before commands are executed. */
 class ParserTest {
@@ -70,14 +71,10 @@ class ParserTest {
         assertEquals("return book", deadline.getStorageFields().get(0));
         assertEquals("2019-12-02", deadline.getStorageFields().get(1));
         assertThrows(EmptyTaskDescriptionException.class, () -> parser.parseDeadline("   "));
-        assertThrows(EmptyParameterException.class,
-                () -> parser.parseDeadline(" /by 2019-12-02"));
-        assertThrows(EmptyParameterException.class,
-                () -> parser.parseDeadline("return book"));
-        assertThrows(EmptyParameterException.class,
-                () -> parser.parseDeadline("return book /by"));
-        assertThrows(InvalidDateTimeException.class,
-                () -> parser.parseDeadline("return book /by not-a-date"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseDeadline(" /by 2019-12-02"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseDeadline("return book"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseDeadline("return book /by"));
+        assertThrows(InvalidDateTimeException.class, () -> parser.parseDeadline("return book /by not-a-date"));
     }
 
     /** Verifies valid event parsing and validation of its two date parameters. */
@@ -90,18 +87,17 @@ class ParserTest {
         assertEquals("2019-12-02T14:00:00", event.getStorageFields().get(1));
         assertEquals("2019-12-02T15:00:00", event.getStorageFields().get(2));
         assertThrows(EmptyTaskDescriptionException.class, () -> parser.parseEvent("   "));
-        assertThrows(EmptyParameterException.class,
-                () -> parser.parseEvent(" /from 2019-12-02 /to 2019-12-03"));
-        assertThrows(EmptyParameterException.class,
-                () -> parser.parseEvent("project meeting"));
-        assertThrows(EmptyParameterException.class,
-                () -> parser.parseEvent("project meeting /to 2019-12-03"));
-        assertThrows(EmptyParameterException.class,
-                () -> parser.parseEvent("project meeting /from /to 2019-12-03"));
-        assertThrows(EmptyParameterException.class,
-                () -> parser.parseEvent("project meeting /from 2019-12-02 /to"));
-        assertThrows(InvalidDateTimeException.class,
-                () -> parser.parseEvent("project meeting /from invalid /to 2019-12-03"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseEvent(
+                " /from 2019-12-02 /to 2019-12-03"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseEvent("project meeting"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseEvent(
+                "project meeting /to 2019-12-03"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseEvent(
+                "project meeting /from /to 2019-12-03"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseEvent(
+                "project meeting /from 2019-12-02 /to"));
+        assertThrows(InvalidDateTimeException.class, () -> parser.parseEvent(
+                "project meeting /from invalid /to 2019-12-03"));
     }
 
     /** Verifies that complete command lines produce the expected command types. */

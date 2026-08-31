@@ -1,11 +1,12 @@
 package charliek.command;
 
-import charliek.model.Task;
-import charliek.model.TaskList;
-import charliek.ui.Ui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import charliek.model.Task;
+import charliek.model.TaskList;
+import charliek.ui.Ui;
 
 /**
  * Finds and displays tasks that match a given keyword in their description.

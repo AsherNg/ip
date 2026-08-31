@@ -1,13 +1,16 @@
 package charliek.parser;
 
+import java.time.DateTimeException;
+import java.util.Objects;
+
 import charliek.command.AddCommand;
 import charliek.command.Command;
 import charliek.command.CommandType;
 import charliek.command.DeleteCommand;
 import charliek.command.ExitCommand;
+import charliek.command.FindCommand;
 import charliek.command.ListCommand;
 import charliek.command.MarkCommand;
-import charliek.command.FindCommand;
 import charliek.command.UnmarkCommand;
 import charliek.exception.CharlieKException;
 import charliek.exception.EmptyParameterException;
@@ -20,8 +23,6 @@ import charliek.model.TaskList;
 import charliek.model.ToDo;
 import charliek.storage.Storage;
 import charliek.ui.Ui;
-import java.time.DateTimeException;
-import java.util.Objects;
 
 /**
  * Interprets complete lines entered by the user.
@@ -65,15 +66,15 @@ public class Parser {
                 .orElseThrow(UnknownCommandException::new);
         String argument = command.argumentFrom(input);
         return switch (command) {
-        case BYE -> new ExitCommand(ui);
-        case LIST -> new ListCommand(tasks, ui, argument.trim());
-        case MARK -> new MarkCommand(tasks, ui, storage, argument);
-        case UNMARK -> new UnmarkCommand(tasks, ui, storage, argument);
-        case FIND -> new FindCommand(tasks, ui, argument);
-        case DELETE -> new DeleteCommand(tasks, ui, storage, argument);
-        case TODO -> new AddCommand(tasks, ui, storage, parseToDo(argument));
-        case DEADLINE -> new AddCommand(tasks, ui, storage, parseDeadline(argument));
-        case EVENT -> new AddCommand(tasks, ui, storage, parseEvent(argument));
+            case BYE -> new ExitCommand(ui);
+            case LIST -> new ListCommand(tasks, ui, argument.trim());
+            case MARK -> new MarkCommand(tasks, ui, storage, argument);
+            case UNMARK -> new UnmarkCommand(tasks, ui, storage, argument);
+            case FIND -> new FindCommand(tasks, ui, argument);
+            case DELETE -> new DeleteCommand(tasks, ui, storage, argument);
+            case TODO -> new AddCommand(tasks, ui, storage, parseToDo(argument));
+            case DEADLINE -> new AddCommand(tasks, ui, storage, parseDeadline(argument));
+            case EVENT -> new AddCommand(tasks, ui, storage, parseEvent(argument));
         };
     }
 

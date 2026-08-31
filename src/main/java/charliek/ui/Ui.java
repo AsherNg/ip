@@ -1,8 +1,9 @@
 package charliek.ui;
 
-import charliek.model.Task;
-import java.util.Scanner;
 import java.util.List;
+import java.util.Scanner;
+
+import charliek.model.Task;
 
 /**
  * Handles CharlieK's basic interaction with the user.

@@ -5,15 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import charliek.exception.TaskStorageException;
-import charliek.exception.UnknownCommandException;
-import charliek.model.Deadline;
-import charliek.model.Event;
-import charliek.model.Task;
-import charliek.model.TaskList;
-import charliek.model.ToDo;
-import charliek.storage.Storage;
-import charliek.ui.Ui;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,10 +14,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import charliek.exception.TaskStorageException;
+import charliek.exception.UnknownCommandException;
+import charliek.model.Deadline;
+import charliek.model.Event;
+import charliek.model.Task;
+import charliek.model.TaskList;
+import charliek.model.ToDo;
+import charliek.storage.Storage;
+import charliek.ui.Ui;
 
 /** Tests command execution, persistence, validation, and rollback behavior. */
 class CommandTest {
@@ -56,7 +58,7 @@ class CommandTest {
 
     /** Verifies that adding a task updates memory and persists the task. */
     @Test
-    void addCommand_execute_success_addsAndSavesTask() throws Exception {
+    void addCommand_execute_addsAndSavesTask() throws Exception {
         TaskList tasks = new TaskList();
         Storage storage = storageAt("tasks.csv");
         Task task = new ToDo("read book");
@@ -76,9 +78,8 @@ class CommandTest {
         Path taskPath = tempDirectory.resolve("tasks.csv");
         Files.createDirectory(taskPath);
 
-        assertThrows(TaskStorageException.class,
-                () -> new AddCommand(tasks, new Ui(), new Storage(taskPath),
-                        new ToDo("read book")).execute());
+        assertThrows(TaskStorageException.class, () -> new AddCommand(
+                tasks, new Ui(), new Storage(taskPath), new ToDo("read book")).execute());
 
         assertEquals(0, tasks.size());
     }
@@ -121,8 +122,8 @@ class CommandTest {
         Path taskPath = tempDirectory.resolve("tasks.csv");
         Files.createDirectory(taskPath);
 
-        assertThrows(TaskStorageException.class,
-                () -> new MarkCommand(tasks, new Ui(), new Storage(taskPath), "1").execute());
+        assertThrows(TaskStorageException.class, () -> new MarkCommand(
+                tasks, new Ui(), new Storage(taskPath), "1").execute());
 
         assertFalse(task.isDone());
     }
@@ -166,8 +167,8 @@ class CommandTest {
         Path taskPath = tempDirectory.resolve("tasks.csv");
         Files.createDirectory(taskPath);
 
-        assertThrows(TaskStorageException.class,
-                () -> new UnmarkCommand(tasks, new Ui(), new Storage(taskPath), "1").execute());
+        assertThrows(TaskStorageException.class, () -> new UnmarkCommand(
+                tasks, new Ui(), new Storage(taskPath), "1").execute());
 
         assertTrue(task.isDone());
     }
@@ -209,8 +210,8 @@ class CommandTest {
         Path taskPath = tempDirectory.resolve("tasks.csv");
         Files.createDirectory(taskPath);
 
-        assertThrows(TaskStorageException.class,
-                () -> new DeleteCommand(tasks, new Ui(), new Storage(taskPath), "2").execute());
+        assertThrows(TaskStorageException.class, () -> new DeleteCommand(
+                tasks, new Ui(), new Storage(taskPath), "2").execute());
 
         assertEquals(List.of(first, second), tasks.toList());
     }
@@ -244,8 +245,8 @@ class CommandTest {
     /** Verifies that unsupported list modes are rejected. */
     @Test
     void listCommand_unsupportedOption_throwsUnknownCommandException() {
-        assertThrows(UnknownCommandException.class,
-                () -> new ListCommand(new TaskList(), new Ui(), "unsupported").execute());
+        assertThrows(UnknownCommandException.class, () -> new ListCommand(
+                new TaskList(), new Ui(), "unsupported").execute());
     }
 
     /** Verifies that the exit command reports its session-ending state. */

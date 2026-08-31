@@ -1,12 +1,13 @@
 package charliek.command;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+
 import charliek.exception.UnknownCommandException;
 import charliek.model.Task;
 import charliek.model.TaskList;
 import charliek.ui.Ui;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * Displays the current tasks, optionally sorted by date and time.
