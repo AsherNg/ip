@@ -42,15 +42,27 @@ public class DialogBox extends HBox {
         getStyleClass().add("dialog-box");
     }
 
-    /** Creates a right-aligned dialog for user input. */
+    /**
+     * Creates a right-aligned dialog for user input.
+     *
+     * @param text the message to display
+     * @param image the user's avatar, or {@code null} when no avatar is available
+     * @return a right-aligned user dialog box
+     */
     public static DialogBox getUserDialog(String text, Image image) {
         DialogBox dialogBox = new DialogBox(text, image);
         dialogBox.getStyleClass().add("user-dialog");
         return dialogBox;
     }
 
-    /** Creates a left-aligned dialog for chatbot output. */
-    public static DialogBox getDukeDialog(String text, Image image) {
+    /**
+     * Creates a left-aligned dialog for chatbot output.
+     *
+     * @param text the message to display
+     * @param image the chatbot's avatar, or {@code null} when no avatar is available
+     * @return a left-aligned chatbot dialog box
+     */
+    public static DialogBox getChatbotDialog(String text, Image image) {
         DialogBox dialogBox = new DialogBox(text, image);
         dialogBox.flip();
         dialogBox.getStyleClass().add("bot-dialog");

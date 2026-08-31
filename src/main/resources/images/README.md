@@ -1,5 +1,5 @@
-# Avatar placeholders
+# Chat avatars
 
-The JavaFX dialog boxes reserve space for user and chatbot avatars, but no
-image assets are included yet. Add the future image files to this directory
-and load them in `charliek.ui.MainWindow` when they are ready.
+The JavaFX dialog boxes use `user.png` for user messages and `chatbot.png` for
+chatbot messages. Both images are loaded by `charliek.ui.MainWindow` and
+scaled proportionally to fit the avatar slot in `DialogBox.fxml`.

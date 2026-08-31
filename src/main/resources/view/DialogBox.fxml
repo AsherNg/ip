@@ -11,7 +11,7 @@
          xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label fx:id="dialog" maxWidth="1.7976931348623157E308" minHeight="-Infinity" wrapText="true" />
-        <ImageView fx:id="displayPicture" fitHeight="44.0" fitWidth="44.0" preserveRatio="true"
+        <ImageView fx:id="displayPicture" fitHeight="80.0" fitWidth="80.0" preserveRatio="true"
                    styleClass="avatar-placeholder" />
     </children>
     <padding>

@@ -24,7 +24,12 @@ public class Main extends Application {
     /** The minimum height of the chat window. */
     private static final double MINIMUM_HEIGHT = 500.0;
 
-    /** Loads the FXML view and shows the primary stage. */
+    /**
+     * Loads the FXML view and shows the primary stage.
+     *
+     * @param stage the primary JavaFX window supplied by the runtime
+     * @throws IOException when the FXML view or stylesheet cannot be loaded
+     */
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));

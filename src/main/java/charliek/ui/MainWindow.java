@@ -1,5 +1,6 @@
 package charliek.ui;
 
+import java.net.URL;
 import java.nio.file.Path;
 
 import charliek.command.Command;
@@ -24,6 +25,12 @@ import javafx.scene.layout.VBox;
  * rendered responses into JavaFX dialog boxes.</p>
  */
 public class MainWindow {
+    /** Resource path for the user's avatar. */
+    private static final String USER_IMAGE_PATH = "/images/user.png";
+
+    /** Resource path for the chatbot's avatar. */
+    private static final String CHATBOT_IMAGE_PATH = "/images/chatbot.png";
+
     /** Scrolls through the conversation history. */
     @FXML
     private ScrollPane scrollPane;
@@ -52,10 +59,10 @@ public class MainWindow {
     /** Captures the existing response formatting without writing to standard output. */
     private final Ui ui;
 
-    /** Placeholder for the future user avatar asset. */
+    /** Avatar shown beside user messages. */
     private final Image userImage;
 
-    /** Placeholder for the future chatbot avatar asset. */
+    /** Avatar shown beside chatbot messages. */
     private final Image chatbotImage;
 
     /** Captures one command's response before it is rendered as one dialog. */
@@ -65,8 +72,8 @@ public class MainWindow {
     public MainWindow() {
         tasks = new TaskList();
         storage = new Storage(Path.of("data/charliek.csv"));
-        userImage = null;
-        chatbotImage = null;
+        userImage = loadImage(USER_IMAGE_PATH);
+        chatbotImage = loadImage(CHATBOT_IMAGE_PATH);
         ui = new Ui(this::captureResponse);
         parser = new Parser(tasks, ui, storage);
     }
@@ -105,7 +112,7 @@ public class MainWindow {
             String response = responseBuffer.toString().stripTrailing();
             responseBuffer = null;
             if (!response.isBlank()) {
-                dialogContainer.getChildren().add(DialogBox.getDukeDialog(response, chatbotImage));
+                dialogContainer.getChildren().add(DialogBox.getChatbotDialog(response, chatbotImage));
             }
         }
 
@@ -127,7 +134,22 @@ public class MainWindow {
             message += System.lineSeparator() + System.lineSeparator()
                     + "I couldn't load saved tasks because the saved data is invalid.";
         }
-        dialogContainer.getChildren().add(DialogBox.getDukeDialog(message, chatbotImage));
+        dialogContainer.getChildren().add(DialogBox.getChatbotDialog(message, chatbotImage));
+    }
+
+    /**
+     * Loads an avatar from the application's resources.
+     *
+     * @param resourcePath the absolute classpath path of the image
+     * @return the loaded image
+     * @throws IllegalStateException when the resource cannot be found
+     */
+    private static Image loadImage(String resourcePath) {
+        URL imageResource = MainWindow.class.getResource(resourcePath);
+        if (imageResource == null) {
+            throw new IllegalStateException("Unable to find image resource: " + resourcePath);
+        }
+        return new Image(imageResource.toExternalForm());
     }
 
     /** Appends output produced by command collaborators to the current response. */

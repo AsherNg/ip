@@ -27,6 +27,22 @@ This plan contains end-to-end console tests for `CharlieK`.
   the contents specified in that test's setup first.
 - The CSV file has no header row. Columns are `type,status,description`, followed by `deadline` for `D` tasks or `from,to` for `E` tasks; status `0` means incomplete and `1` means complete. Dates are stored as `yyyy-MM-dd`, and date-times as ISO local date-times such as `yyyy-MM-ddTHH:mm:ss`.
 
+## JavaFX GUI smoke test
+
+The console cases above verify the preserved command-line entry point. Use
+the following manual smoke test for the JavaFX entry point:
+
+1. Run `.\gradlew.bat run` from the repository root using Java 25.
+2. Confirm that the greeting appears in a left-aligned chatbot bubble with
+   `chatbot.png` and that the input field and Send button appear at the bottom.
+3. Enter `todo buy milk` and press Enter. Confirm that the command appears in
+   a right-aligned user bubble with `user.png`, followed by a left-aligned
+   chatbot response.
+4. Enter enough long commands to exceed the visible area. Confirm that the
+   conversation scrolls automatically to the newest response.
+5. Enter `bye`. Confirm that the chatbot shows the goodbye response and the
+   input controls become disabled.
+
 ## Shared startup output
 
 Every test case begins with:
