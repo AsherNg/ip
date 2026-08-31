@@ -1,0 +1,54 @@
+.root {
+    -fx-background-color: #f4f6f8;
+    -fx-font-family: "System";
+}
+
+.chat-scroll-pane,
+.chat-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.dialog-container {
+    -fx-background-color: transparent;
+}
+
+.dialog-box {
+    -fx-spacing: 8px;
+}
+
+.dialog-box .label {
+    -fx-max-width: 390px;
+    -fx-padding: 10px 14px;
+    -fx-background-radius: 14px;
+    -fx-text-fill: #1f2933;
+}
+
+.user-dialog .label {
+    -fx-background-color: #cfe8ff;
+}
+
+.bot-dialog .label {
+    -fx-background-color: #ffffff;
+}
+
+.avatar-placeholder {
+    -fx-border-color: #b8c2cc;
+    -fx-border-radius: 22px;
+}
+
+.input-bar {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d8dee4 transparent transparent transparent;
+}
+
+.input-bar .text-field {
+    -fx-background-radius: 8px;
+    -fx-border-color: #c7d0d9;
+    -fx-border-radius: 8px;
+}
+
+.input-bar .button {
+    -fx-background-color: #2f80ed;
+    -fx-background-radius: 8px;
+    -fx-text-fill: white;
+}
