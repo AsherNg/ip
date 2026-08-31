@@ -21,6 +21,7 @@ class CommandTypeTest {
                 CommandType.fromInput("deadline return book /by 2019-12-02"));
         assertEquals(Optional.of(CommandType.EVENT),
                 CommandType.fromInput("event meeting /from 2019-12-02 /to 2019-12-03"));
+        assertEquals(Optional.of(CommandType.FIND), CommandType.fromInput("find book"));
     }
 
     /** Verifies that unknown, null, and invalid argument forms are rejected. */

@@ -13,7 +13,7 @@ Enforce the git conventions from https://se-education.org/guides/conventions/git
 - Use the **imperative mood**.
 - Capitalize the first letter.
 - Do not end with a period.
-- Optionally add a scope: prefix, e.g. Person class:, Main.java:, ug fix:, chore:.
+- Optionally add a scope: prefix, e.g. Person class:, Main.java:, bug fix:, chore:.
 
 ## Commit message: Body
 
@@ -30,7 +30,7 @@ Enforce the git conventions from https://se-education.org/guides/conventions/git
 
 ## Branch names
 
-- Use kebab-case with meaningful keywords: efactor-ui-tests
+- Use kebab-case with meaningful keywords: refactor-ui-tests
 - For issues: issueNumber-keywords e.g. 1234-ui-freeze-error
 
 ## Tags

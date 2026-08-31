@@ -972,3 +972,57 @@ ____________________________________________________________
      Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+### UI-18 — Find tasks by keyword
+
+**Aim:** Verify that `find` displays only tasks whose descriptions contain the supplied keyword, without regard to letter case.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes charliek.CharlieK
+```
+
+**Inputs:**
+
+```
+todo Read book
+todo Buy milk
+find BOOK
+find meeting
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] Read book
+     Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Got it. I've added this task:
+       [T][ ] Buy milk
+     Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     Here are the matching tasks in your list:
+     1.[T][ ] Read book
+____________________________________________________________
+____________________________________________________________
+     Here are the matching tasks in your list:
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```

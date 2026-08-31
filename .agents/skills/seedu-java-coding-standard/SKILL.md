@@ -24,9 +24,8 @@ Enforce the Java coding conventions from https://se-education.org/guides/convent
 
 - **Classes**: PascalCase, singular noun (e.g., Person, AddressBook)
 - **Interfaces**: PascalCase, adjective or noun (e.g., Predicate, Sortable)
-- **Methods**: camelCase, verb phrase (e.g., ddPerson, getAddress)
-- **Fields**: camelCase (e.g., 
-ame, ddress)
+- **Methods**: camelCase, verb phrase (e.g., addPerson, getAddress)
+- **Fields**: camelCase (e.g., name, address)
 - **Constants**: UPPER_SNAKE_CASE (e.g., MAX_SIZE, DEFAULT_TIMEOUT)
 - **Type parameters**: Single uppercase letter (e.g., T, E, V), or PascalCase for bounded parameters
 
@@ -64,6 +63,6 @@ ame, ddress)
 
 ## Testing
 
-- **Test method names**: Describe what is tested, e.g., ddPerson_validPerson_success()
+- **Test method names**: Describe what is tested, e.g., addPerson_validPerson_success()
 - **Test structure**: Arrange-Act-Assert (AAA) pattern
 - **Test classes**: Name after class being tested + Test suffix (e.g., PersonTest)

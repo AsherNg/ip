@@ -5,6 +5,7 @@ import charliek.model.TaskList;
 import charliek.ui.Ui;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Finds and displays tasks that match a given keyword in their description.
@@ -32,6 +33,7 @@ public class FindCommand extends Command {
         this.keyword = keyword;
     }
 
+    /** Displays all tasks whose descriptions contain the search keyword. */
     @Override
     public void execute() {
         List<Task> matchingTasks = findMatchingTasks();
@@ -46,7 +48,8 @@ public class FindCommand extends Command {
     private List<Task> findMatchingTasks() {
         List<Task> matchingTasks = new ArrayList<>();
         for (Task task : tasks.toList()) {
-            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+            if (task.getDescription().toLowerCase(Locale.ROOT)
+                    .contains(keyword.toLowerCase(Locale.ROOT))) {
                 matchingTasks.add(task);
             }
         }

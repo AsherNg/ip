@@ -12,7 +12,6 @@ import charliek.model.Event;
 import charliek.model.Task;
 import charliek.model.TaskList;
 import charliek.model.ToDo;
-import charliek.command.FindCommand;
 import charliek.storage.Storage;
 import charliek.ui.Ui;
 import java.io.ByteArrayInputStream;
@@ -273,7 +272,7 @@ class CommandTest {
                 new Deadline("return book", LocalDate.of(2026, 6, 6)),
                 new ToDo("buy food")));
 
-        new FindCommand(tasks, new Ui()).execute();
+        new FindCommand(tasks, new Ui(), "book").execute();
 
         String output = capturedOutput.toString();
         assertTrue(output.contains("read book"));
@@ -288,7 +287,7 @@ class CommandTest {
                 new ToDo("read book"),
                 new ToDo("buy food")));
 
-        new FindCommand(tasks, new Ui()).execute();
+        new FindCommand(tasks, new Ui(), "missing").execute();
 
         String output = capturedOutput.toString();
         assertTrue(output.contains("Here are the matching tasks"));

@@ -1,4 +1,4 @@
-﻿# Project context
+# Project context
 
 This repository is a starter template for a greenfield Java project used in an introductory software engineering course in an undergraduate computer science program. Students use it as the starting point for their own projects.
 
@@ -36,7 +36,7 @@ Gradle test task after updating the tests.
 
 After each code update:
 
-1. Update 	est/ui-test-plan.md when the change affects an existing console behavior or adds a new one.
+1. Update test/ui-test-plan.md when the change affects an existing console behavior or adds a new one.
 2. Invoke the project-specific $test-ui skill and run the plan. The skill must show each console input/output transcript and stop at the first failure.
 
 ## Java version:
@@ -49,7 +49,7 @@ Use the $seedu-git-standard skill for all git operations. Enforce the SE-EDU con
 
 * **Commit subject**: 50 chars max (72 hard), imperative mood, capitalized, no trailing period, optional scope prefix.
 * **Commit body**: Blank line after subject, 72-char wrap, explain WHAT and WHY, not HOW.
-* **Branch names**: Kebab-case, e.g. efactor-ui-tests or 1234-ui-freeze-error.
+* **Branch names**: Kebab-case, e.g. refactor-ui-tests or 1234-ui-freeze-error.
 * **Tags**: Lightweight unless annotated tags are explicitly requested.
 
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
