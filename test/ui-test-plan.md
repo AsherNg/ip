@@ -9,7 +9,9 @@ This plan contains end-to-end console tests for `CharlieK`.
 - Compile before testing:
 
   ```
-    javac -d _temp/ui-test-classes (Get-ChildItem -Path src/main/java -Recurse -Filter *.java | ForEach-Object { $_.FullName })
+    javac -d _temp/ui-test-classes (Get-ChildItem -Path src/main/java -Recurse -Filter *.java |
+      Where-Object { $_.Name -notin @('Launcher.java', 'DialogBox.java', 'Main.java', 'MainWindow.java') } |
+      ForEach-Object { $_.FullName })
   ```
 
 - Each test case starts a fresh process with:
@@ -19,8 +21,27 @@ This plan contains end-to-end console tests for `CharlieK`.
   ```
 
 - Compare output exactly after normalizing only platform line endings. The skill must stop at the first failure and show the complete console transcript.
-- Remove `data/charliek.csv` before each test case to keep cases isolated. For setup-based cases, create the CSV file with the contents specified in that test's setup first.
+- Run each test case from a fresh temporary working directory under `_temp/` so
+  the repository's real `data/charliek.csv` is never modified or removed. For
+  setup-based cases, create the CSV file inside that temporary directory with
+  the contents specified in that test's setup first.
 - The CSV file has no header row. Columns are `type,status,description`, followed by `deadline` for `D` tasks or `from,to` for `E` tasks; status `0` means incomplete and `1` means complete. Dates are stored as `yyyy-MM-dd`, and date-times as ISO local date-times such as `yyyy-MM-ddTHH:mm:ss`.
+
+## JavaFX GUI smoke test
+
+The console cases above verify the preserved command-line entry point. Use
+the following manual smoke test for the JavaFX entry point:
+
+1. Run `.\gradlew.bat run` from the repository root using Java 25.
+2. Confirm that the greeting appears in a left-aligned chatbot bubble with
+   `chatbot.png` and that the input field and Send button appear at the bottom.
+3. Enter `todo buy milk` and press Enter. Confirm that the command appears in
+   a right-aligned user bubble with `user.png`, followed by a left-aligned
+   chatbot response.
+4. Enter enough long commands to exceed the visible area. Confirm that the
+   conversation scrolls automatically to the newest response.
+5. Enter `bye`. Confirm that the chatbot shows the goodbye response and the
+   input controls become disabled.
 
 ## Shared startup output
 

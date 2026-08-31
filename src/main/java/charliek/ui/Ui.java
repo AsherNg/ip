@@ -1,7 +1,9 @@
 package charliek.ui;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 import charliek.model.Task;
 
@@ -25,9 +27,29 @@ public class Ui {
     /** Reads commands from the user's standard input. */
     private final Scanner scanner;
 
+    /** Receives rendered user-facing text, allowing the console and GUI to share command logic. */
+    private final Consumer<String> output;
+
     /** Creates a UI connected to the standard console. */
     public Ui() {
-        scanner = new Scanner(System.in);
+        this(new Scanner(System.in), System.out::print);
+    }
+
+    /**
+     * Creates a UI that sends rendered messages to the supplied output sink.
+     * This constructor is used by the JavaFX controller to reuse the existing
+     * command and response behavior without writing to the console.
+     *
+     * @param output the destination for rendered user-facing text
+     */
+    public Ui(Consumer<String> output) {
+        this(null, output);
+    }
+
+    /** Creates a UI with explicit input and output collaborators. */
+    private Ui(Scanner scanner, Consumer<String> output) {
+        this.scanner = scanner;
+        this.output = Objects.requireNonNull(output);
     }
 
     /**
@@ -37,9 +59,9 @@ public class Ui {
      */
     public void showWelcome(String loadingError) {
         showLine();
-        System.out.print(BANNER);
-        System.out.println("Hello! I'm CharlieK.");
-        System.out.println("What can I do for you?");
+        print(BANNER);
+        print("Hello! I'm CharlieK." + System.lineSeparator());
+        print("What can I do for you?" + System.lineSeparator());
         showLine();
         if (loadingError != null) {
             showError(loadingError);
@@ -53,6 +75,7 @@ public class Ui {
      * @return {@code true} when another input line is available
      */
     public boolean hasNextCommand() {
+        ensureConsoleInputAvailable();
         return scanner.hasNextLine();
     }
 
@@ -62,17 +85,18 @@ public class Ui {
      * @return the next complete input line
      */
     public String readCommand() {
+        ensureConsoleInputAvailable();
         return scanner.nextLine();
     }
 
     /** Prints the standard message separator. */
     public void showLine() {
-        System.out.println(LINE);
+        print(LINE + System.lineSeparator());
     }
 
     /** Shows the normal goodbye message and its trailing separator. */
     public void showGoodbye() {
-        System.out.println("     Bye. Hope to see you again soon!");
+        print("     Bye. Hope to see you again soon!" + System.lineSeparator());
         showLine();
     }
 
@@ -82,7 +106,7 @@ public class Ui {
      * @param message the message to display
      */
     public void showError(String message) {
-        System.out.println("     " + message);
+        print("     " + message + System.lineSeparator());
     }
 
     /** Shows the fallback message used for unexpected command-processing failures. */
@@ -97,9 +121,9 @@ public class Ui {
      * @param taskCount the number of tasks after adding it
      */
     public void showTaskAdded(Task task, int taskCount) {
-        System.out.println("     Got it. I've added this task:");
-        System.out.println("       " + task);
-        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+        print("     Got it. I've added this task:" + System.lineSeparator());
+        print("       " + task + System.lineSeparator());
+        print("     Now you have " + taskCount + " tasks in the list." + System.lineSeparator());
     }
 
     /** Shows that the requested task number does not exist. */
@@ -118,8 +142,8 @@ public class Ui {
      * @param task the marked task
      */
     public void showTaskMarked(Task task) {
-        System.out.println("     Nice! I've marked this task as done:");
-        System.out.println("       " + task);
+        print("     Nice! I've marked this task as done:" + System.lineSeparator());
+        print("       " + task + System.lineSeparator());
     }
 
     /**
@@ -128,8 +152,8 @@ public class Ui {
      * @param task the already marked task
      */
     public void showTaskAlreadyMarked(Task task) {
-        System.out.println("     This task is already marked:");
-        System.out.println("       " + task);
+        print("     This task is already marked:" + System.lineSeparator());
+        print("       " + task + System.lineSeparator());
     }
 
     /**
@@ -138,8 +162,8 @@ public class Ui {
      * @param task the unmarked task
      */
     public void showTaskUnmarked(Task task) {
-        System.out.println("     OK, I've marked this task as not done yet:");
-        System.out.println("       " + task);
+        print("     OK, I've marked this task as not done yet:" + System.lineSeparator());
+        print("       " + task + System.lineSeparator());
     }
 
     /**
@@ -148,8 +172,8 @@ public class Ui {
      * @param task the already unmarked task
      */
     public void showTaskAlreadyUnmarked(Task task) {
-        System.out.println("     This task is already unmarked:");
-        System.out.println("       " + task);
+        print("     This task is already unmarked:" + System.lineSeparator());
+        print("       " + task + System.lineSeparator());
     }
 
     /**
@@ -159,9 +183,9 @@ public class Ui {
      * @param taskCount the number of tasks after deleting it
      */
     public void showTaskDeleted(Task task, int taskCount) {
-        System.out.println("     Noted. I've removed this task:");
-        System.out.println("       " + task);
-        System.out.println("     Now you have " + taskCount + " tasks in the list.");
+        print("     Noted. I've removed this task:" + System.lineSeparator());
+        print("       " + task + System.lineSeparator());
+        print("     Now you have " + taskCount + " tasks in the list." + System.lineSeparator());
     }
 
     /**
@@ -170,9 +194,9 @@ public class Ui {
      * @param tasks the tasks to display
      */
     public void showTasks(List<Task> tasks) {
-        System.out.println("     Here are the tasks in your list:");
+        print("     Here are the tasks in your list:" + System.lineSeparator());
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println("     " + (i + 1) + "." + tasks.get(i));
+            print("     " + (i + 1) + "." + tasks.get(i) + System.lineSeparator());
         }
     }
 
@@ -182,9 +206,21 @@ public class Ui {
      * @param tasks the matching tasks to display
      */
     public void showMatchingTasks(List<Task> tasks) {
-        System.out.println("     Here are the matching tasks in your list:");
+        print("     Here are the matching tasks in your list:" + System.lineSeparator());
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println("     " + (i + 1) + "." + tasks.get(i));
+            print("     " + (i + 1) + "." + tasks.get(i) + System.lineSeparator());
+        }
+    }
+
+    /** Sends rendered text to the configured output destination. */
+    private void print(String message) {
+        output.accept(message);
+    }
+
+    /** Fails clearly when console-only input methods are used by an output-only UI. */
+    private void ensureConsoleInputAvailable() {
+        if (scanner == null) {
+            throw new IllegalStateException("This UI is configured for output only.");
         }
     }
 }
