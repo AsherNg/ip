@@ -80,7 +80,7 @@ public class Deadline extends Task {
      */
     @Override
     public List<String> getStorageFields() {
-        return List.of(description, DateTimeParser.formatForStorage(toParsedDateTime()));
+        return List.of(getDescription(), DateTimeParser.formatForStorage(toParsedDateTime()));
     }
 
     /**
@@ -93,7 +93,11 @@ public class Deadline extends Task {
         return " (by: " + DateTimeParser.formatForDisplay(toParsedDateTime()) + ")";
     }
 
-    /** Returns the deadline as the task's chronological ordering key. */
+    /**
+     * Returns the deadline as the task's chronological ordering key.
+     *
+     * @return the deadline at midnight for date-only values, or the supplied deadline time
+     */
     @Override
     public Optional<LocalDateTime> getSortDateTime() {
         LocalDateTime sortDateTime = deadlineDateTime == null

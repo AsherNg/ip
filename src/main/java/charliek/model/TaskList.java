@@ -7,35 +7,39 @@ import java.util.List;
  * Stores the tasks currently managed by CharlieK.
  *
  * <p>This class owns the in-memory collection so the rest of the application
- * does not need to depend directly on an {@link ArrayList}.</p>
+ * does not need to depend directly on its list implementation.</p>
  */
 public class TaskList {
     /** The tasks in their normal insertion order. */
-    private final ArrayList<Task> tasks;
-
-    /** Creates an empty task list. */
-    public TaskList() {
-        tasks = new ArrayList<>();
-    }
+    private final List<Task> tasks;
 
     /**
-     * Creates a task list containing a copy of the supplied tasks.
+     * Creates a task list containing copies of the supplied task references in their given order.
      *
-     * @param initialTasks tasks to store initially
+     * <p>The varargs form keeps the common empty-list and small-list cases concise while still
+     * allowing callers to pass an existing task array.</p>
+     *
+     * @param initialTasks tasks to store initially, or no tasks for an empty list
+     * @throws IllegalArgumentException if the task array or one of its elements is {@code null}
      */
-    public TaskList(List<Task> initialTasks) {
+    public TaskList(Task... initialTasks) {
         if (initialTasks == null) {
             throw new IllegalArgumentException("The initial task list cannot be null.");
         }
-        tasks = new ArrayList<>(initialTasks);
+        tasks = new ArrayList<>();
+        for (Task task : initialTasks) {
+            add(task);
+        }
     }
 
     /**
      * Adds a task to the end of this list.
      *
      * @param task the task to add
+     * @throws IllegalArgumentException if {@code task} is {@code null}
      */
     public void add(Task task) {
+        requireTask(task);
         tasks.add(task);
     }
 
@@ -44,8 +48,10 @@ public class TaskList {
      *
      * @param index the zero-based insertion position
      * @param task the task to add
+     * @throws IllegalArgumentException if {@code task} is {@code null}
      */
     public void add(int index, Task task) {
+        requireTask(task);
         tasks.add(index, task);
     }
 
@@ -73,10 +79,14 @@ public class TaskList {
      * Replaces the current contents with a copy of the supplied tasks.
      *
      * @param replacementTasks tasks to store
+     * @throws IllegalArgumentException if the list or one of its elements is {@code null}
      */
     public void replaceWith(List<Task> replacementTasks) {
         if (replacementTasks == null) {
             throw new IllegalArgumentException("The replacement task list cannot be null.");
+        }
+        for (Task task : replacementTasks) {
+            requireTask(task);
         }
         tasks.clear();
         tasks.addAll(replacementTasks);
@@ -98,5 +108,12 @@ public class TaskList {
      */
     public List<Task> toList() {
         return new ArrayList<>(tasks);
+    }
+
+    /** Rejects null task references before they enter the list. */
+    private static void requireTask(Task task) {
+        if (task == null) {
+            throw new IllegalArgumentException("The task list cannot contain null tasks.");
+        }
     }
 }

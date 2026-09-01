@@ -8,11 +8,11 @@ import java.util.Optional;
  * Represents a task entered into CharlieK's task list.
  */
 public abstract class Task {
-    /** The text describing this task. */
-    protected String description;
+    /** The immutable text describing this task. */
+    private final String description;
 
     /** Whether this task has been marked as done. */
-    protected boolean isDone;
+    private boolean done;
 
     /**
      * Creates an incomplete task with the given description.
@@ -24,7 +24,7 @@ public abstract class Task {
             throw new IllegalArgumentException("A task description must not be blank.");
         }
         this.description = description;
-        this.isDone = false;
+        done = false;
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class Task {
      * @return {@code X} when done, otherwise a blank space
      */
     public String getStatusIcon() {
-        return isDone ? "X" : " ";
+        return done ? "X" : " ";
     }
 
     /**
@@ -97,17 +97,17 @@ public abstract class Task {
      * @return {@code true} when the task is done
      */
     public boolean isDone() {
-        return isDone;
+        return done;
     }
 
     /** Marks this task as done. */
     public void markAsDone() {
-        isDone = true;
+        done = true;
     }
 
     /** Marks this task as not done. */
     public void markAsNotDone() {
-        isDone = false;
+        done = false;
     }
 
     /**

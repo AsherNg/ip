@@ -71,7 +71,7 @@ public class Event extends Task {
      */
     @Override
     public List<String> getStorageFields() {
-        return List.of(description,
+        return List.of(getDescription(),
                 DateTimeParser.formatForStorage(new DateTimeParser.ParsedDateTime(fromDate, fromDateTime)),
                 DateTimeParser.formatForStorage(new DateTimeParser.ParsedDateTime(toDate, toDateTime)));
     }
@@ -87,7 +87,11 @@ public class Event extends Task {
                 + " to: " + format(toDate, toDateTime) + ")";
     }
 
-    /** Returns the event start as the task's chronological ordering key. */
+    /**
+     * Returns the event start as the task's chronological ordering key.
+     *
+     * @return the event start at midnight for date-only values, or the supplied start time
+     */
     @Override
     public Optional<LocalDateTime> getSortDateTime() {
         LocalDateTime sortDateTime = fromDateTime == null

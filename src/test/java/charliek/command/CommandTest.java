@@ -88,7 +88,7 @@ class CommandTest {
     @Test
     void markCommand_executeOnIncompleteTask_marksAndSavesTask() throws Exception {
         Task task = new ToDo("read book");
-        TaskList tasks = new TaskList(List.of(task));
+        TaskList tasks = new TaskList(task);
         Storage storage = storageAt("tasks.csv");
 
         new MarkCommand(tasks, new Ui(), storage, "1").execute();
@@ -102,7 +102,7 @@ class CommandTest {
     void markCommand_invalidOrAlreadyMarkedTask_leavesStateUnchanged() throws Exception {
         Task task = new ToDo("read book");
         task.markAsDone();
-        TaskList tasks = new TaskList(List.of(task));
+        TaskList tasks = new TaskList(task);
         Storage storage = storageAt("tasks.csv");
 
         new MarkCommand(tasks, new Ui(), storage, "1").execute();
@@ -118,7 +118,7 @@ class CommandTest {
     @Test
     void markCommand_saveFails_restoresIncompleteStatus() throws IOException {
         Task task = new ToDo("read book");
-        TaskList tasks = new TaskList(List.of(task));
+        TaskList tasks = new TaskList(task);
         Path taskPath = tempDirectory.resolve("tasks.csv");
         Files.createDirectory(taskPath);
 
@@ -133,7 +133,7 @@ class CommandTest {
     void unmarkCommand_executeOnCompletedTask_unmarksAndSavesTask() throws Exception {
         Task task = new ToDo("read book");
         task.markAsDone();
-        TaskList tasks = new TaskList(List.of(task));
+        TaskList tasks = new TaskList(task);
         Storage storage = storageAt("tasks.csv");
 
         new UnmarkCommand(tasks, new Ui(), storage, "1").execute();
@@ -146,7 +146,7 @@ class CommandTest {
     @Test
     void unmarkCommand_invalidOrAlreadyUnmarkedTask_leavesStateUnchanged() throws Exception {
         Task task = new ToDo("read book");
-        TaskList tasks = new TaskList(List.of(task));
+        TaskList tasks = new TaskList(task);
         Storage storage = storageAt("tasks.csv");
 
         new UnmarkCommand(tasks, new Ui(), storage, "1").execute();
@@ -163,7 +163,7 @@ class CommandTest {
     void unmarkCommand_saveFails_restoresCompletedStatus() throws IOException {
         Task task = new ToDo("read book");
         task.markAsDone();
-        TaskList tasks = new TaskList(List.of(task));
+        TaskList tasks = new TaskList(task);
         Path taskPath = tempDirectory.resolve("tasks.csv");
         Files.createDirectory(taskPath);
 
@@ -178,7 +178,7 @@ class CommandTest {
     void deleteCommand_executeOnValidTask_removesAndSavesTask() throws Exception {
         Task first = new ToDo("first");
         Task second = new ToDo("second");
-        TaskList tasks = new TaskList(List.of(first, second));
+        TaskList tasks = new TaskList(first, second);
         Storage storage = storageAt("tasks.csv");
 
         new DeleteCommand(tasks, new Ui(), storage, "1").execute();
@@ -191,7 +191,7 @@ class CommandTest {
     @Test
     void deleteCommand_invalidTaskNumber_leavesListUnchanged() throws Exception {
         Task task = new ToDo("read book");
-        TaskList tasks = new TaskList(List.of(task));
+        TaskList tasks = new TaskList(task);
         Storage storage = storageAt("tasks.csv");
 
         new DeleteCommand(tasks, new Ui(), storage, "0").execute();
@@ -206,7 +206,7 @@ class CommandTest {
     void deleteCommand_saveFails_restoresDeletedTask() throws IOException {
         Task first = new ToDo("first");
         Task second = new ToDo("second");
-        TaskList tasks = new TaskList(List.of(first, second));
+        TaskList tasks = new TaskList(first, second);
         Path taskPath = tempDirectory.resolve("tasks.csv");
         Files.createDirectory(taskPath);
 
@@ -219,7 +219,7 @@ class CommandTest {
     /** Verifies that ordinary listing preserves insertion order. */
     @Test
     void listCommand_withoutOption_displaysInsertionOrder() throws Exception {
-        TaskList tasks = new TaskList(List.of(new ToDo("first"), new ToDo("second")));
+        TaskList tasks = new TaskList(new ToDo("first"), new ToDo("second"));
 
         new ListCommand(tasks, new Ui(), "").execute();
 
@@ -230,10 +230,10 @@ class CommandTest {
     /** Verifies that time listing sorts dated tasks before undated tasks. */
     @Test
     void listCommand_timeOption_displaysChronologicalOrder() throws Exception {
-        TaskList tasks = new TaskList(List.of(
+        TaskList tasks = new TaskList(
                 new ToDo("no date"),
                 new Deadline("later", LocalDate.of(2026, 12, 31)),
-                new Event("early", "2026-01-01", "2026-01-02")));
+                new Event("early", "2026-01-01", "2026-01-02"));
 
         new ListCommand(tasks, new Ui(), "time").execute();
 
@@ -268,10 +268,10 @@ class CommandTest {
     /** Verifies that find command returns tasks matching a keyword. */
     @Test
     void findCommand_execute_findsMatchingTasks() throws Exception {
-        TaskList tasks = new TaskList(List.of(
+        TaskList tasks = new TaskList(
                 new ToDo("read book"),
                 new Deadline("return book", LocalDate.of(2026, 6, 6)),
-                new ToDo("buy food")));
+                new ToDo("buy food"));
 
         new FindCommand(tasks, new Ui(), "book").execute();
 
@@ -284,9 +284,9 @@ class CommandTest {
     /** Verifies that find command handles no matches. */
     @Test
     void findCommand_noMatches_showsEmptyList() throws Exception {
-        TaskList tasks = new TaskList(List.of(
+        TaskList tasks = new TaskList(
                 new ToDo("read book"),
-                new ToDo("buy food")));
+                new ToDo("buy food"));
 
         new FindCommand(tasks, new Ui(), "missing").execute();
 

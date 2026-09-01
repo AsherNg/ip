@@ -75,7 +75,7 @@ public class CharlieK {
      *
      * @param args command-line arguments, which are currently ignored
      */
-    public static void main(String[] args) {
+    public static void main(String... args) {
         new CharlieK("data/charliek.csv").run();
     }
 

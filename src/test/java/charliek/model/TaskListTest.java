@@ -20,14 +20,15 @@ class TaskListTest {
         assertEquals(List.of(), tasks.toList());
     }
 
-    /** Verifies that an initial collection is copied in its original order. */
+    /** Verifies that initial varargs are copied in their original order. */
     @Test
     void taskList_initialTasks_copiesInputOrder() {
-        ArrayList<Task> initialTasks = new ArrayList<>(List.of(
-                new ToDo("first"), new ToDo("second")));
+        Task first = new ToDo("first");
+        Task second = new ToDo("second");
+        Task[] initialTasks = {first, second};
         TaskList tasks = new TaskList(initialTasks);
 
-        initialTasks.clear();
+        initialTasks[0] = new ToDo("changed");
 
         assertEquals(2, tasks.size());
         assertEquals("first", tasks.get(0).getStorageFields().get(0));
@@ -37,10 +38,14 @@ class TaskListTest {
     /** Verifies that null task-list inputs are rejected. */
     @Test
     void taskList_nullInput_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> new TaskList(null));
+        assertThrows(IllegalArgumentException.class, () -> new TaskList((Task[]) null));
+        assertThrows(IllegalArgumentException.class, () -> new TaskList((Task) null));
 
         TaskList tasks = new TaskList();
+        ArrayList<Task> nullTaskList = new ArrayList<>();
+        nullTaskList.add(null);
         assertThrows(IllegalArgumentException.class, () -> tasks.replaceWith(null));
+        assertThrows(IllegalArgumentException.class, () -> tasks.replaceWith(nullTaskList));
     }
 
     /** Verifies append and indexed insertion behavior. */
@@ -63,7 +68,7 @@ class TaskListTest {
     void taskList_getAndRemove_validIndexReturnsTask() {
         Task first = new ToDo("first");
         Task second = new ToDo("second");
-        TaskList tasks = new TaskList(List.of(first, second));
+        TaskList tasks = new TaskList(first, second);
 
         assertEquals(first, tasks.get(0));
         assertEquals(first, tasks.remove(0));
@@ -74,7 +79,7 @@ class TaskListTest {
     /** Verifies replacement discards old tasks and copies the replacement list. */
     @Test
     void taskList_replaceWith_replacesContentsWithoutAliasingInput() {
-        TaskList tasks = new TaskList(List.of(new ToDo("old")));
+        TaskList tasks = new TaskList(new ToDo("old"));
         ArrayList<Task> replacement = new ArrayList<>(List.of(new ToDo("new")));
 
         tasks.replaceWith(replacement);
@@ -88,7 +93,7 @@ class TaskListTest {
     @Test
     void taskList_toList_returnsIndependentSnapshot() {
         Task task = new ToDo("read book");
-        TaskList tasks = new TaskList(List.of(task));
+        TaskList tasks = new TaskList(task);
 
         List<Task> snapshot = tasks.toList();
         snapshot.clear();

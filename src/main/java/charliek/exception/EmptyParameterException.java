@@ -5,11 +5,11 @@ package charliek.exception;
  */
 public class EmptyParameterException extends CharlieKException {
     /** The message displayed when a required task parameter is missing. */
-    private static final String message =
+    private static final String MESSAGE =
             "The parameter is empty! Enter the required parameters or I will carry the flame!";
 
     /** Creates an exception for a missing deadline or event parameter. */
     public EmptyParameterException() {
-        super(message);
+        super(MESSAGE);
     }
 }

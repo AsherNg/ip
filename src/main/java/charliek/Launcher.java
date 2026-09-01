@@ -18,7 +18,7 @@ public final class Launcher {
      *
      * @param args command-line arguments forwarded to the JavaFX runtime
      */
-    public static void main(String[] args) {
+    public static void main(String... args) {
         Application.launch(Main.class, args);
     }
 }
