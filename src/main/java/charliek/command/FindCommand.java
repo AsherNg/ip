@@ -1,6 +1,5 @@
 package charliek.command;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -55,14 +54,10 @@ public class FindCommand extends Command {
      * @return a list of tasks that match the keyword.
      */
     private List<Task> findMatchingTasks() {
-        List<Task> matchingTasks = new ArrayList<>();
-        for (Task task : tasks.toList()) {
-            if (task.getDescription().toLowerCase(Locale.ROOT)
-                    .contains(keyword.toLowerCase(Locale.ROOT))) {
-                matchingTasks.add(task);
-            }
-        }
-        return matchingTasks;
+        return tasks.toList().stream()
+                .filter(task -> task.getDescription().toLowerCase(Locale.ROOT)
+                        .contains(keyword.toLowerCase(Locale.ROOT)))
+                .toList();
     }
 }
 
