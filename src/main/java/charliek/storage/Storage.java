@@ -18,6 +18,7 @@ import charliek.exception.TaskStorageException;
 import charliek.model.Deadline;
 import charliek.model.Event;
 import charliek.model.Task;
+import charliek.model.TaskType;
 import charliek.model.ToDo;
 import charliek.parser.DateTimeParser;
 
@@ -25,6 +26,31 @@ import charliek.parser.DateTimeParser;
  * Encapsulates reading and writing CharlieK's task data.
  */
 public class Storage {
+    /**
+     * Marker stored for an incomplete task.
+     */
+    private static final String INCOMPLETE_STATUS = "0";
+
+    /**
+     * Marker stored for a completed task.
+     */
+    private static final String COMPLETE_STATUS = "1";
+
+    /**
+     * Number of CSV fields stored for a to-do task.
+     */
+    private static final int TODO_FIELD_COUNT = 3;
+
+    /**
+     * Number of CSV fields stored for a deadline task.
+     */
+    private static final int DEADLINE_FIELD_COUNT = 4;
+
+    /**
+     * Number of CSV fields stored for an event task.
+     */
+    private static final int EVENT_FIELD_COUNT = 5;
+
     /**
      * The normalized absolute path of the task file.
      */
@@ -160,7 +186,7 @@ public class Storage {
     private String toCsvLine(Task task) {
         ArrayList<String> fields = new ArrayList<>();
         fields.add(task.getStorageType());
-        fields.add(task.isDone() ? "1" : "0");
+        fields.add(task.isDone() ? COMPLETE_STATUS : INCOMPLETE_STATUS);
         fields.addAll(task.getStorageFields());
 
         StringBuilder line = new StringBuilder();
@@ -177,34 +203,37 @@ public class Storage {
      * Parses one CSV row, returning {@code null} for blank or malformed input.
      */
     private Task parseTask(List<String> fields) {
-        if (fields == null || fields.size() < 3) {
+        if (fields == null || fields.size() < TODO_FIELD_COUNT) {
             return null;
         }
 
-        String type = fields.get(0);
+        TaskType type = TaskType.fromIcon(fields.get(0)).orElse(null);
         String status = fields.get(1);
         String description = fields.get(2);
-        if (!("0".equals(status) || "1".equals(status)) || description.isBlank()) {
+        if (!(INCOMPLETE_STATUS.equals(status) || COMPLETE_STATUS.equals(status)) || description.isBlank()) {
+            return null;
+        }
+        if (type == null) {
             return null;
         }
 
         try {
             Task task;
             switch (type) {
-                case "T":
-                    if (fields.size() != 3) {
+                case TODO:
+                    if (fields.size() != TODO_FIELD_COUNT) {
                         return null;
                     }
                     task = new ToDo(description);
                     break;
-                case "D":
-                    if (fields.size() != 4 || fields.get(3).isEmpty()) {
+                case DEADLINE:
+                    if (fields.size() != DEADLINE_FIELD_COUNT || fields.get(3).isEmpty()) {
                         return null;
                     }
                     task = new Deadline(description, DateTimeParser.parseStored(fields.get(3)));
                     break;
-                case "E":
-                    if (fields.size() != 5 || fields.get(3).isEmpty() || fields.get(4).isEmpty()) {
+                case EVENT:
+                    if (fields.size() != EVENT_FIELD_COUNT || fields.get(3).isEmpty() || fields.get(4).isEmpty()) {
                         return null;
                     }
                     task = new Event(description,
@@ -225,7 +254,7 @@ public class Storage {
      * Restores completion status after constructing a task from its CSV row.
      */
     private Task restoreStatus(Task task, String status) {
-        if ("1".equals(status)) {
+        if (COMPLETE_STATUS.equals(status)) {
             task.markAsDone();
         }
         return task;

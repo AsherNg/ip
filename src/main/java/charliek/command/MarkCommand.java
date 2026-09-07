@@ -1,5 +1,7 @@
 package charliek.command;
 
+import java.util.OptionalInt;
+
 import charliek.exception.TaskStorageException;
 import charliek.model.Task;
 import charliek.model.TaskList;
@@ -52,25 +54,19 @@ public class MarkCommand extends Command {
      */
     @Override
     public void execute() throws TaskStorageException {
-        try {
-            int taskNumber = Integer.parseInt(taskNumberText);
-            if (taskNumber < 1 || taskNumber > tasks.size()) {
-                ui.showTaskDoesNotExist();
-                return;
-            }
-
-            int taskIndex = taskNumber - 1;
-            Task task = tasks.get(taskIndex);
-            if (task.isDone()) {
-                ui.showTaskAlreadyMarked(task);
-                return;
-            }
-
-            task.markAsDone();
-            saveTasksOrRollback(storage, tasks, task::markAsNotDone);
-            ui.showTaskMarked(task);
-        } catch (NumberFormatException exception) {
-            ui.showInvalidTaskNumber();
+        OptionalInt taskIndex = parseTaskIndex(taskNumberText, tasks, ui);
+        if (taskIndex.isEmpty()) {
+            return;
         }
+
+        Task task = tasks.get(taskIndex.getAsInt());
+        if (task.isDone()) {
+            ui.showTaskAlreadyMarked(task);
+            return;
+        }
+
+        task.markAsDone();
+        saveTasksOrRollback(storage, tasks, task::markAsNotDone);
+        ui.showTaskMarked(task);
     }
 }

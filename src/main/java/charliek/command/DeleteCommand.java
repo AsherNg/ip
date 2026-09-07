@@ -1,5 +1,7 @@
 package charliek.command;
 
+import java.util.OptionalInt;
+
 import charliek.exception.TaskStorageException;
 import charliek.model.Task;
 import charliek.model.TaskList;
@@ -52,20 +54,14 @@ public class DeleteCommand extends Command {
      */
     @Override
     public void execute() throws TaskStorageException {
-        try {
-            int taskNumber = Integer.parseInt(taskNumberText);
-            if (taskNumber < 1 || taskNumber > tasks.size()) {
-                ui.showTaskDoesNotExist();
-                return;
-            }
-
-            int taskIndex = taskNumber - 1;
-            Task deletedTask = tasks.remove(taskIndex);
-            saveTasksOrRollback(storage, tasks, () -> tasks.add(taskIndex, deletedTask));
-
-            ui.showTaskDeleted(deletedTask, tasks.size());
-        } catch (NumberFormatException exception) {
-            ui.showInvalidTaskNumber();
+        OptionalInt taskIndex = parseTaskIndex(taskNumberText, tasks, ui);
+        if (taskIndex.isEmpty()) {
+            return;
         }
+
+        Task deletedTask = tasks.remove(taskIndex.getAsInt());
+        saveTasksOrRollback(storage, tasks, () -> tasks.add(taskIndex.getAsInt(), deletedTask));
+
+        ui.showTaskDeleted(deletedTask, tasks.size());
     }
 }
