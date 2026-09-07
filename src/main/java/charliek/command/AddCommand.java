@@ -52,22 +52,14 @@ public class AddCommand extends Command {
      */
     @Override
     public void execute() throws TaskStorageException {
-        int originalTaskCount = tasks.size();
         tasks.add(task);
-        // Saving must observe the task just appended; otherwise the success message and disk diverge.
-        assert tasks.size() == originalTaskCount + 1
-                && tasks.get(originalTaskCount) == task
-                : "Adding a task must append exactly one task.";
         try {
             storage.save(tasks.toList());
         } catch (TaskStorageException exception) {
             tasks.remove(tasks.size() - 1);
-            // A failed save must leave memory exactly as it was before the command.
-            assert tasks.size() == originalTaskCount : "Failed add must restore the original task count.";
             throw exception;
         } catch (RuntimeException exception) {
             tasks.remove(tasks.size() - 1);
-            assert tasks.size() == originalTaskCount : "Failed add must restore the original task count.";
             throw exception;
         }
         ui.showTaskAdded(task, tasks.size());

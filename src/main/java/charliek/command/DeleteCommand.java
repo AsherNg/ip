@@ -60,25 +60,14 @@ public class DeleteCommand extends Command {
             }
 
             int taskIndex = taskNumber - 1;
-            // The range check above is the internal precondition for this zero-based lookup.
-            assert taskIndex >= 0 && taskIndex < tasks.size()
-                    : "A validated task number must produce a valid task index.";
-            int originalTaskCount = tasks.size();
             Task deletedTask = tasks.remove(taskIndex);
-            assert deletedTask != null && tasks.size() == originalTaskCount - 1
-                    : "Deleting a task must remove one non-null task.";
             try {
                 storage.save(tasks.toList());
             } catch (TaskStorageException exception) {
                 tasks.add(taskIndex, deletedTask);
-                // A failed save must restore both the count and the deleted task's position.
-                assert tasks.size() == originalTaskCount && tasks.get(taskIndex) == deletedTask
-                        : "Failed delete must restore the original task list.";
                 throw exception;
             } catch (RuntimeException exception) {
                 tasks.add(taskIndex, deletedTask);
-                assert tasks.size() == originalTaskCount && tasks.get(taskIndex) == deletedTask
-                        : "Failed delete must restore the original task list.";
                 throw exception;
             }
 

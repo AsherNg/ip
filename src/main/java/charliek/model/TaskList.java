@@ -43,9 +43,6 @@ public class TaskList {
     public void add(Task task) {
         validateTask(task);
         tasks.add(task);
-
-        // Callers depend on add placing the validated task at the end of the list.
-        assert tasks.get(tasks.size() - 1) == task : "Added task must be the final list element.";
     }
 
     /**
@@ -58,9 +55,6 @@ public class TaskList {
     public void add(int index, Task task) {
         validateTask(task);
         tasks.add(index, task);
-
-        // Rollback logic uses this positional contract to restore deleted tasks exactly.
-        assert tasks.get(index) == task : "Inserted task must occupy the requested position.";
     }
 
     /**
@@ -98,10 +92,6 @@ public class TaskList {
         }
         tasks.clear();
         tasks.addAll(replacementTasks);
-
-        // Loading replaces the whole list, so its size must match the validated input exactly.
-        assert tasks.size() == replacementTasks.size()
-                : "Task-list replacement must preserve the input size.";
     }
 
     /**

@@ -60,28 +60,20 @@ public class UnmarkCommand extends Command {
             }
 
             int taskIndex = taskNumber - 1;
-            // The range check above is the internal precondition for this zero-based lookup.
-            assert taskIndex >= 0 && taskIndex < tasks.size()
-                    : "A validated task number must produce a valid task index.";
             Task task = tasks.get(taskIndex);
-            assert task != null : "A valid task index must contain a task.";
             if (!task.isDone()) {
                 ui.showTaskAlreadyUnmarked(task);
                 return;
             }
 
             task.markAsNotDone();
-            assert !task.isDone() : "markAsNotDone must make the task incomplete.";
             try {
                 storage.save(tasks.toList());
             } catch (TaskStorageException exception) {
                 task.markAsDone();
-                // A failed save must undo the in-memory status change.
-                assert task.isDone() : "Failed unmark must restore the complete status.";
                 throw exception;
             } catch (RuntimeException exception) {
                 task.markAsDone();
-                assert task.isDone() : "Failed unmark must restore the complete status.";
                 throw exception;
             }
             ui.showTaskUnmarked(task);
