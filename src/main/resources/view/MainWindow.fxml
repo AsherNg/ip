@@ -6,23 +6,32 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
 
 <BorderPane prefHeight="700.0" prefWidth="520.0"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="charliek.ui.MainWindow">
     <center>
-        <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
-                    styleClass="chat-scroll-pane">
-            <content>
-                <VBox fx:id="dialogContainer" fillWidth="true" spacing="8.0" styleClass="dialog-container">
-                    <padding>
-                        <Insets bottom="16.0" left="12.0" right="12.0" top="16.0" />
-                    </padding>
-                </VBox>
-            </content>
-        </ScrollPane>
+        <StackPane styleClass="chat-area">
+            <VBox alignment="CENTER" mouseTransparent="true" spacing="4.0" styleClass="chat-watermark">
+                <Label styleClass="watermark-title" text="CHARLIEK" />
+                <Label styleClass="watermark-tagline" text="America's #1 task manager*" />
+                <Label styleClass="watermark-footnote" text="*citation needed" />
+            </VBox>
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                        styleClass="chat-scroll-pane">
+                <content>
+                    <VBox fx:id="dialogContainer" fillWidth="true" spacing="8.0" styleClass="dialog-container">
+                        <padding>
+                            <Insets bottom="16.0" left="12.0" right="12.0" top="16.0" />
+                        </padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </StackPane>
     </center>
     <bottom>
         <HBox spacing="8.0" styleClass="input-bar">
