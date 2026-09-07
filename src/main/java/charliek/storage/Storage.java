@@ -113,6 +113,8 @@ public class Storage {
             }
 
             Path parent = taskFile.getParent();
+            // The constructor normalizes to an absolute file path, so a parent directory must exist conceptually.
+            assert parent != null : "An absolute task-file path must have a parent directory.";
             Files.createDirectories(parent);
             if (Files.exists(taskFile) && !Files.isRegularFile(taskFile)) {
                 throw new IOException("The task path is not a regular file.");
