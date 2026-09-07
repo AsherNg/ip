@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
+import charliek.command.CommandType;
 import charliek.model.Task;
 
 /**
@@ -18,6 +19,20 @@ public class Ui {
      * The separator printed between console messages.
      */
     private static final String LINE = "____________________________________________________________";
+
+    /**
+     * Commands shown by the general help display, in user-facing order.
+     */
+    private static final List<CommandType> HELP_COMMANDS = List.of(
+            CommandType.TODO,
+            CommandType.DEADLINE,
+            CommandType.EVENT,
+            CommandType.LIST,
+            CommandType.FIND,
+            CommandType.MARK,
+            CommandType.UNMARK,
+            CommandType.DELETE,
+            CommandType.BYE);
 
     /**
      * The banner printed when CharlieK starts.
@@ -130,6 +145,47 @@ public class Ui {
      */
     public void showProcessingError() {
         showError("I couldn't process that command. Please check the input and try again.");
+    }
+
+    /**
+     * Shows every available command with its usage, description, and example.
+     */
+    public void showAvailableCommands() {
+        print("     Available commands" + System.lineSeparator() + System.lineSeparator());
+        for (int commandIndex = 0; commandIndex < HELP_COMMANDS.size(); commandIndex++) {
+            CommandType command = HELP_COMMANDS.get(commandIndex);
+            print("     " + command.getUsage() + System.lineSeparator());
+            print("       " + command.getDescription() + System.lineSeparator());
+            print("       Example: " + command.getExample() + System.lineSeparator());
+            if (commandIndex < HELP_COMMANDS.size() - 1) {
+                print(System.lineSeparator());
+            }
+        }
+    }
+
+    /**
+     * Shows detailed usage information for one command.
+     *
+     * @param command the command to describe.
+     */
+    public void showCommandHelp(CommandType command) {
+        print("     Help: " + command.getKeyword() + System.lineSeparator() + System.lineSeparator());
+        print("     Usage" + System.lineSeparator());
+        print("       " + command.getUsage() + System.lineSeparator() + System.lineSeparator());
+        print("     Description" + System.lineSeparator());
+        print("       " + command.getDescription() + System.lineSeparator() + System.lineSeparator());
+        print("     Example" + System.lineSeparator());
+        print("       " + command.getExample() + System.lineSeparator());
+    }
+
+    /**
+     * Shows an error for a command that has no help entry.
+     *
+     * @param commandKeyword the command keyword that was requested.
+     */
+    public void showUnknownHelpCommand(String commandKeyword) {
+        showError("I do not have help for '" + commandKeyword
+                + "'. Try 'help' to see the available commands.");
     }
 
     /**

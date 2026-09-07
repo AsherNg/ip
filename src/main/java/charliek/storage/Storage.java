@@ -116,6 +116,27 @@ public class Storage {
     }
 
     /**
+     * Loads saved tasks, creating a starter task file when this is a first run.
+     *
+     * <p>An existing file, including an intentionally empty one, always takes
+     * precedence over the supplied defaults.</p>
+     *
+     * @param defaultTasks tasks to save for a new user.
+     * @return the saved tasks, or the supplied defaults when the file was missing.
+     * @throws TaskStorageException when starter tasks cannot be saved or the existing file cannot be loaded.
+     */
+    public ArrayList<Task> loadOrCreate(List<Task> defaultTasks) throws TaskStorageException {
+        if (defaultTasks == null) {
+            throw new IllegalArgumentException("The default task list cannot be null.");
+        }
+        if (Files.notExists(taskFile)) {
+            save(defaultTasks);
+            return new ArrayList<>(defaultTasks);
+        }
+        return load();
+    }
+
+    /**
      * Saves the supplied task list as CSV rows, creating its parent directory if necessary.
      * A temporary file prevents a failed write from truncating a previously
      * valid task file.

@@ -1,11 +1,41 @@
 .root {
-    -fx-background-color: #f4f6f8;
+    -fx-background-color: linear-gradient(to bottom right, #fff9ed 0%, #edf5ff 55%, #fff0f0 100%);
     -fx-font-family: "System";
+}
+
+.chat-area {
+    -fx-background-color: linear-gradient(to bottom right, #fffdf7 0%, #f3f8ff 55%, #fff7f7 100%);
 }
 
 .chat-scroll-pane,
 .chat-scroll-pane > .viewport {
     -fx-background-color: transparent;
+}
+
+.chat-watermark {
+    -fx-alignment: center;
+    -fx-mouse-transparent: true;
+}
+
+.watermark-title {
+    -fx-font-size: 54px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #17365d;
+    -fx-opacity: 0.08;
+}
+
+.watermark-tagline {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #b33a3a;
+    -fx-opacity: 0.18;
+}
+
+.watermark-footnote {
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+    -fx-text-fill: #17365d;
+    -fx-opacity: 0.18;
 }
 
 .dialog-container {

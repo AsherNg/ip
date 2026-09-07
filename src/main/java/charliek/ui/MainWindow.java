@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import charliek.command.Command;
 import charliek.exception.CharlieKException;
 import charliek.exception.TaskStorageException;
+import charliek.model.SampleData;
 import charliek.model.TaskList;
 import charliek.parser.Parser;
 import charliek.storage.Storage;
@@ -161,7 +162,7 @@ public class MainWindow {
         String message = "Hello! I'm CharlieK." + System.lineSeparator()
                 + "What can I do for you?";
         try {
-            tasks.replaceWith(storage.load());
+            tasks.replaceWith(storage.loadOrCreate(SampleData.create()));
         } catch (TaskStorageException exception) {
             message += System.lineSeparator() + System.lineSeparator() + exception.getMessage();
         } catch (RuntimeException exception) {

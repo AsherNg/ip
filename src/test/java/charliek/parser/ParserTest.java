@@ -17,6 +17,7 @@ import charliek.command.AddCommand;
 import charliek.command.DeleteCommand;
 import charliek.command.ExitCommand;
 import charliek.command.FindCommand;
+import charliek.command.HelpCommand;
 import charliek.command.ListCommand;
 import charliek.command.MarkCommand;
 import charliek.command.UnmarkCommand;
@@ -123,6 +124,8 @@ class ParserTest {
         assertInstanceOf(UnmarkCommand.class, parser.parse("unmark 1"));
         assertInstanceOf(DeleteCommand.class, parser.parse("delete 1"));
         assertInstanceOf(FindCommand.class, parser.parse("find book"));
+        assertInstanceOf(HelpCommand.class, parser.parse("help"));
+        assertInstanceOf(HelpCommand.class, parser.parse("help list"));
         assertInstanceOf(AddCommand.class, parser.parse("todo read book"));
         assertInstanceOf(AddCommand.class,
                 parser.parse("deadline return book /by 2019-12-02"));

@@ -98,6 +98,8 @@ ____________________________________________________________
 
 **Aim:** Verify task creation, listing, completion marking, and completion reversal in one session.
 
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
+
 **Command:**
 
 ```
@@ -172,6 +174,8 @@ ____________________________________________________________
 
 **Aim:** Verify that invalid and out-of-range task references produce helpful errors and do not terminate the application.
 
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
+
 **Command:**
 
 ```
@@ -216,6 +220,8 @@ ____________________________________________________________
 ### UI-04 — Add to-do, deadline, and event tasks
 
 **Aim:** Verify that the three supported task types are parsed, stored polymorphically in the task list, and displayed with their type-specific details.
+
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
 
 **Command:**
 
@@ -275,6 +281,8 @@ ____________________________________________________________
 
 **Aim:** Verify that common numeric, ISO, compact-time, and 12-hour date/time inputs are parsed and printed consistently.
 
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
+
 **Command:**
 
 ```
@@ -332,6 +340,8 @@ ____________________________________________________________
 
 **Aim:** Verify that entering a command without a task keyword does not add a task.
 
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
+
 **Command:**
 
 ```
@@ -372,6 +382,8 @@ ____________________________________________________________
 ### UI-07 — Reject empty descriptions and parameters
 
 **Aim:** Verify that empty task descriptions, missing deadline parameters, and missing event parameters are caught and reported without adding malformed tasks.
+
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
 
 **Command:**
 
@@ -441,6 +453,8 @@ ____________________________________________________________
 ### UI-08 — Delete a task and compact the list
 
 **Aim:** Verify that a selected task is removed, the remaining tasks are renumbered, and the updated task count is displayed.
+
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
 
 **Command:**
 
@@ -542,6 +556,8 @@ ____________________________________________________________
 ### UI-09 — Save the task list after changes
 
 **Aim:** Exercise the task-list mutation commands that trigger automatic saving to `data/charliek.csv`.
+
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
 
 **Command:**
 
@@ -653,11 +669,11 @@ ____________________________________________________________
 ____________________________________________________________
 ```
 
-### UI-11 — Create storage for a new user
+### UI-11 — Seed sample tasks for a new user
 
-**Aim:** Verify that a user with no existing `data/` directory can add and list a task without a file-system error.
+**Aim:** Verify that a first-time user receives a varied starter task list and that it is persisted.
 
-**Setup:** Before starting the application, ensure that `data/charliek.csv` does not exist. The application must create the missing parent directory and CSV file when the task is added.
+**Setup:** Before starting the application, ensure that `data/charliek.csv` does not exist. The application must create the missing parent directory and CSV file with starter tasks.
 
 **Command:**
 
@@ -668,7 +684,6 @@ java -cp _temp/ui-test-classes charliek.CharlieK
 **Inputs:**
 
 ```
-todo create data path
 list
 bye
 ```
@@ -686,13 +701,14 @@ Hello! I'm CharlieK.
 What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
-       [T][ ] create data path
-     Now you have 1 tasks in the list.
-____________________________________________________________
-____________________________________________________________
      Here are the tasks in your list:
-     1.[T][ ] create data path
+     1.[T][X] Read the quick-start help
+     2.[T][ ] Add your first personal task
+     3.[D][ ] Plan the week's priorities (by: 15 Jan 2099)
+     4.[D][ ] Submit an objective report (by: 20 Jan 2099, 17:00)
+     5.[E][ ] Morning briefing (no podium required) (from: 10 Jan 2099 to: 11 Jan 2099)
+     6.[E][ ] Deep work (hot takes muted) (from: 12 Jan 2099, 09:00 to: 12 Jan 2099, 10:30)
+     7.[T][ ] Drink water before another hot take
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
@@ -843,6 +859,8 @@ ____________________________________________________________
 
 **Aim:** Verify that malformed deadline and event date/time values are reported without terminating the application or adding tasks.
 
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
+
 **Command:**
 
 ```
@@ -887,6 +905,8 @@ ____________________________________________________________
 ### UI-16 — Sort tasks chronologically with `list time`
 
 **Aim:** Verify that `list time` sorts dated tasks by their deadline or event start, places undated to-dos last, and leaves ordinary `list` order unchanged.
+
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
 
 **Command:**
 
@@ -998,6 +1018,8 @@ ____________________________________________________________
 
 **Aim:** Verify that `find` displays only tasks whose descriptions contain the supplied keyword, without regard to letter case.
 
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
+
 **Command:**
 
 ```
@@ -1042,6 +1064,125 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
      Here are the matching tasks in your list:
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-19 — Display the available commands
+
+**Aim:** Verify that `help` lists every available command with its parameters, a brief description, and an example.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes charliek.CharlieK
+```
+
+**Inputs:**
+
+```
+help
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Available commands
+
+     todo <description>
+       Add an undated to-do task.
+       Example: todo buy milk
+
+     deadline <description> /by <date/time>
+       Add a task with a deadline.
+       Example: deadline submit report /by 2/12/2019
+
+     event <description> /from <date/time> /to <date/time>
+       Add an event task.
+       Example: event project meeting /from 2026-08-06 2pm /to 2026-08-06 4pm
+
+     list [time]
+       Display tasks, optionally in chronological order.
+       Example: list time
+
+     find <keyword>
+       Find tasks containing a keyword.
+       Example: find book
+
+     mark <number>
+       Mark a task as complete.
+       Example: mark 1
+
+     unmark <number>
+       Mark a task as incomplete.
+       Example: unmark 1
+
+     delete <number>
+       Delete a task.
+       Example: delete 1
+
+     bye
+       Exit CharlieK.
+       Example: bye
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-20 — Display detailed command usage
+
+**Aim:** Verify that `help <command>` displays the selected command's usage, description, and example.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes charliek.CharlieK
+```
+
+**Inputs:**
+
+```
+help deadline
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Help: deadline
+
+     Usage
+       deadline <description> /by <date/time>
+
+     Description
+       Add a task with a deadline.
+
+     Example
+       deadline submit report /by 2/12/2019
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
