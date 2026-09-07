@@ -42,6 +42,40 @@ class StorageTest {
     }
 
     /**
+     * Verifies that missing storage is initialized with and persists starter tasks.
+     */
+    @Test
+    void loadOrCreate_missingFile_persistsDefaultTasks() throws Exception {
+        Storage storage = new Storage(tempDirectory.resolve("nested/tasks.csv"));
+        List<Task> defaults = List.of(
+                new ToDo("sample to-do"),
+                new Deadline("sample deadline", LocalDate.of(2099, 1, 10)));
+
+        List<Task> loaded = storage.loadOrCreate(defaults);
+
+        assertEquals(2, loaded.size());
+        assertEquals(defaults.get(0).toString(), loaded.get(0).toString());
+        assertEquals(defaults.get(1).toString(), loaded.get(1).toString());
+        assertEquals(loaded.stream().map(Task::toString).toList(),
+                storage.load().stream().map(Task::toString).toList());
+    }
+
+    /**
+     * Verifies that an existing empty file is not replaced with starter tasks.
+     */
+    @Test
+    void loadOrCreate_existingEmptyFile_preservesEmptyList() throws Exception {
+        Path taskFile = tempDirectory.resolve("tasks.csv");
+        Files.createFile(taskFile);
+        Storage storage = new Storage(taskFile);
+
+        List<Task> loaded = storage.loadOrCreate(List.of(new ToDo("must not be inserted")));
+
+        assertTrue(loaded.isEmpty());
+        assertTrue(storage.load().isEmpty());
+    }
+
+    /**
      * Verifies round-trip persistence for all task types and completion states.
      */
     @Test

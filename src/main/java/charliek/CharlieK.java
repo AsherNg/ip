@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import charliek.command.Command;
 import charliek.exception.CharlieKException;
 import charliek.exception.TaskStorageException;
+import charliek.model.SampleData;
 import charliek.model.TaskList;
 import charliek.parser.Parser;
 import charliek.storage.Storage;
@@ -91,9 +92,9 @@ public class CharlieK {
 
     /**
      * Loads task lines saved by the storage component when the application starts.
-     * Missing files represent a new, empty task list.
+     * Missing files are initialized with starter tasks for new users.
      */
     private void loadTasks() throws TaskStorageException {
-        tasks.replaceWith(storage.load());
+        tasks.replaceWith(storage.loadOrCreate(SampleData.create()));
     }
 }
