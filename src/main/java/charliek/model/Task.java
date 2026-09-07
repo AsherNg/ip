@@ -29,6 +29,12 @@ public abstract class Task {
         }
         this.description = description;
         isDone = false;
+
+        // Every task relies on a non-blank description when it is displayed and persisted.
+        assert this.description != null && !this.description.isBlank()
+                : "A constructed task must have a non-blank description.";
+        // New tasks are incomplete until a command or storage loader explicitly marks them done.
+        assert !isDone : "A newly constructed task must be incomplete.";
     }
 
     /**
