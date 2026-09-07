@@ -60,20 +60,28 @@ public class MarkCommand extends Command {
             }
 
             int taskIndex = taskNumber - 1;
+            // The range check above is the internal precondition for this zero-based lookup.
+            assert taskIndex >= 0 && taskIndex < tasks.size()
+                    : "A validated task number must produce a valid task index.";
             Task task = tasks.get(taskIndex);
+            assert task != null : "A valid task index must contain a task.";
             if (task.isDone()) {
                 ui.showTaskAlreadyMarked(task);
                 return;
             }
 
             task.markAsDone();
+            assert task.isDone() : "markAsDone must make the task complete.";
             try {
                 storage.save(tasks.toList());
             } catch (TaskStorageException exception) {
                 task.markAsNotDone();
+                // A failed save must undo the in-memory status change.
+                assert !task.isDone() : "Failed mark must restore the incomplete status.";
                 throw exception;
             } catch (RuntimeException exception) {
                 task.markAsNotDone();
+                assert !task.isDone() : "Failed mark must restore the incomplete status.";
                 throw exception;
             }
             ui.showTaskMarked(task);
