@@ -103,16 +103,12 @@ public final class DateTimeParser {
      */
     public static ParsedDateTime parseStored(String storedValue) {
         String normalizedValue = normalize(storedValue);
-        try {
-            if (normalizedValue.contains("T")) {
-                return ParsedDateTime.ofDateTime(LocalDateTime.parse(
-                        normalizedValue, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-            }
-            return ParsedDateTime.ofDate(LocalDate.parse(
-                    normalizedValue, DateTimeFormatter.ISO_LOCAL_DATE));
-        } catch (DateTimeParseException exception) {
-            throw exception;
+        if (normalizedValue.contains("T")) {
+            return ParsedDateTime.ofDateTime(LocalDateTime.parse(
+                    normalizedValue, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         }
+        return ParsedDateTime.ofDate(LocalDate.parse(
+                normalizedValue, DateTimeFormatter.ISO_LOCAL_DATE));
     }
 
     /**

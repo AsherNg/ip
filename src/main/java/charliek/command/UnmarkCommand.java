@@ -1,5 +1,7 @@
 package charliek.command;
 
+import java.util.OptionalInt;
+
 import charliek.exception.TaskStorageException;
 import charliek.model.Task;
 import charliek.model.TaskList;
@@ -52,41 +54,19 @@ public class UnmarkCommand extends Command {
      */
     @Override
     public void execute() throws TaskStorageException {
-        try {
-            int taskNumber = Integer.parseInt(taskNumberText);
-            if (taskNumber < 1 || taskNumber > tasks.size()) {
-                ui.showTaskDoesNotExist();
-                return;
-            }
-
-            int taskIndex = taskNumber - 1;
-            // The range check above is the internal precondition for this zero-based lookup.
-            assert taskIndex >= 0 && taskIndex < tasks.size()
-                    : "A validated task number must produce a valid task index.";
-            Task task = tasks.get(taskIndex);
-            assert task != null : "A valid task index must contain a task.";
-            if (!task.isDone()) {
-                ui.showTaskAlreadyUnmarked(task);
-                return;
-            }
-
-            task.markAsNotDone();
-            assert !task.isDone() : "markAsNotDone must make the task incomplete.";
-            try {
-                storage.save(tasks.toList());
-            } catch (TaskStorageException exception) {
-                task.markAsDone();
-                // A failed save must undo the in-memory status change.
-                assert task.isDone() : "Failed unmark must restore the complete status.";
-                throw exception;
-            } catch (RuntimeException exception) {
-                task.markAsDone();
-                assert task.isDone() : "Failed unmark must restore the complete status.";
-                throw exception;
-            }
-            ui.showTaskUnmarked(task);
-        } catch (NumberFormatException exception) {
-            ui.showInvalidTaskNumber();
+        OptionalInt taskIndex = parseTaskIndex(taskNumberText, tasks, ui);
+        if (taskIndex.isEmpty()) {
+            return;
         }
+
+        Task task = tasks.get(taskIndex.getAsInt());
+        if (!task.isDone()) {
+            ui.showTaskAlreadyUnmarked(task);
+            return;
+        }
+
+        task.markAsNotDone();
+        saveTasksOrRollback(storage, tasks, task::markAsDone);
+        ui.showTaskUnmarked(task);
     }
 }
