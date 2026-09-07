@@ -61,15 +61,7 @@ public class DeleteCommand extends Command {
 
             int taskIndex = taskNumber - 1;
             Task deletedTask = tasks.remove(taskIndex);
-            try {
-                storage.save(tasks.toList());
-            } catch (TaskStorageException exception) {
-                tasks.add(taskIndex, deletedTask);
-                throw exception;
-            } catch (RuntimeException exception) {
-                tasks.add(taskIndex, deletedTask);
-                throw exception;
-            }
+            saveTasksOrRollback(storage, tasks, () -> tasks.add(taskIndex, deletedTask));
 
             ui.showTaskDeleted(deletedTask, tasks.size());
         } catch (NumberFormatException exception) {

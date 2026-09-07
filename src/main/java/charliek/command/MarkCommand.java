@@ -67,15 +67,7 @@ public class MarkCommand extends Command {
             }
 
             task.markAsDone();
-            try {
-                storage.save(tasks.toList());
-            } catch (TaskStorageException exception) {
-                task.markAsNotDone();
-                throw exception;
-            } catch (RuntimeException exception) {
-                task.markAsNotDone();
-                throw exception;
-            }
+            saveTasksOrRollback(storage, tasks, task::markAsNotDone);
             ui.showTaskMarked(task);
         } catch (NumberFormatException exception) {
             ui.showInvalidTaskNumber();

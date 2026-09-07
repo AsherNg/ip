@@ -53,15 +53,7 @@ public class AddCommand extends Command {
     @Override
     public void execute() throws TaskStorageException {
         tasks.add(task);
-        try {
-            storage.save(tasks.toList());
-        } catch (TaskStorageException exception) {
-            tasks.remove(tasks.size() - 1);
-            throw exception;
-        } catch (RuntimeException exception) {
-            tasks.remove(tasks.size() - 1);
-            throw exception;
-        }
+        saveTasksOrRollback(storage, tasks, () -> tasks.remove(tasks.size() - 1));
         ui.showTaskAdded(task, tasks.size());
     }
 }

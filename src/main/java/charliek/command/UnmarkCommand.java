@@ -67,15 +67,7 @@ public class UnmarkCommand extends Command {
             }
 
             task.markAsNotDone();
-            try {
-                storage.save(tasks.toList());
-            } catch (TaskStorageException exception) {
-                task.markAsDone();
-                throw exception;
-            } catch (RuntimeException exception) {
-                task.markAsDone();
-                throw exception;
-            }
+            saveTasksOrRollback(storage, tasks, task::markAsDone);
             ui.showTaskUnmarked(task);
         } catch (NumberFormatException exception) {
             ui.showInvalidTaskNumber();
