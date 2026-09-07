@@ -216,10 +216,7 @@ public class Ui {
      * @param tasks the tasks to display.
      */
     public void showTasks(List<Task> tasks) {
-        print("     Here are the tasks in your list:" + System.lineSeparator());
-        for (int i = 0; i < tasks.size(); i++) {
-            print("     " + (i + 1) + "." + tasks.get(i) + System.lineSeparator());
-        }
+        showTaskList(tasks, "     Here are the tasks in your list:");
     }
 
     /**
@@ -228,9 +225,19 @@ public class Ui {
      * @param tasks the matching tasks to display.
      */
     public void showMatchingTasks(List<Task> tasks) {
-        print("     Here are the matching tasks in your list:" + System.lineSeparator());
-        for (int i = 0; i < tasks.size(); i++) {
-            print("     " + (i + 1) + "." + tasks.get(i) + System.lineSeparator());
+        showTaskList(tasks, "     Here are the matching tasks in your list:");
+    }
+
+    /**
+     * Shows a heading followed by tasks numbered in their display order.
+     *
+     * @param tasks the tasks to display.
+     * @param heading the heading to print before the task list.
+     */
+    private void showTaskList(List<Task> tasks, String heading) {
+        print(heading + System.lineSeparator());
+        for (int taskIndex = 0; taskIndex < tasks.size(); taskIndex++) {
+            print("     " + (taskIndex + 1) + "." + tasks.get(taskIndex) + System.lineSeparator());
         }
     }
 
