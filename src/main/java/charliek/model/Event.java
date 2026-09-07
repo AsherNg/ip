@@ -60,6 +60,12 @@ public class Event extends Task {
         this.fromDateTime = from.dateTime();
         this.toDate = to.date();
         this.toDateTime = to.dateTime();
+
+        // Each endpoint must retain exactly one representation for display and chronological sorting.
+        assert (fromDate == null) != (fromDateTime == null)
+                : "An event start must contain either a date or a date-time, but not both.";
+        assert (toDate == null) != (toDateTime == null)
+                : "An event end must contain either a date or a date-time, but not both.";
     }
 
     /**

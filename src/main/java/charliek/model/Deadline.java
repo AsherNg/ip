@@ -65,6 +65,10 @@ public class Deadline extends Task {
         }
         this.deadlineDate = deadline.date();
         this.deadlineDateTime = deadline.dateTime();
+
+        // A deadline stores exactly one representation so formatting and sorting cannot disagree.
+        assert (deadlineDate == null) != (deadlineDateTime == null)
+                : "A deadline must contain either a date or a date-time, but not both.";
     }
 
     /**
