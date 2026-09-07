@@ -1078,37 +1078,43 @@ Hello! I'm CharlieK.
 What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
-     Available commands:
-       bye
-         Exit CharlieK.
-         Example: bye
-       list [time]
-         Display tasks in insertion order, or chronologically when time is specified.
-         Example: list time
-       mark <number>
-         Mark a task as complete.
-         Example: mark 1
-       unmark <number>
-         Mark a task as incomplete.
-         Example: unmark 1
-       delete <number>
-         Delete a task.
-         Example: delete 1
-       todo <description>
-         Add an undated to-do task.
-         Example: todo buy milk
-       deadline <description> /by <date/time>
-         Add a task with a deadline.
-         Example: deadline submit report /by 2/12/2019
-       event <description> /from <date/time> /to <date/time>
-         Add a task that takes place during a specified period.
-         Example: event project meeting /from 2026-08-06 2pm /to 2026-08-06 4pm
-       find <keyword>
-         Find tasks whose descriptions contain a keyword.
-         Example: find book
-       help [command]
-         Show all commands or detailed usage for one command.
-         Example: help list
+     Available commands
+
+     todo <description>
+       Add an undated to-do task.
+       Example: todo buy milk
+
+     deadline <description> /by <date/time>
+       Add a task with a deadline.
+       Example: deadline submit report /by 2/12/2019
+
+     event <description> /from <date/time> /to <date/time>
+       Add an event task.
+       Example: event project meeting /from 2026-08-06 2pm /to 2026-08-06 4pm
+
+     list [time]
+       Display tasks, optionally in chronological order.
+       Example: list time
+
+     find <keyword>
+       Find tasks containing a keyword.
+       Example: find book
+
+     mark <number>
+       Mark a task as complete.
+       Example: mark 1
+
+     unmark <number>
+       Mark a task as incomplete.
+       Example: unmark 1
+
+     delete <number>
+       Delete a task.
+       Example: delete 1
+
+     bye
+       Exit CharlieK.
+       Example: bye
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!
@@ -1145,10 +1151,16 @@ Hello! I'm CharlieK.
 What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
-     Command: deadline
-     Usage: deadline <description> /by <date/time>
-     Description: Add a task with a deadline.
-     Example: deadline submit report /by 2/12/2019
+     Help: deadline
+
+     Usage
+       deadline <description> /by <date/time>
+
+     Description
+       Add a task with a deadline.
+
+     Example
+       deadline submit report /by 2/12/2019
 ____________________________________________________________
 ____________________________________________________________
      Bye. Hope to see you again soon!

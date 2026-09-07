@@ -1,7 +1,6 @@
 package charliek.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,11 +18,34 @@ class HelpCommandTest {
         StringBuilder output = new StringBuilder();
         new HelpCommand(new Ui(output::append), "").execute();
 
-        String help = output.toString();
-        for (CommandType command : CommandType.values()) {
-            assertTrue(help.contains(command.getUsage()));
-            assertTrue(help.contains("Example: " + command.getExample()));
-        }
+        assertEquals("     Available commands\n\n"
+                + "     todo <description>\n"
+                + "       Add an undated to-do task.\n"
+                + "       Example: todo buy milk\n\n"
+                + "     deadline <description> /by <date/time>\n"
+                + "       Add a task with a deadline.\n"
+                + "       Example: deadline submit report /by 2/12/2019\n\n"
+                + "     event <description> /from <date/time> /to <date/time>\n"
+                + "       Add an event task.\n"
+                + "       Example: event project meeting /from 2026-08-06 2pm /to 2026-08-06 4pm\n\n"
+                + "     list [time]\n"
+                + "       Display tasks, optionally in chronological order.\n"
+                + "       Example: list time\n\n"
+                + "     find <keyword>\n"
+                + "       Find tasks containing a keyword.\n"
+                + "       Example: find book\n\n"
+                + "     mark <number>\n"
+                + "       Mark a task as complete.\n"
+                + "       Example: mark 1\n\n"
+                + "     unmark <number>\n"
+                + "       Mark a task as incomplete.\n"
+                + "       Example: unmark 1\n\n"
+                + "     delete <number>\n"
+                + "       Delete a task.\n"
+                + "       Example: delete 1\n\n"
+                + "     bye\n"
+                + "       Exit CharlieK.\n"
+                + "       Example: bye\n", output.toString().replace(System.lineSeparator(), "\n"));
     }
 
     /**
@@ -34,10 +56,13 @@ class HelpCommandTest {
         StringBuilder output = new StringBuilder();
         new HelpCommand(new Ui(output::append), " list ").execute();
 
-        assertEquals("     Command: list\n"
-                + "     Usage: list [time]\n"
-                + "     Description: Display tasks in insertion order, or chronologically when time is specified.\n"
-                + "     Example: list time\n", output.toString().replace(System.lineSeparator(), "\n"));
+        assertEquals("     Help: list\n\n"
+                + "     Usage\n"
+                + "       list [time]\n\n"
+                + "     Description\n"
+                + "       Display tasks, optionally in chronological order.\n\n"
+                + "     Example\n"
+                + "       list time\n", output.toString().replace(System.lineSeparator(), "\n"));
     }
 
     /**

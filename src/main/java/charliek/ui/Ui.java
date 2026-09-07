@@ -21,6 +21,20 @@ public class Ui {
     private static final String LINE = "____________________________________________________________";
 
     /**
+     * Commands shown by the general help display, in user-facing order.
+     */
+    private static final List<CommandType> HELP_COMMANDS = List.of(
+            CommandType.TODO,
+            CommandType.DEADLINE,
+            CommandType.EVENT,
+            CommandType.LIST,
+            CommandType.FIND,
+            CommandType.MARK,
+            CommandType.UNMARK,
+            CommandType.DELETE,
+            CommandType.BYE);
+
+    /**
      * The banner printed when CharlieK starts.
      */
     private static final String BANNER = "  ____ _                _ _      _  __\n"
@@ -137,11 +151,15 @@ public class Ui {
      * Shows every available command with its usage, description, and example.
      */
     public void showAvailableCommands() {
-        print("     Available commands:" + System.lineSeparator());
-        for (CommandType command : CommandType.values()) {
-            print("       " + command.getUsage() + System.lineSeparator());
-            print("         " + command.getDescription() + System.lineSeparator());
-            print("         Example: " + command.getExample() + System.lineSeparator());
+        print("     Available commands" + System.lineSeparator() + System.lineSeparator());
+        for (int commandIndex = 0; commandIndex < HELP_COMMANDS.size(); commandIndex++) {
+            CommandType command = HELP_COMMANDS.get(commandIndex);
+            print("     " + command.getUsage() + System.lineSeparator());
+            print("       " + command.getDescription() + System.lineSeparator());
+            print("       Example: " + command.getExample() + System.lineSeparator());
+            if (commandIndex < HELP_COMMANDS.size() - 1) {
+                print(System.lineSeparator());
+            }
         }
     }
 
@@ -151,10 +169,13 @@ public class Ui {
      * @param command the command to describe.
      */
     public void showCommandHelp(CommandType command) {
-        print("     Command: " + command.getKeyword() + System.lineSeparator());
-        print("     Usage: " + command.getUsage() + System.lineSeparator());
-        print("     Description: " + command.getDescription() + System.lineSeparator());
-        print("     Example: " + command.getExample() + System.lineSeparator());
+        print("     Help: " + command.getKeyword() + System.lineSeparator() + System.lineSeparator());
+        print("     Usage" + System.lineSeparator());
+        print("       " + command.getUsage() + System.lineSeparator() + System.lineSeparator());
+        print("     Description" + System.lineSeparator());
+        print("       " + command.getDescription() + System.lineSeparator() + System.lineSeparator());
+        print("     Example" + System.lineSeparator());
+        print("       " + command.getExample() + System.lineSeparator());
     }
 
     /**

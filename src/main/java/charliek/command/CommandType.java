@@ -15,7 +15,7 @@ public enum CommandType {
      * Displays all tasks, optionally sorted by time.
      */
     LIST("list", true, "list [time]",
-            "Display tasks in insertion order, or chronologically when time is specified.", "list time"),
+            "Display tasks, optionally in chronological order.", "list time"),
 
     /**
      * Marks a task as done.
@@ -47,13 +47,13 @@ public enum CommandType {
      * Adds an event task.
      */
     EVENT("event", true, "event <description> /from <date/time> /to <date/time>",
-            "Add a task that takes place during a specified period.",
+            "Add an event task.",
             "event project meeting /from 2026-08-06 2pm /to 2026-08-06 4pm"),
 
     /**
      * Finds tasks matching a keyword.
      */
-    FIND("find", true, "find <keyword>", "Find tasks whose descriptions contain a keyword.", "find book"),
+    FIND("find", true, "find <keyword>", "Find tasks containing a keyword.", "find book"),
 
     /**
      * Shows all commands or detailed usage for one command.
