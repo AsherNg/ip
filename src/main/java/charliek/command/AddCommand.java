@@ -52,6 +52,7 @@ public class AddCommand extends Command {
      */
     @Override
     public void execute() throws TaskStorageException {
+        int originalTaskCount = tasks.size();
         tasks.add(task);
         saveTasksOrRollback(storage, tasks, () -> tasks.remove(tasks.size() - 1));
         ui.showTaskAdded(task, tasks.size());
