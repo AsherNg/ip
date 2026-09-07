@@ -33,6 +33,21 @@ import charliek.ui.Ui;
  */
 public class Parser {
     /**
+     * Marker separating a deadline description from its date/time.
+     */
+    private static final String DEADLINE_MARKER = " /by ";
+
+    /**
+     * Marker separating an event description from its start date/time.
+     */
+    private static final String EVENT_START_MARKER = " /from ";
+
+    /**
+     * Marker separating an event start date/time from its end date/time.
+     */
+    private static final String EVENT_END_MARKER = " /to ";
+
+    /**
      * The task list used by commands created by this parser.
      */
     private final TaskList tasks;
@@ -116,7 +131,7 @@ public class Parser {
             throw new EmptyTaskDescriptionException();
         }
 
-        int markerIndex = commandText.indexOf(" /by ");
+        int markerIndex = commandText.indexOf(DEADLINE_MARKER);
         String description = markerIndex < 0
                 ? commandText
                 : commandText.substring(0, markerIndex).trim();
@@ -127,7 +142,7 @@ public class Parser {
             throw new EmptyParameterException();
         }
 
-        String deadline = commandText.substring(markerIndex + " /by ".length()).trim();
+        String deadline = commandText.substring(markerIndex + DEADLINE_MARKER.length()).trim();
         if (deadline.isEmpty()) {
             throw new EmptyParameterException();
         }
@@ -156,7 +171,7 @@ public class Parser {
             throw new EmptyTaskDescriptionException();
         }
 
-        int fromMarkerIndex = commandText.indexOf(" /from ");
+        int fromMarkerIndex = commandText.indexOf(EVENT_START_MARKER);
         String description = fromMarkerIndex < 0
                 ? commandText
                 : commandText.substring(0, fromMarkerIndex).trim();
@@ -164,18 +179,18 @@ public class Parser {
             throw new EmptyTaskDescriptionException();
         }
 
-        int toMarkerIndex = commandText.indexOf(" /to ", fromMarkerIndex + 1);
+        int toMarkerIndex = commandText.indexOf(EVENT_END_MARKER, fromMarkerIndex + 1);
         if (fromMarkerIndex < 0 || toMarkerIndex < 0) {
             throw new EmptyParameterException();
         }
 
-        int fromValueStart = fromMarkerIndex + " /from ".length();
+        int fromValueStart = fromMarkerIndex + EVENT_START_MARKER.length();
         if (toMarkerIndex <= fromValueStart) {
             throw new EmptyParameterException();
         }
 
         String from = commandText.substring(fromValueStart, toMarkerIndex).trim();
-        String to = commandText.substring(toMarkerIndex + " /to ".length()).trim();
+        String to = commandText.substring(toMarkerIndex + EVENT_END_MARKER.length()).trim();
         if (from.isEmpty() || to.isEmpty()) {
             throw new EmptyParameterException();
         }
