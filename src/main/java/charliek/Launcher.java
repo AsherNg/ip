@@ -16,7 +16,7 @@ public final class Launcher {
     /**
      * Starts the CharlieK JavaFX application.
      *
-     * @param args command-line arguments forwarded to the JavaFX runtime
+     * @param args command-line arguments forwarded to the JavaFX runtime.
      */
     public static void main(String... args) {
         Application.launch(Main.class, args);

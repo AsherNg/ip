@@ -30,7 +30,9 @@ import charliek.model.ToDo;
 import charliek.storage.Storage;
 import charliek.ui.Ui;
 
-/** Tests command execution, persistence, validation, and rollback behavior. */
+/**
+ * Tests command execution, persistence, validation, and rollback behavior.
+ */
 class CommandTest {
     @TempDir
     Path tempDirectory;
@@ -39,7 +41,9 @@ class CommandTest {
     private PrintStream originalOutput;
     private ByteArrayOutputStream capturedOutput;
 
-    /** Redirects console dependencies so command tests remain isolated and readable. */
+    /**
+     * Redirects console dependencies so command tests remain isolated and readable.
+     */
     @BeforeEach
     void setUpConsole() {
         originalInput = System.in;
@@ -49,14 +53,18 @@ class CommandTest {
         System.setOut(new PrintStream(capturedOutput));
     }
 
-    /** Restores the process-wide console streams after each command test. */
+    /**
+     * Restores the process-wide console streams after each command test.
+     */
     @AfterEach
     void restoreConsole() {
         System.setIn(originalInput);
         System.setOut(originalOutput);
     }
 
-    /** Verifies that adding a task updates memory and persists the task. */
+    /**
+     * Verifies that adding a task updates memory and persists the task.
+     */
     @Test
     void addCommand_execute_addsAndSavesTask() throws Exception {
         TaskList tasks = new TaskList();
@@ -71,7 +79,9 @@ class CommandTest {
         assertTrue(capturedOutput.toString().contains("I've added this task"));
     }
 
-    /** Verifies that a failed add save rolls the in-memory list back. */
+    /**
+     * Verifies that a failed add save rolls the in-memory list back.
+     */
     @Test
     void addCommand_saveFails_removesTaskFromList() throws IOException {
         TaskList tasks = new TaskList();
@@ -84,7 +94,9 @@ class CommandTest {
         assertEquals(0, tasks.size());
     }
 
-    /** Verifies marking an incomplete task updates its status and persists it. */
+    /**
+     * Verifies marking an incomplete task updates its status and persists it.
+     */
     @Test
     void markCommand_executeOnIncompleteTask_marksAndSavesTask() throws Exception {
         Task task = new ToDo("read book");
@@ -97,7 +109,9 @@ class CommandTest {
         assertTrue(storage.load().get(0).isDone());
     }
 
-    /** Verifies that already marked, invalid, and out-of-range requests are harmless. */
+    /**
+     * Verifies that already marked, invalid, and out-of-range requests are harmless.
+     */
     @Test
     void markCommand_invalidOrAlreadyMarkedTask_leavesStateUnchanged() throws Exception {
         Task task = new ToDo("read book");
@@ -114,7 +128,9 @@ class CommandTest {
         assertTrue(capturedOutput.toString().contains("valid task number"));
     }
 
-    /** Verifies that a failed mark save restores the incomplete status. */
+    /**
+     * Verifies that a failed mark save restores the incomplete status.
+     */
     @Test
     void markCommand_saveFails_restoresIncompleteStatus() throws IOException {
         Task task = new ToDo("read book");
@@ -128,7 +144,9 @@ class CommandTest {
         assertFalse(task.isDone());
     }
 
-    /** Verifies unmarking a completed task updates its status and persists it. */
+    /**
+     * Verifies unmarking a completed task updates its status and persists it.
+     */
     @Test
     void unmarkCommand_executeOnCompletedTask_unmarksAndSavesTask() throws Exception {
         Task task = new ToDo("read book");
@@ -142,7 +160,9 @@ class CommandTest {
         assertFalse(storage.load().get(0).isDone());
     }
 
-    /** Verifies that already unmarked and invalid requests are harmless. */
+    /**
+     * Verifies that already unmarked and invalid requests are harmless.
+     */
     @Test
     void unmarkCommand_invalidOrAlreadyUnmarkedTask_leavesStateUnchanged() throws Exception {
         Task task = new ToDo("read book");
@@ -158,7 +178,9 @@ class CommandTest {
         assertTrue(capturedOutput.toString().contains("valid task number"));
     }
 
-    /** Verifies that a failed unmark save restores the completed status. */
+    /**
+     * Verifies that a failed unmark save restores the completed status.
+     */
     @Test
     void unmarkCommand_saveFails_restoresCompletedStatus() throws IOException {
         Task task = new ToDo("read book");
@@ -173,7 +195,9 @@ class CommandTest {
         assertTrue(task.isDone());
     }
 
-    /** Verifies that deleting a task removes and persists the selected task. */
+    /**
+     * Verifies that deleting a task removes and persists the selected task.
+     */
     @Test
     void deleteCommand_executeOnValidTask_removesAndSavesTask() throws Exception {
         Task first = new ToDo("first");
@@ -187,7 +211,9 @@ class CommandTest {
         assertEquals(List.of("second"), storage.load().get(0).getStorageFields());
     }
 
-    /** Verifies that invalid delete requests do not change the task list. */
+    /**
+     * Verifies that invalid delete requests do not change the task list.
+     */
     @Test
     void deleteCommand_invalidTaskNumber_leavesListUnchanged() throws Exception {
         Task task = new ToDo("read book");
@@ -201,7 +227,9 @@ class CommandTest {
         assertEquals(List.of(task), tasks.toList());
     }
 
-    /** Verifies that a failed delete save restores the task at its original index. */
+    /**
+     * Verifies that a failed delete save restores the task at its original index.
+     */
     @Test
     void deleteCommand_saveFails_restoresDeletedTask() throws IOException {
         Task first = new ToDo("first");
@@ -216,7 +244,9 @@ class CommandTest {
         assertEquals(List.of(first, second), tasks.toList());
     }
 
-    /** Verifies that ordinary listing preserves insertion order. */
+    /**
+     * Verifies that ordinary listing preserves insertion order.
+     */
     @Test
     void listCommand_withoutOption_displaysInsertionOrder() throws Exception {
         TaskList tasks = new TaskList(new ToDo("first"), new ToDo("second"));
@@ -227,7 +257,9 @@ class CommandTest {
         assertTrue(output.indexOf("1.[T][ ] first") < output.indexOf("2.[T][ ] second"));
     }
 
-    /** Verifies that time listing sorts dated tasks before undated tasks. */
+    /**
+     * Verifies that time listing sorts dated tasks before undated tasks.
+     */
     @Test
     void listCommand_timeOption_displaysChronologicalOrder() throws Exception {
         TaskList tasks = new TaskList(
@@ -242,14 +274,18 @@ class CommandTest {
         assertTrue(output.indexOf("2.[D][ ] later") < output.indexOf("3.[T][ ] no date"));
     }
 
-    /** Verifies that unsupported list modes are rejected. */
+    /**
+     * Verifies that unsupported list modes are rejected.
+     */
     @Test
     void listCommand_unsupportedOption_throwsUnknownCommandException() {
         assertThrows(UnknownCommandException.class, () -> new ListCommand(
                 new TaskList(), new Ui(), "unsupported").execute());
     }
 
-    /** Verifies that the exit command reports its session-ending state. */
+    /**
+     * Verifies that the exit command reports its session-ending state.
+     */
     @Test
     void exitCommand_execute_marksCommandAsExit() {
         ExitCommand command = new ExitCommand(new Ui());
@@ -260,12 +296,16 @@ class CommandTest {
         assertTrue(capturedOutput.toString().contains("Bye. Hope to see you again soon!"));
     }
 
-    /** Creates storage at an isolated temporary path. */
+    /**
+     * Creates storage at an isolated temporary path.
+     */
     private Storage storageAt(String fileName) {
         return new Storage(tempDirectory.resolve(fileName));
     }
 
-    /** Verifies that find command returns tasks matching a keyword. */
+    /**
+     * Verifies that find command returns tasks matching a keyword.
+     */
     @Test
     void findCommand_execute_findsMatchingTasks() throws Exception {
         TaskList tasks = new TaskList(
@@ -281,7 +321,9 @@ class CommandTest {
         assertFalse(output.contains("buy food"));
     }
 
-    /** Verifies that find command handles no matches. */
+    /**
+     * Verifies that find command handles no matches.
+     */
     @Test
     void findCommand_noMatches_showsEmptyList() throws Exception {
         TaskList tasks = new TaskList(

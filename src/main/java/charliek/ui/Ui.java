@@ -14,23 +14,33 @@ import charliek.model.Task;
  * decide how tasks are mutated or sorted.</p>
  */
 public class Ui {
-    /** The separator printed between console messages. */
+    /**
+     * The separator printed between console messages.
+     */
     private static final String LINE = "____________________________________________________________";
 
-    /** The banner printed when CharlieK starts. */
+    /**
+     * The banner printed when CharlieK starts.
+     */
     private static final String BANNER = "  ____ _                _ _      _  __\n"
             + " / ___| |__   __ _ _ __| (_) ___| |/ /\n"
             + "| |   | '_ \\ / _` | '__| | |/ _ \\ ' / \n"
             + "| |___| | | | (_| | |  | | |  __/ . \\ \n"
             + " \\____|_| |_|\\__,_|_|  |_|_|\\___|_|\\_\\\n";
 
-    /** Reads commands from the user's standard input. */
+    /**
+     * Reads commands from the user's standard input.
+     */
     private final Scanner scanner;
 
-    /** Receives rendered user-facing text, allowing the console and GUI to share command logic. */
+    /**
+     * Receives rendered user-facing text, allowing the console and GUI to share command logic.
+     */
     private final Consumer<String> output;
 
-    /** Creates a UI connected to the standard console. */
+    /**
+     * Creates a UI connected to the standard console.
+     */
     public Ui() {
         this(new Scanner(System.in), System.out::print);
     }
@@ -40,13 +50,15 @@ public class Ui {
      * This constructor is used by the JavaFX controller to reuse the existing
      * command and response behavior without writing to the console.
      *
-     * @param output the destination for rendered user-facing text
+     * @param output the destination for rendered user-facing text.
      */
     public Ui(Consumer<String> output) {
         this(null, output);
     }
 
-    /** Creates a UI with explicit input and output collaborators. */
+    /**
+     * Creates a UI with explicit input and output collaborators.
+     */
     private Ui(Scanner scanner, Consumer<String> output) {
         this.scanner = scanner;
         this.output = Objects.requireNonNull(output);
@@ -55,7 +67,7 @@ public class Ui {
     /**
      * Shows the startup banner and any saved-task loading error.
      *
-     * @param loadingError the loading error to show, or {@code null} when loading succeeded
+     * @param loadingError the loading error to show, or {@code null} when loading succeeded.
      */
     public void showWelcome(String loadingError) {
         showLine();
@@ -72,7 +84,7 @@ public class Ui {
     /**
      * Returns whether another command is available from standard input.
      *
-     * @return {@code true} when another input line is available
+     * @return {@code true} when another input line is available.
      */
     public boolean hasNextCommand() {
         ensureConsoleInputAvailable();
@@ -82,19 +94,23 @@ public class Ui {
     /**
      * Reads the next command from standard input.
      *
-     * @return the next complete input line
+     * @return the next complete input line.
      */
     public String readCommand() {
         ensureConsoleInputAvailable();
         return scanner.nextLine();
     }
 
-    /** Prints the standard message separator. */
+    /**
+     * Prints the standard message separator.
+     */
     public void showLine() {
         print(LINE + System.lineSeparator());
     }
 
-    /** Shows the normal goodbye message and its trailing separator. */
+    /**
+     * Shows the normal goodbye message and its trailing separator.
+     */
     public void showGoodbye() {
         print("     Bye. Hope to see you again soon!" + System.lineSeparator());
         showLine();
@@ -103,13 +119,15 @@ public class Ui {
     /**
      * Shows a user-facing error message.
      *
-     * @param message the message to display
+     * @param message the message to display.
      */
     public void showError(String message) {
         print("     " + message + System.lineSeparator());
     }
 
-    /** Shows the fallback message used for unexpected command-processing failures. */
+    /**
+     * Shows the fallback message used for unexpected command-processing failures.
+     */
     public void showProcessingError() {
         showError("I couldn't process that command. Please check the input and try again.");
     }
@@ -117,8 +135,8 @@ public class Ui {
     /**
      * Shows confirmation that a task was added.
      *
-     * @param task the added task
-     * @param taskCount the number of tasks after adding it
+     * @param task the added task.
+     * @param taskCount the number of tasks after adding it.
      */
     public void showTaskAdded(Task task, int taskCount) {
         print("     Got it. I've added this task:" + System.lineSeparator());
@@ -126,12 +144,16 @@ public class Ui {
         print("     Now you have " + taskCount + " tasks in the list." + System.lineSeparator());
     }
 
-    /** Shows that the requested task number does not exist. */
+    /**
+     * Shows that the requested task number does not exist.
+     */
     public void showTaskDoesNotExist() {
         showError("That task does not exist.");
     }
 
-    /** Shows that the supplied task number is not a valid number. */
+    /**
+     * Shows that the supplied task number is not a valid number.
+     */
     public void showInvalidTaskNumber() {
         showError("Please provide a valid task number.");
     }
@@ -139,7 +161,7 @@ public class Ui {
     /**
      * Shows confirmation that a task was marked as done.
      *
-     * @param task the marked task
+     * @param task the marked task.
      */
     public void showTaskMarked(Task task) {
         print("     Nice! I've marked this task as done:" + System.lineSeparator());
@@ -149,7 +171,7 @@ public class Ui {
     /**
      * Shows that a task was already marked as done.
      *
-     * @param task the already marked task
+     * @param task the already marked task.
      */
     public void showTaskAlreadyMarked(Task task) {
         print("     This task is already marked:" + System.lineSeparator());
@@ -159,7 +181,7 @@ public class Ui {
     /**
      * Shows confirmation that a task was marked as not done.
      *
-     * @param task the unmarked task
+     * @param task the unmarked task.
      */
     public void showTaskUnmarked(Task task) {
         print("     OK, I've marked this task as not done yet:" + System.lineSeparator());
@@ -169,7 +191,7 @@ public class Ui {
     /**
      * Shows that a task was already marked as not done.
      *
-     * @param task the already unmarked task
+     * @param task the already unmarked task.
      */
     public void showTaskAlreadyUnmarked(Task task) {
         print("     This task is already unmarked:" + System.lineSeparator());
@@ -179,8 +201,8 @@ public class Ui {
     /**
      * Shows confirmation that a task was deleted.
      *
-     * @param task the deleted task
-     * @param taskCount the number of tasks after deleting it
+     * @param task the deleted task.
+     * @param taskCount the number of tasks after deleting it.
      */
     public void showTaskDeleted(Task task, int taskCount) {
         print("     Noted. I've removed this task:" + System.lineSeparator());
@@ -191,7 +213,7 @@ public class Ui {
     /**
      * Shows the supplied tasks in their display order.
      *
-     * @param tasks the tasks to display
+     * @param tasks the tasks to display.
      */
     public void showTasks(List<Task> tasks) {
         print("     Here are the tasks in your list:" + System.lineSeparator());
@@ -203,7 +225,7 @@ public class Ui {
     /**
      * Shows tasks that match a keyword search.
      *
-     * @param tasks the matching tasks to display
+     * @param tasks the matching tasks to display.
      */
     public void showMatchingTasks(List<Task> tasks) {
         print("     Here are the matching tasks in your list:" + System.lineSeparator());
@@ -212,12 +234,16 @@ public class Ui {
         }
     }
 
-    /** Sends rendered text to the configured output destination. */
+    /**
+     * Sends rendered text to the configured output destination.
+     */
     private void print(String message) {
         output.accept(message);
     }
 
-    /** Fails clearly when console-only input methods are used by an output-only UI. */
+    /**
+     * Fails clearly when console-only input methods are used by an output-only UI.
+     */
     private void ensureConsoleInputAvailable() {
         if (scanner == null) {
             throw new IllegalStateException("This UI is configured for output only.");

@@ -9,19 +9,27 @@ import java.time.format.ResolverStyle;
 import java.util.List;
 import java.util.Locale;
 
-/** Parses, formats, and serializes the date/time values used by dated tasks. */
+/**
+ * Parses, formats, and serializes the date/time values used by dated tasks.
+ */
 public final class DateTimeParser {
     private static final Locale DISPLAY_LOCALE = Locale.ENGLISH;
 
-    /** Formats dates in the user-facing task list. */
+    /**
+     * Formats dates in the user-facing task list.
+     */
     private static final DateTimeFormatter DISPLAY_DATE =
             DateTimeFormatter.ofPattern("d MMM uuuu", DISPLAY_LOCALE);
 
-    /** Formats date-times in the user-facing task list. */
+    /**
+     * Formats date-times in the user-facing task list.
+     */
     private static final DateTimeFormatter DISPLAY_DATE_TIME =
             DateTimeFormatter.ofPattern("d MMM uuuu, HH:mm", DISPLAY_LOCALE);
 
-    /** Date patterns accepted from users, ordered from numeric to textual forms. */
+    /**
+     * Date patterns accepted from users, ordered from numeric to textual forms.
+     */
     private static final List<String> DATE_PATTERNS = List.of(
             "d/M/uuuu", "d-M-uuuu", "d.M.uuuu",
             "uuuu-M-d", "uuuu/M/d", "uuuu.M.d",
@@ -29,13 +37,17 @@ public final class DateTimeParser {
             "d MMM uuuu", "d MMMM uuuu", "d-MMM-uuuu", "d-MMMM-uuuu",
             "MMM d uuuu", "MMMM d uuuu", "uuuu MMM d");
 
-    /** Time patterns accepted from users. */
+    /**
+     * Time patterns accepted from users.
+     */
     private static final List<String> TIME_PATTERNS = List.of(
             "HHmm", "H:mm", "HH:mm", "H:mm:ss", "HH:mm:ss",
             "ha", "h a", "h:mma", "h:mm a", "h:mm:ssa", "h:mm:ss a",
             "h.mma", "h.mm a");
 
-    /** Separators accepted between a date and a time. */
+    /**
+     * Separators accepted between a date and a time.
+     */
     private static final List<String> DATE_TIME_SEPARATORS = List.of(" ", ", ", "T");
 
     private DateTimeParser() {
@@ -45,9 +57,9 @@ public final class DateTimeParser {
     /**
      * Parses a user-entered date or date-time and detects whether a time was supplied.
      *
-     * @param input the date or date-time entered by the user
-     * @return the parsed date or date-time
-     * @throws DateTimeParseException if no supported format matches
+     * @param input the date or date-time entered by the user.
+     * @return the parsed date or date-time.
+     * @throws DateTimeParseException if no supported format matches.
      */
     public static ParsedDateTime parseUserInput(String input) {
         String normalizedInput = normalize(input);
@@ -85,9 +97,9 @@ public final class DateTimeParser {
     /**
      * Parses the canonical ISO date or date-time value stored in the CSV file.
      *
-     * @param storedValue the stored ISO date or date-time value
-     * @return the parsed date or date-time
-     * @throws DateTimeParseException if the stored value is not a valid ISO value
+     * @param storedValue the stored ISO date or date-time value.
+     * @return the parsed date or date-time.
+     * @throws DateTimeParseException if the stored value is not a valid ISO value.
      */
     public static ParsedDateTime parseStored(String storedValue) {
         String normalizedValue = normalize(storedValue);
@@ -106,9 +118,9 @@ public final class DateTimeParser {
     /**
      * Formats a parsed value for display in a task description.
      *
-     * @param value the parsed date or date-time to format
-     * @return the user-facing date or date-time text
-     * @throws IllegalArgumentException if {@code value} is {@code null}
+     * @param value the parsed date or date-time to format.
+     * @return the user-facing date or date-time text.
+     * @throws IllegalArgumentException if {@code value} is {@code null}.
      */
     public static String formatForDisplay(ParsedDateTime value) {
         requireValue(value);
@@ -121,9 +133,9 @@ public final class DateTimeParser {
     /**
      * Formats a parsed value for stable CSV persistence.
      *
-     * @param value the parsed date or date-time to format
-     * @return the canonical ISO date or date-time text
-     * @throws IllegalArgumentException if {@code value} is {@code null}
+     * @param value the parsed date or date-time to format.
+     * @return the canonical ISO date or date-time text.
+     * @throws IllegalArgumentException if {@code value} is {@code null}.
      */
     public static String formatForStorage(ParsedDateTime value) {
         requireValue(value);
@@ -133,7 +145,9 @@ public final class DateTimeParser {
         return DateTimeFormatter.ISO_LOCAL_DATE.format(value.date());
     }
 
-    /** Creates a strict formatter for a date-only pattern. */
+    /**
+     * Creates a strict formatter for a date-only pattern.
+     */
     private static DateTimeFormatter formatterFor(String datePattern) {
         return new DateTimeFormatterBuilder()
                 .parseCaseInsensitive()
@@ -142,7 +156,9 @@ public final class DateTimeParser {
                 .withResolverStyle(ResolverStyle.STRICT);
     }
 
-    /** Creates a strict formatter for a date pattern followed by a time pattern. */
+    /**
+     * Creates a strict formatter for a date pattern followed by a time pattern.
+     */
     private static DateTimeFormatter formatterFor(
             String datePattern, String separator, String timePattern) {
         return new DateTimeFormatterBuilder()
@@ -154,7 +170,9 @@ public final class DateTimeParser {
                 .withResolverStyle(ResolverStyle.STRICT);
     }
 
-    /** Normalizes optional input whitespace before parsing. */
+    /**
+     * Normalizes optional input whitespace before parsing.
+     */
     private static String normalize(String input) {
         if (input == null) {
             return "";
@@ -162,7 +180,9 @@ public final class DateTimeParser {
         return input.trim().replaceAll("\\s+", " ");
     }
 
-    /** Rejects a missing parsed date/time value before formatting. */
+    /**
+     * Rejects a missing parsed date/time value before formatting.
+     */
     private static void requireValue(ParsedDateTime value) {
         if (value == null) {
             throw new IllegalArgumentException("A date/time value is required.");
@@ -172,16 +192,16 @@ public final class DateTimeParser {
     /**
      * Holds either a date-only value or a value that includes a time.
      *
-     * @param date the date-only value, or {@code null} when a time is present
-     * @param dateTime the date-time value, or {@code null} for a date-only value
+     * @param date the date-only value, or {@code null} when a time is present.
+     * @param dateTime the date-time value, or {@code null} for a date-only value.
      */
     public record ParsedDateTime(LocalDate date, LocalDateTime dateTime) {
         /**
          * Validates that exactly one of the date components is present.
          *
-         * @param date the date-only value, or {@code null} when a time is present
-         * @param dateTime the date-time value, or {@code null} for a date-only value
-         * @throws IllegalArgumentException if both values or neither value is supplied
+         * @param date the date-only value, or {@code null} when a time is present.
+         * @param dateTime the date-time value, or {@code null} for a date-only value.
+         * @throws IllegalArgumentException if both values or neither value is supplied.
          */
         public ParsedDateTime {
             if ((date == null) == (dateTime == null)) {
@@ -192,8 +212,8 @@ public final class DateTimeParser {
         /**
          * Creates a date-only parsed value.
          *
-         * @param date the date to store
-         * @return a parsed value containing the supplied date
+         * @param date the date to store.
+         * @return a parsed value containing the supplied date.
          */
         public static ParsedDateTime ofDate(LocalDate date) {
             return new ParsedDateTime(date, null);
@@ -202,8 +222,8 @@ public final class DateTimeParser {
         /**
          * Creates a date-time parsed value.
          *
-         * @param dateTime the date-time to store
-         * @return a parsed value containing the supplied date-time
+         * @param dateTime the date-time to store.
+         * @return a parsed value containing the supplied date-time.
          */
         public static ParsedDateTime ofDateTime(LocalDateTime dateTime) {
             return new ParsedDateTime(null, dateTime);
@@ -212,7 +232,7 @@ public final class DateTimeParser {
         /**
          * Checks whether this value includes a time.
          *
-         * @return {@code true} when this value contains a date-time
+         * @return {@code true} when this value contains a date-time.
          */
         public boolean hasTime() {
             return dateTime != null;

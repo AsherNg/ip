@@ -32,21 +32,27 @@ import charliek.ui.Ui;
  * it does not execute commands or persist tasks.</p>
  */
 public class Parser {
-    /** The task list used by commands created by this parser. */
+    /**
+     * The task list used by commands created by this parser.
+     */
     private final TaskList tasks;
 
-    /** The UI used by commands created by this parser. */
+    /**
+     * The UI used by commands created by this parser.
+     */
     private final Ui ui;
 
-    /** The storage used by commands created by this parser. */
+    /**
+     * The storage used by commands created by this parser.
+     */
     private final Storage storage;
 
     /**
      * Creates a parser that can construct executable commands.
      *
-     * @param tasks the task list commands will operate on
-     * @param ui the UI commands will use for output
-     * @param storage the storage commands will use for persistence
+     * @param tasks the task list commands will operate on.
+     * @param ui the UI commands will use for output.
+     * @param storage the storage commands will use for persistence.
      */
     public Parser(TaskList tasks, Ui ui, Storage storage) {
         this.tasks = Objects.requireNonNull(tasks);
@@ -57,14 +63,14 @@ public class Parser {
     /**
      * Parses one complete user input line.
      *
-     * @param input the line entered by the user
-     * @return an executable command for the input
-     * @throws CharlieKException when the command or its arguments are invalid
+     * @param input the line entered by the user.
+     * @return an executable command for the input.
+     * @throws CharlieKException when the command or its arguments are invalid.
      */
     public Command parse(String input) throws CharlieKException {
-        CommandType command = CommandType.fromInput(input)
+        CommandType command = CommandType.getCommandFromInput(input)
                 .orElseThrow(UnknownCommandException::new);
-        String argument = command.argumentFrom(input);
+        String argument = command.getArgumentFromInput(input);
         return switch (command) {
             case BYE -> new ExitCommand(ui);
             case LIST -> new ListCommand(tasks, ui, argument.trim());
@@ -81,9 +87,9 @@ public class Parser {
     /**
      * Parses a to-do description into a task.
      *
-     * @param command the argument following the {@code todo} keyword
-     * @return the parsed to-do task
-     * @throws EmptyTaskDescriptionException when the description is blank
+     * @param command the argument following the {@code todo} keyword.
+     * @return the parsed to-do task.
+     * @throws EmptyTaskDescriptionException when the description is blank.
      */
     public ToDo parseToDo(String command) throws EmptyTaskDescriptionException {
         String description = command.trim();
@@ -96,11 +102,11 @@ public class Parser {
     /**
      * Parses a deadline description and date/time into a task.
      *
-     * @param command the argument following the {@code deadline} keyword
-     * @return the parsed deadline task
-     * @throws EmptyTaskDescriptionException when the description is blank
-     * @throws EmptyParameterException when the {@code /by} parameter is missing or blank
-     * @throws InvalidDateTimeException when the deadline has an unsupported format
+     * @param command the argument following the {@code deadline} keyword.
+     * @return the parsed deadline task.
+     * @throws EmptyTaskDescriptionException when the description is blank.
+     * @throws EmptyParameterException when the {@code /by} parameter is missing or blank.
+     * @throws InvalidDateTimeException when the deadline has an unsupported format.
      */
     public Deadline parseDeadline(String command)
             throws EmptyTaskDescriptionException, EmptyParameterException,
@@ -136,11 +142,11 @@ public class Parser {
     /**
      * Parses an event description and its start/end date-times into a task.
      *
-     * @param command the argument following the {@code event} keyword
-     * @return the parsed event task
-     * @throws EmptyTaskDescriptionException when the description is blank
-     * @throws EmptyParameterException when an event parameter is missing or blank
-     * @throws InvalidDateTimeException when either date/time has an unsupported format
+     * @param command the argument following the {@code event} keyword.
+     * @return the parsed event task.
+     * @throws EmptyTaskDescriptionException when the description is blank.
+     * @throws EmptyParameterException when an event parameter is missing or blank.
+     * @throws InvalidDateTimeException when either date/time has an unsupported format.
      */
     public Event parseEvent(String command)
             throws EmptyTaskDescriptionException, EmptyParameterException,

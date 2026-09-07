@@ -25,13 +25,15 @@ import charliek.parser.DateTimeParser;
  * Encapsulates reading and writing CharlieK's task data.
  */
 public class Storage {
-    /** The normalized absolute path of the task file. */
+    /**
+     * The normalized absolute path of the task file.
+     */
     private final Path taskFile;
 
     /**
      * Creates a storage service for a task file.
      *
-     * @param taskFile the file used for task persistence
+     * @param taskFile the file used for task persistence.
      */
     public Storage(Path taskFile) {
         if (taskFile == null || taskFile.getFileName() == null) {
@@ -47,8 +49,8 @@ public class Storage {
      * malformed CSV rows are ignored so one damaged record cannot prevent the
      * rest of the task list from loading.</p>
      *
-     * @return the tasks found in the file
-     * @throws TaskStorageException when the file cannot be inspected or read
+     * @return the tasks found in the file.
+     * @throws TaskStorageException when the file cannot be inspected or read.
      */
     public ArrayList<Task> load() throws TaskStorageException {
         try {
@@ -92,8 +94,8 @@ public class Storage {
      * A temporary file prevents a failed write from truncating a previously
      * valid task file.
      *
-     * @param tasks the complete current task list
-     * @throws TaskStorageException when the path is not writable or the write fails
+     * @param tasks the complete current task list.
+     * @throws TaskStorageException when the path is not writable or the write fails.
      */
     public void save(List<Task> tasks) throws TaskStorageException {
         if (tasks == null) {
@@ -140,7 +142,9 @@ public class Storage {
         }
     }
 
-    /** Moves a fully written temporary file into the configured task-file path. */
+    /**
+     * Moves a fully written temporary file into the configured task-file path.
+     */
     private void moveIntoPlace(Path temporaryFile) throws IOException {
         try {
             Files.move(temporaryFile, taskFile,
@@ -150,7 +154,9 @@ public class Storage {
         }
     }
 
-    /** Converts one task into type, status, and task-specific CSV columns. */
+    /**
+     * Converts one task into type, status, and task-specific CSV columns.
+     */
     private String toCsvLine(Task task) {
         ArrayList<String> fields = new ArrayList<>();
         fields.add(task.getStorageType());
@@ -167,7 +173,9 @@ public class Storage {
         return line.toString();
     }
 
-    /** Parses one CSV row, returning {@code null} for blank or malformed input. */
+    /**
+     * Parses one CSV row, returning {@code null} for blank or malformed input.
+     */
     private Task parseTask(List<String> fields) {
         if (fields == null || fields.size() < 3) {
             return null;
@@ -213,7 +221,9 @@ public class Storage {
         }
     }
 
-    /** Restores completion status after constructing a task from its CSV row. */
+    /**
+     * Restores completion status after constructing a task from its CSV row.
+     */
     private Task restoreStatus(Task task, String status) {
         if ("1".equals(status)) {
             task.markAsDone();
@@ -221,7 +231,9 @@ public class Storage {
         return task;
     }
 
-    /** Returns a parsed row, or {@code null} when the CSV syntax is invalid. */
+    /**
+     * Returns a parsed row, or {@code null} when the CSV syntax is invalid.
+     */
     private List<String> parseCsvLineSafely(String line) {
         if (line == null || line.isBlank()) {
             return null;
@@ -234,7 +246,9 @@ public class Storage {
         }
     }
 
-    /** Parses one CSV row, including quoted fields containing commas or quotes. */
+    /**
+     * Parses one CSV row, including quoted fields containing commas or quotes.
+     */
     private List<String> parseCsvLine(String line) {
         ArrayList<String> fields = new ArrayList<>();
         StringBuilder field = new StringBuilder();
@@ -279,7 +293,9 @@ public class Storage {
         return fields;
     }
 
-    /** Escapes a value when CSV syntax requires quoting. */
+    /**
+     * Escapes a value when CSV syntax requires quoting.
+     */
     private String escapeCsv(String value) {
         if (value == null) {
             throw new IllegalArgumentException("A task CSV field cannot be null.");

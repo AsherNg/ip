@@ -25,50 +25,78 @@ import javafx.scene.layout.VBox;
  * rendered responses into JavaFX dialog boxes.</p>
  */
 public class MainWindow {
-    /** Resource path for the user's avatar. */
+    /**
+     * Resource path for the user's avatar.
+     */
     private static final String USER_IMAGE_PATH = "/images/user.png";
 
-    /** Resource path for the chatbot's avatar. */
+    /**
+     * Resource path for the chatbot's avatar.
+     */
     private static final String CHATBOT_IMAGE_PATH = "/images/chatbot.png";
 
-    /** Scrolls through the conversation history. */
+    /**
+     * Scrolls through the conversation history.
+     */
     @FXML
     private ScrollPane scrollPane;
 
-    /** Holds dialog boxes in chronological order. */
+    /**
+     * Holds dialog boxes in chronological order.
+     */
     @FXML
     private VBox dialogContainer;
 
-    /** Accepts commands entered by the user. */
+    /**
+     * Accepts commands entered by the user.
+     */
     @FXML
     private TextField userInput;
 
-    /** Sends the command currently in {@link #userInput}. */
+    /**
+     * Sends the command currently in {@link #userInput}.
+     */
     @FXML
     private Button sendButton;
 
-    /** Stores tasks shared by all commands in this GUI session. */
+    /**
+     * Stores tasks shared by all commands in this GUI session.
+     */
     private final TaskList tasks;
 
-    /** Persists tasks to the same file used by the console application. */
+    /**
+     * Persists tasks to the same file used by the console application.
+     */
     private final Storage storage;
 
-    /** Parses commands and executes them against the shared task state. */
+    /**
+     * Parses commands and executes them against the shared task state.
+     */
     private final Parser parser;
 
-    /** Captures the existing response formatting without writing to standard output. */
+    /**
+     * Captures the existing response formatting without writing to standard output.
+     */
     private final Ui ui;
 
-    /** Avatar shown beside user messages. */
+    /**
+     * Avatar shown beside user messages.
+     */
     private final Image userImage;
 
-    /** Avatar shown beside chatbot messages. */
+    /**
+     * Avatar shown beside chatbot messages.
+     */
     private final Image chatbotImage;
 
-    /** Captures one command's response before it is rendered as one dialog. */
+    /**
+     * Captures one command's response before it is rendered as one dialog.
+     */
     private StringBuilder responseBuffer;
 
-    /** Creates the controller's domain collaborators before FXML injection. */
+    /**
+     * Creates the controller's domain collaborators before FXML injection.
+     */
     public MainWindow() {
         tasks = new TaskList();
         storage = new Storage(Path.of("data/charliek.csv"));
@@ -78,7 +106,9 @@ public class MainWindow {
         parser = new Parser(tasks, ui, storage);
     }
 
-    /** Sets up scrolling and adds the initial chatbot message. */
+    /**
+     * Sets up scrolling and adds the initial chatbot message.
+     */
     @FXML
     public void initialize() {
         scrollPane.setFitToWidth(true);
@@ -87,7 +117,9 @@ public class MainWindow {
         showInitialMessage();
     }
 
-    /** Handles both the Send button and the Enter key in the input field. */
+    /**
+     * Handles both the Send button and the Enter key in the input field.
+     */
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
@@ -122,7 +154,9 @@ public class MainWindow {
         }
     }
 
-    /** Loads persisted tasks and reports a load failure in the initial message. */
+    /**
+     * Loads persisted tasks and reports a load failure in the initial message.
+     */
     private void showInitialMessage() {
         String message = "Hello! I'm CharlieK." + System.lineSeparator()
                 + "What can I do for you?";
@@ -140,9 +174,9 @@ public class MainWindow {
     /**
      * Loads an avatar from the application's resources.
      *
-     * @param resourcePath the absolute classpath path of the image
-     * @return the loaded image
-     * @throws IllegalStateException when the resource cannot be found
+     * @param resourcePath the absolute classpath path of the image.
+     * @return the loaded image.
+     * @throws IllegalStateException when the resource cannot be found.
      */
     private static Image loadImage(String resourcePath) {
         URL imageResource = MainWindow.class.getResource(resourcePath);
@@ -152,7 +186,9 @@ public class MainWindow {
         return new Image(imageResource.toExternalForm());
     }
 
-    /** Appends output produced by command collaborators to the current response. */
+    /**
+     * Appends output produced by command collaborators to the current response.
+     */
     private void captureResponse(String output) {
         if (responseBuffer != null) {
             responseBuffer.append(output);

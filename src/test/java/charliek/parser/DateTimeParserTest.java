@@ -12,9 +12,13 @@ import java.time.format.DateTimeParseException;
 
 import org.junit.jupiter.api.Test;
 
-/** Tests the supported user-input cases handled by {@link DateTimeParser}. */
+/**
+ * Tests the supported user-input cases handled by {@link DateTimeParser}.
+ */
 class DateTimeParserTest {
-    /** Verifies that a date-only input produces a date without a time. */
+    /**
+     * Verifies that a date-only input produces a date without a time.
+     */
     @Test
     void parseUserInput_dateOnly_returnsDateWithoutTime() {
         DateTimeParser.ParsedDateTime result =
@@ -25,7 +29,9 @@ class DateTimeParserTest {
         assertFalse(result.hasTime());
     }
 
-    /** Verifies that a date-time input produces the expected date and time. */
+    /**
+     * Verifies that a date-time input produces the expected date and time.
+     */
     @Test
     void parseUserInput_dateAndTime_returnsDateTime() {
         DateTimeParser.ParsedDateTime result =
@@ -36,7 +42,9 @@ class DateTimeParserTest {
         assertTrue(result.hasTime());
     }
 
-    /** Verifies that surrounding and repeated whitespace is normalized. */
+    /**
+     * Verifies that surrounding and repeated whitespace is normalized.
+     */
     @Test
     void parseUserInput_extraWhitespace_returnsNormalizedValue() {
         DateTimeParser.ParsedDateTime result =
@@ -45,7 +53,9 @@ class DateTimeParserTest {
         assertEquals(LocalDateTime.of(2019, 12, 2, 18, 0), result.dateTime());
     }
 
-    /** Verifies textual dates, case-insensitive month names, and seconds. */
+    /**
+     * Verifies textual dates, case-insensitive month names, and seconds.
+     */
     @Test
     void parseUserInput_textualAndSecondPrecisionForms_returnsDateTime() {
         DateTimeParser.ParsedDateTime textual =
@@ -57,7 +67,9 @@ class DateTimeParserTest {
         assertEquals(LocalDateTime.of(2019, 12, 2, 23, 5, 6), numeric.dateTime());
     }
 
-    /** Verifies that invalid calendar dates and clock values are rejected strictly. */
+    /**
+     * Verifies that invalid calendar dates and clock values are rejected strictly.
+     */
     @Test
     void parseUserInput_invalidDateOrTime_throwsDateTimeParseException() {
         assertThrows(DateTimeParseException.class, () -> DateTimeParser.parseUserInput("2019-02-30"));
@@ -65,7 +77,9 @@ class DateTimeParserTest {
         assertThrows(DateTimeParseException.class, () -> DateTimeParser.parseUserInput("2019-12-02 13:60:00"));
     }
 
-    /** Verifies that null, blank, and unsupported inputs are rejected. */
+    /**
+     * Verifies that null, blank, and unsupported inputs are rejected.
+     */
     @Test
     void parseUserInput_invalidInput_throwsDateTimeParseException() {
         assertThrows(DateTimeParseException.class, () -> DateTimeParser.parseUserInput(null));
@@ -74,7 +88,9 @@ class DateTimeParserTest {
         assertThrows(DateTimeParseException.class, () -> DateTimeParser.parseUserInput("not a date"));
     }
 
-    /** Verifies that stored ISO date and date-time values are restored correctly. */
+    /**
+     * Verifies that stored ISO date and date-time values are restored correctly.
+     */
     @Test
     void parseStored_isoValues_returnsCorrespondingDateOrDateTime() {
         DateTimeParser.ParsedDateTime date = DateTimeParser.parseStored(" 2019-12-02 ");
@@ -87,13 +103,17 @@ class DateTimeParserTest {
         assertNull(dateTime.date());
     }
 
-    /** Verifies that malformed stored values are rejected. */
+    /**
+     * Verifies that malformed stored values are rejected.
+     */
     @Test
     void parseStored_invalidValue_throwsDateTimeParseException() {
         assertThrows(DateTimeParseException.class, () -> DateTimeParser.parseStored("2019-02-30"));
     }
 
-    /** Verifies the user-facing formatting for both supported value shapes. */
+    /**
+     * Verifies the user-facing formatting for both supported value shapes.
+     */
     @Test
     void formatForDisplay_dateAndDateTime_returnsReadableValues() {
         assertEquals("2 Dec 2019",
@@ -105,7 +125,9 @@ class DateTimeParserTest {
                                 LocalDateTime.of(2019, 12, 2, 18, 5))));
     }
 
-    /** Verifies the stable ISO formatting used for CSV persistence. */
+    /**
+     * Verifies the stable ISO formatting used for CSV persistence.
+     */
     @Test
     void formatForStorage_dateAndDateTime_returnsIsoValues() {
         assertEquals("2019-12-02",
@@ -117,14 +139,18 @@ class DateTimeParserTest {
                                 LocalDateTime.of(2019, 12, 2, 18, 5))));
     }
 
-    /** Verifies that formatting methods reject absent values. */
+    /**
+     * Verifies that formatting methods reject absent values.
+     */
     @Test
     void formatForDisplayOrStorage_nullValue_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> DateTimeParser.formatForDisplay(null));
         assertThrows(IllegalArgumentException.class, () -> DateTimeParser.formatForStorage(null));
     }
 
-    /** Verifies the invariant that a parsed value contains exactly one date shape. */
+    /**
+     * Verifies the invariant that a parsed value contains exactly one date shape.
+     */
     @Test
     void parsedDateTime_bothOrNeitherValues_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> new DateTimeParser.ParsedDateTime(null, null));

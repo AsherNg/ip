@@ -6,44 +6,66 @@ import java.util.Optional;
  * Describes the command keywords recognized by the parser.
  */
 public enum CommandType {
-    /** Exits the application. */
+    /**
+     * Exits the application.
+     */
     BYE("bye", false),
 
-    /** Displays all tasks, optionally sorted by time. */
+    /**
+     * Displays all tasks, optionally sorted by time.
+     */
     LIST("list", true),
 
-    /** Marks a task as done. */
+    /**
+     * Marks a task as done.
+     */
     MARK("mark", true),
 
-    /** Marks a task as not done. */
+    /**
+     * Marks a task as not done.
+     */
     UNMARK("unmark", true),
 
-    /** Deletes a task. */
+    /**
+     * Deletes a task.
+     */
     DELETE("delete", true),
 
-    /** Adds a to-do task. */
+    /**
+     * Adds a to-do task.
+     */
     TODO("todo", true),
 
-    /** Adds a deadline task. */
+    /**
+     * Adds a deadline task.
+     */
     DEADLINE("deadline", true),
 
-    /** Adds an event task. */
+    /**
+     * Adds an event task.
+     */
     EVENT("event", true),
 
-    /** Finds tasks matching a keyword. */
+    /**
+     * Finds tasks matching a keyword.
+     */
     FIND("find", true);
 
-    /** The text the user types for this command. */
+    /**
+     * The text the user types for this command.
+     */
     private final String keyword;
 
-    /** Whether this command may be followed by an argument. */
+    /**
+     * Whether this command may be followed by an argument.
+     */
     private final boolean acceptsArguments;
 
     /**
      * Creates a command definition.
      *
-     * @param keyword the command keyword
-     * @param acceptsArguments whether the command accepts an argument
+     * @param keyword the command keyword.
+     * @param acceptsArguments whether the command accepts an argument.
      */
     CommandType(String keyword, boolean acceptsArguments) {
         this.keyword = keyword;
@@ -53,10 +75,10 @@ public enum CommandType {
     /**
      * Finds the command represented by a complete input line.
      *
-     * @param input the input line entered by the user
-     * @return the matching command, or an empty result for an unknown command
+     * @param input the input line entered by the user.
+     * @return the matching command, or an empty result for an unknown command.
      */
-    public static Optional<CommandType> fromInput(String input) {
+    public static Optional<CommandType> getCommandFromInput(String input) {
         if (input == null) {
             return Optional.empty();
         }
@@ -74,10 +96,10 @@ public enum CommandType {
     /**
      * Extracts the text after this command's keyword.
      *
-     * @param input the complete input line
-     * @return the text after the keyword and its separating space
+     * @param input the complete input line.
+     * @return the text after the keyword and its separating space.
      */
-    public String argumentFrom(String input) {
+    public String getArgumentFromInput(String input) {
         if (input == null) {
             return "";
         }

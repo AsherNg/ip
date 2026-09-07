@@ -14,22 +14,30 @@ import charliek.ui.Ui;
  * Runs the CharlieK command-line chatbot.
  */
 public class CharlieK {
-    /** Stores the tasks entered during this run of the program. */
+    /**
+     * Stores the tasks entered during this run of the program.
+     */
     private final TaskList tasks;
 
-    /** Provides the task list's file-system persistence. */
+    /**
+     * Provides the task list's file-system persistence.
+     */
     private final Storage storage;
 
-    /** Interprets command lines entered by the user. */
+    /**
+     * Interprets command lines entered by the user.
+     */
     private final Parser parser;
 
-    /** Handles console input and common session messages. */
+    /**
+     * Handles console input and common session messages.
+     */
     private final Ui ui;
 
     /**
      * Creates an application instance using the supplied task-file path.
      *
-     * @param filePath the path to the file used for task persistence
+     * @param filePath the path to the file used for task persistence.
      */
     public CharlieK(String filePath) {
         storage = new Storage(Path.of(filePath));
@@ -38,7 +46,9 @@ public class CharlieK {
         parser = new Parser(tasks, ui, storage);
     }
 
-    /** Starts the application session. */
+    /**
+     * Starts the application session.
+     */
     public void run() {
         String loadingError = null;
         try {
@@ -73,7 +83,7 @@ public class CharlieK {
     /**
      * Starts CharlieK using the default task-file location.
      *
-     * @param args command-line arguments, which are currently ignored
+     * @param args command-line arguments, which are currently ignored.
      */
     public static void main(String... args) {
         new CharlieK("data/charliek.csv").run();

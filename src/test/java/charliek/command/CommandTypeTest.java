@@ -7,47 +7,57 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-/** Tests command keyword recognition and argument extraction. */
+/**
+ * Tests command keyword recognition and argument extraction.
+ */
 class CommandTypeTest {
-    /** Verifies that every supported command keyword is recognized. */
+    /**
+     * Verifies that every supported command keyword is recognized.
+     */
     @Test
-    void fromInput_supportedKeywords_returnsMatchingCommandType() {
-        assertEquals(Optional.of(CommandType.BYE), CommandType.fromInput("bye"));
-        assertEquals(Optional.of(CommandType.LIST), CommandType.fromInput("list"));
-        assertEquals(Optional.of(CommandType.MARK), CommandType.fromInput("mark 1"));
-        assertEquals(Optional.of(CommandType.UNMARK), CommandType.fromInput("unmark 1"));
-        assertEquals(Optional.of(CommandType.DELETE), CommandType.fromInput("delete 1"));
-        assertEquals(Optional.of(CommandType.TODO), CommandType.fromInput("todo read book"));
+    void getCommandFromInput_supportedKeywords_returnsMatchingCommandType() {
+        assertEquals(Optional.of(CommandType.BYE), CommandType.getCommandFromInput("bye"));
+        assertEquals(Optional.of(CommandType.LIST), CommandType.getCommandFromInput("list"));
+        assertEquals(Optional.of(CommandType.MARK), CommandType.getCommandFromInput("mark 1"));
+        assertEquals(Optional.of(CommandType.UNMARK), CommandType.getCommandFromInput("unmark 1"));
+        assertEquals(Optional.of(CommandType.DELETE), CommandType.getCommandFromInput("delete 1"));
+        assertEquals(Optional.of(CommandType.TODO), CommandType.getCommandFromInput("todo read book"));
         assertEquals(Optional.of(CommandType.DEADLINE),
-                CommandType.fromInput("deadline return book /by 2019-12-02"));
+                CommandType.getCommandFromInput("deadline return book /by 2019-12-02"));
         assertEquals(Optional.of(CommandType.EVENT),
-                CommandType.fromInput("event meeting /from 2019-12-02 /to 2019-12-03"));
-        assertEquals(Optional.of(CommandType.FIND), CommandType.fromInput("find book"));
+                CommandType.getCommandFromInput("event meeting /from 2019-12-02 /to 2019-12-03"));
+        assertEquals(Optional.of(CommandType.FIND), CommandType.getCommandFromInput("find book"));
     }
 
-    /** Verifies that unknown, null, and invalid argument forms are rejected. */
+    /**
+     * Verifies that unknown, null, and invalid argument forms are rejected.
+     */
     @Test
-    void fromInput_unknownOrInvalidInput_returnsEmptyOptional() {
-        assertTrue(CommandType.fromInput(null).isEmpty());
-        assertTrue(CommandType.fromInput("").isEmpty());
-        assertTrue(CommandType.fromInput("unknown command").isEmpty());
-        assertTrue(CommandType.fromInput("bye now").isEmpty());
-        assertTrue(CommandType.fromInput("todoist something").isEmpty());
+    void getCommandFromInput_unknownOrInvalidInput_returnsEmptyOptional() {
+        assertTrue(CommandType.getCommandFromInput(null).isEmpty());
+        assertTrue(CommandType.getCommandFromInput("").isEmpty());
+        assertTrue(CommandType.getCommandFromInput("unknown command").isEmpty());
+        assertTrue(CommandType.getCommandFromInput("bye now").isEmpty());
+        assertTrue(CommandType.getCommandFromInput("todoist something").isEmpty());
     }
 
-    /** Verifies extraction for exact commands and commands with arguments. */
+    /**
+     * Verifies extraction for exact commands and commands with arguments.
+     */
     @Test
-    void argumentFrom_exactAndArgumentInputs_returnsTextAfterKeyword() {
-        assertEquals("", CommandType.BYE.argumentFrom("bye"));
-        assertEquals("", CommandType.TODO.argumentFrom("todo"));
-        assertEquals("", CommandType.TODO.argumentFrom("todo "));
-        assertEquals("read book", CommandType.TODO.argumentFrom("todo read book"));
-        assertEquals("1", CommandType.MARK.argumentFrom("mark 1"));
+    void getArgumentFromInput_exactAndArgumentInputs_returnsTextAfterKeyword() {
+        assertEquals("", CommandType.BYE.getArgumentFromInput("bye"));
+        assertEquals("", CommandType.TODO.getArgumentFromInput("todo"));
+        assertEquals("", CommandType.TODO.getArgumentFromInput("todo "));
+        assertEquals("read book", CommandType.TODO.getArgumentFromInput("todo read book"));
+        assertEquals("1", CommandType.MARK.getArgumentFromInput("mark 1"));
     }
 
-    /** Verifies that a null input has no argument. */
+    /**
+     * Verifies that a null input has no argument.
+     */
     @Test
-    void argumentFrom_nullInput_returnsEmptyString() {
-        assertEquals("", CommandType.TODO.argumentFrom(null));
+    void getArgumentFromInput_nullInput_returnsEmptyString() {
+        assertEquals("", CommandType.TODO.getArgumentFromInput(null));
     }
 }

@@ -10,25 +10,33 @@ import charliek.ui.Ui;
  * Marks a selected task as done and persists the updated list.
  */
 public class MarkCommand extends Command {
-    /** The task list to update. */
+    /**
+     * The task list to update.
+     */
     private final TaskList tasks;
 
-    /** The UI used to show the result. */
+    /**
+     * The UI used to show the result.
+     */
     private final Ui ui;
 
-    /** The storage used to persist the updated list. */
+    /**
+     * The storage used to persist the updated list.
+     */
     private final Storage storage;
 
-    /** The one-based task number supplied by the user. */
+    /**
+     * The one-based task number supplied by the user.
+     */
     private final String taskNumberText;
 
     /**
      * Creates a mark command.
      *
-     * @param tasks the task list to update
-     * @param ui the UI used to show the result
-     * @param storage the storage used to persist the updated list
-     * @param taskNumberText the task number supplied by the user
+     * @param tasks the task list to update.
+     * @param ui the UI used to show the result.
+     * @param storage the storage used to persist the updated list.
+     * @param taskNumberText the task number supplied by the user.
      */
     public MarkCommand(TaskList tasks, Ui ui, Storage storage, String taskNumberText) {
         this.tasks = tasks;
@@ -40,7 +48,7 @@ public class MarkCommand extends Command {
     /**
      * Marks the selected task as done, saves the updated list, and reports the result.
      *
-     * @throws TaskStorageException if the updated task list cannot be saved
+     * @throws TaskStorageException if the updated task list cannot be saved.
      */
     @Override
     public void execute() throws TaskStorageException {

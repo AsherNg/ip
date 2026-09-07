@@ -7,7 +7,7 @@ public class ToDo extends Task {
     /**
      * Creates an incomplete to-do task.
      *
-     * @param description the text describing the task
+     * @param description the text describing the task.
      */
     public ToDo(String description) {
         super(description);
@@ -16,7 +16,7 @@ public class ToDo extends Task {
     /**
      * Returns the type of this task.
      *
-     * @return {@link TaskType#TODO}
+     * @return {@link TaskType#TODO}.
      */
     @Override
     protected TaskType getType() {

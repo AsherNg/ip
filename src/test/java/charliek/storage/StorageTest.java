@@ -24,12 +24,16 @@ import charliek.model.Task;
 import charliek.model.ToDo;
 import charliek.parser.DateTimeParser;
 
-/** Tests CSV persistence, recovery of valid records, and storage failures. */
+/**
+ * Tests CSV persistence, recovery of valid records, and storage failures.
+ */
 class StorageTest {
     @TempDir
     Path tempDirectory;
 
-    /** Verifies that a missing task file represents an empty task list. */
+    /**
+     * Verifies that a missing task file represents an empty task list.
+     */
     @Test
     void load_missingFile_returnsEmptyList() throws Exception {
         Storage storage = new Storage(tempDirectory.resolve("nested/tasks.csv"));
@@ -37,7 +41,9 @@ class StorageTest {
         assertTrue(storage.load().isEmpty());
     }
 
-    /** Verifies round-trip persistence for all task types and completion states. */
+    /**
+     * Verifies round-trip persistence for all task types and completion states.
+     */
     @Test
     void saveAndLoad_allTaskTypes_preservesFieldsAndStatus() throws Exception {
         Storage storage = new Storage(tempDirectory.resolve("nested/tasks.csv"));
@@ -61,7 +67,9 @@ class StorageTest {
         assertEquals(event.getStorageFields(), loaded.get(2).getStorageFields());
     }
 
-    /** Verifies that saving creates missing parent directories and overwrites the file. */
+    /**
+     * Verifies that saving creates missing parent directories and overwrites the file.
+     */
     @Test
     void save_missingParentAndExistingFile_createsAndReplacesFile() throws Exception {
         Path taskFile = tempDirectory.resolve("new/path/tasks.csv");
@@ -74,7 +82,9 @@ class StorageTest {
         assertEquals("second", storage.load().get(0).getStorageFields().get(0));
     }
 
-    /** Verifies that saving an empty list creates a readable empty task file. */
+    /**
+     * Verifies that saving an empty list creates a readable empty task file.
+     */
     @Test
     void save_emptyList_createsEmptyFile() throws Exception {
         Path taskFile = tempDirectory.resolve("tasks.csv");
@@ -87,7 +97,9 @@ class StorageTest {
         assertTrue(storage.load().isEmpty());
     }
 
-    /** Verifies that malformed rows are ignored while valid rows remain loadable. */
+    /**
+     * Verifies that malformed rows are ignored while valid rows remain loadable.
+     */
     @Test
     void load_malformedAndValidRows_returnsOnlyValidTasks() throws Exception {
         Path taskFile = tempDirectory.resolve("tasks.csv");
@@ -107,7 +119,9 @@ class StorageTest {
         assertEquals("[T][ ] valid, quoted task", loaded.get(1).toString());
     }
 
-    /** Verifies that unsupported types, statuses, and field counts are ignored. */
+    /**
+     * Verifies that unsupported types, statuses, and field counts are ignored.
+     */
     @Test
     void load_invalidRecordMetadata_returnsOnlySupportedRecords() throws Exception {
         Path taskFile = tempDirectory.resolve("tasks.csv");
@@ -126,7 +140,9 @@ class StorageTest {
         assertEquals("[T][ ] valid task", loaded.get(0).toString());
     }
 
-    /** Verifies that invalid file paths are reported as storage exceptions. */
+    /**
+     * Verifies that invalid file paths are reported as storage exceptions.
+     */
     @Test
     void load_directoryPath_throwsTaskStorageException() throws IOException {
         Path taskPath = tempDirectory.resolve("tasks.csv");
@@ -139,7 +155,9 @@ class StorageTest {
                 exception.getMessage());
     }
 
-    /** Verifies that save rejects null lists and reports null task entries. */
+    /**
+     * Verifies that save rejects null lists and reports null task entries.
+     */
     @Test
     void save_nullListOrTask_throwsExpectedException() {
         Storage storage = new Storage(tempDirectory.resolve("tasks.csv"));
@@ -148,7 +166,9 @@ class StorageTest {
         assertThrows(TaskStorageException.class, () -> storage.save(Collections.singletonList(null)));
     }
 
-    /** Verifies that saving to an existing directory does not replace that directory. */
+    /**
+     * Verifies that saving to an existing directory does not replace that directory.
+     */
     @Test
     void save_directoryPath_throwsTaskStorageException() throws IOException {
         Path taskPath = tempDirectory.resolve("tasks.csv");

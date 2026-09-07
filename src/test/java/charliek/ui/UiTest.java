@@ -6,9 +6,13 @@ import org.junit.jupiter.api.Test;
 
 import charliek.model.ToDo;
 
-/** Tests UI message rendering for output destinations shared by the console and GUI. */
+/**
+ * Tests UI message rendering for output destinations shared by the console and GUI.
+ */
 class UiTest {
-    /** Verifies that a custom output sink receives the complete formatted response. */
+    /**
+     * Verifies that a custom output sink receives the complete formatted response.
+     */
     @Test
     void outputSink_taskAddedMessage_receivesFormattedResponse() {
         StringBuilder output = new StringBuilder();

@@ -13,16 +13,22 @@ import org.junit.jupiter.api.Test;
 
 import charliek.parser.DateTimeParser;
 
-/** Tests the common task behavior and the three concrete task types. */
+/**
+ * Tests the common task behavior and the three concrete task types.
+ */
 class TaskTest {
-    /** Verifies that task descriptions must contain non-whitespace text. */
+    /**
+     * Verifies that task descriptions must contain non-whitespace text.
+     */
     @Test
     void task_blankDescription_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> new ToDo("  "));
         assertThrows(IllegalArgumentException.class, () -> new ToDo(null));
     }
 
-    /** Verifies the state and icon changes made by the completion methods. */
+    /**
+     * Verifies the state and icon changes made by the completion methods.
+     */
     @Test
     void task_markingDoneAndNotDone_updatesStateAndIcon() {
         Task task = new ToDo("read book");
@@ -39,7 +45,9 @@ class TaskTest {
         assertEquals(" ", task.getStatusIcon());
     }
 
-    /** Verifies the common persistence and display values of a to-do task. */
+    /**
+     * Verifies the common persistence and display values of a to-do task.
+     */
     @Test
     void todo_commonMethods_returnTodoValues() {
         Task task = new ToDo("read book");
@@ -50,7 +58,9 @@ class TaskTest {
         assertEquals("[T][ ] read book", task.toString());
     }
 
-    /** Verifies date-only deadline persistence, display, and sorting values. */
+    /**
+     * Verifies date-only deadline persistence, display, and sorting values.
+     */
     @Test
     void deadline_dateOnly_returnsExpectedValues() {
         Deadline deadline = new Deadline("return book", LocalDate.of(2019, 12, 2));
@@ -61,7 +71,9 @@ class TaskTest {
         assertEquals("[D][ ] return book (by: 2 Dec 2019)", deadline.toString());
     }
 
-    /** Verifies date-time deadline persistence, display, and sorting values. */
+    /**
+     * Verifies date-time deadline persistence, display, and sorting values.
+     */
     @Test
     void deadline_dateTime_returnsExpectedValues() {
         Deadline deadline = new Deadline("return book", LocalDateTime.of(2019, 12, 2, 18, 5));
@@ -71,7 +83,9 @@ class TaskTest {
         assertEquals("[D][ ] return book (by: 2 Dec 2019, 18:05)", deadline.toString());
     }
 
-    /** Verifies date-only and date-time event values. */
+    /**
+     * Verifies date-only and date-time event values.
+     */
     @Test
     void event_dateOnlyAndDateTime_returnsExpectedValues() {
         Event dateEvent = new Event("project meeting", "2019-12-02", "2019-12-03");
@@ -93,7 +107,9 @@ class TaskTest {
                 dateTimeEvent.toString());
     }
 
-    /** Verifies that dated task constructors reject missing parsed values. */
+    /**
+     * Verifies that dated task constructors reject missing parsed values.
+     */
     @Test
     void datedTask_missingDateTime_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> new Deadline(

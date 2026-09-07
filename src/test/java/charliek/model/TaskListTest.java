@@ -9,9 +9,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-/** Tests task-list storage, ordering, replacement, and snapshot behavior. */
+/**
+ * Tests task-list storage, ordering, replacement, and snapshot behavior.
+ */
 class TaskListTest {
-    /** Verifies that a new list is empty. */
+    /**
+     * Verifies that a new list is empty.
+     */
     @Test
     void taskList_newList_isEmpty() {
         TaskList tasks = new TaskList();
@@ -20,7 +24,9 @@ class TaskListTest {
         assertEquals(List.of(), tasks.toList());
     }
 
-    /** Verifies that initial varargs are copied in their original order. */
+    /**
+     * Verifies that initial varargs are copied in their original order.
+     */
     @Test
     void taskList_initialTasks_copiesInputOrder() {
         Task first = new ToDo("first");
@@ -35,7 +41,9 @@ class TaskListTest {
         assertEquals("second", tasks.get(1).getStorageFields().get(0));
     }
 
-    /** Verifies that null task-list inputs are rejected. */
+    /**
+     * Verifies that null task-list inputs are rejected.
+     */
     @Test
     void taskList_nullInput_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> new TaskList((Task[]) null));
@@ -48,7 +56,9 @@ class TaskListTest {
         assertThrows(IllegalArgumentException.class, () -> tasks.replaceWith(nullTaskList));
     }
 
-    /** Verifies append and indexed insertion behavior. */
+    /**
+     * Verifies append and indexed insertion behavior.
+     */
     @Test
     void taskList_add_preservesExpectedOrder() {
         TaskList tasks = new TaskList();
@@ -63,7 +73,9 @@ class TaskListTest {
         assertEquals(List.of(first, inserted, second), tasks.toList());
     }
 
-    /** Verifies indexed access and removal return the expected task. */
+    /**
+     * Verifies indexed access and removal return the expected task.
+     */
     @Test
     void taskList_getAndRemove_validIndexReturnsTask() {
         Task first = new ToDo("first");
@@ -76,7 +88,9 @@ class TaskListTest {
         assertEquals(second, tasks.get(0));
     }
 
-    /** Verifies replacement discards old tasks and copies the replacement list. */
+    /**
+     * Verifies replacement discards old tasks and copies the replacement list.
+     */
     @Test
     void taskList_replaceWith_replacesContentsWithoutAliasingInput() {
         TaskList tasks = new TaskList(new ToDo("old"));
@@ -89,7 +103,9 @@ class TaskListTest {
         assertEquals("new", tasks.get(0).getStorageFields().get(0));
     }
 
-    /** Verifies that callers receive a modifiable snapshot, not the backing list. */
+    /**
+     * Verifies that callers receive a modifiable snapshot, not the backing list.
+     */
     @Test
     void taskList_toList_returnsIndependentSnapshot() {
         Task task = new ToDo("read book");
