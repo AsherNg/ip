@@ -27,6 +27,8 @@ class CommandTypeTest {
         assertEquals(Optional.of(CommandType.EVENT),
                 CommandType.getCommandFromInput("event meeting /from 2019-12-02 /to 2019-12-03"));
         assertEquals(Optional.of(CommandType.FIND), CommandType.getCommandFromInput("find book"));
+        assertEquals(Optional.of(CommandType.HELP), CommandType.getCommandFromInput("help"));
+        assertEquals(Optional.of(CommandType.HELP), CommandType.getCommandFromInput("help list"));
     }
 
     /**
@@ -59,5 +61,15 @@ class CommandTypeTest {
     @Test
     void getArgumentFromInput_nullInput_returnsEmptyString() {
         assertEquals("", CommandType.TODO.getArgumentFromInput(null));
+    }
+
+    /**
+     * Verifies that exact command keywords can be resolved for detailed help.
+     */
+    @Test
+    void getCommandFromKeyword_knownAndUnknownKeywords_returnsExpectedResult() {
+        assertEquals(Optional.of(CommandType.LIST), CommandType.getCommandFromKeyword("list"));
+        assertTrue(CommandType.getCommandFromKeyword("unknown").isEmpty());
+        assertTrue(CommandType.getCommandFromKeyword(null).isEmpty());
     }
 }

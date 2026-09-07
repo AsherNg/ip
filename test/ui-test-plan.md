@@ -1047,3 +1047,110 @@ ____________________________________________________________
      Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+### UI-19 — Display the available commands
+
+**Aim:** Verify that `help` lists every available command with its parameters, a brief description, and an example.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes charliek.CharlieK
+```
+
+**Inputs:**
+
+```
+help
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Available commands:
+       bye
+         Exit CharlieK.
+         Example: bye
+       list [time]
+         Display tasks in insertion order, or chronologically when time is specified.
+         Example: list time
+       mark <number>
+         Mark a task as complete.
+         Example: mark 1
+       unmark <number>
+         Mark a task as incomplete.
+         Example: unmark 1
+       delete <number>
+         Delete a task.
+         Example: delete 1
+       todo <description>
+         Add an undated to-do task.
+         Example: todo buy milk
+       deadline <description> /by <date/time>
+         Add a task with a deadline.
+         Example: deadline submit report /by 2/12/2019
+       event <description> /from <date/time> /to <date/time>
+         Add a task that takes place during a specified period.
+         Example: event project meeting /from 2026-08-06 2pm /to 2026-08-06 4pm
+       find <keyword>
+         Find tasks whose descriptions contain a keyword.
+         Example: find book
+       help [command]
+         Show all commands or detailed usage for one command.
+         Example: help list
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+### UI-20 — Display detailed command usage
+
+**Aim:** Verify that `help <command>` displays the selected command's usage, description, and example.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes charliek.CharlieK
+```
+
+**Inputs:**
+
+```
+help deadline
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+     Command: deadline
+     Usage: deadline <description> /by <date/time>
+     Description: Add a task with a deadline.
+     Example: deadline submit report /by 2/12/2019
+____________________________________________________________
+____________________________________________________________
+     Bye. Hope to see you again soon!
+____________________________________________________________
+```

@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
+import charliek.command.CommandType;
 import charliek.model.Task;
 
 /**
@@ -130,6 +131,40 @@ public class Ui {
      */
     public void showProcessingError() {
         showError("I couldn't process that command. Please check the input and try again.");
+    }
+
+    /**
+     * Shows every available command with its usage, description, and example.
+     */
+    public void showAvailableCommands() {
+        print("     Available commands:" + System.lineSeparator());
+        for (CommandType command : CommandType.values()) {
+            print("       " + command.getUsage() + System.lineSeparator());
+            print("         " + command.getDescription() + System.lineSeparator());
+            print("         Example: " + command.getExample() + System.lineSeparator());
+        }
+    }
+
+    /**
+     * Shows detailed usage information for one command.
+     *
+     * @param command the command to describe.
+     */
+    public void showCommandHelp(CommandType command) {
+        print("     Command: " + command.getKeyword() + System.lineSeparator());
+        print("     Usage: " + command.getUsage() + System.lineSeparator());
+        print("     Description: " + command.getDescription() + System.lineSeparator());
+        print("     Example: " + command.getExample() + System.lineSeparator());
+    }
+
+    /**
+     * Shows an error for a command that has no help entry.
+     *
+     * @param commandKeyword the command keyword that was requested.
+     */
+    public void showUnknownHelpCommand(String commandKeyword) {
+        showError("I do not have help for '" + commandKeyword
+                + "'. Try 'help' to see the available commands.");
     }
 
     /**

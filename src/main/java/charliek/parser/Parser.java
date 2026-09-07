@@ -9,6 +9,7 @@ import charliek.command.CommandType;
 import charliek.command.DeleteCommand;
 import charliek.command.ExitCommand;
 import charliek.command.FindCommand;
+import charliek.command.HelpCommand;
 import charliek.command.ListCommand;
 import charliek.command.MarkCommand;
 import charliek.command.UnmarkCommand;
@@ -92,6 +93,7 @@ public class Parser {
             case MARK -> new MarkCommand(tasks, ui, storage, argument);
             case UNMARK -> new UnmarkCommand(tasks, ui, storage, argument);
             case FIND -> new FindCommand(tasks, ui, argument);
+            case HELP -> new HelpCommand(ui, argument);
             case DELETE -> new DeleteCommand(tasks, ui, storage, argument);
             case TODO -> new AddCommand(tasks, ui, storage, parseToDo(argument));
             case DEADLINE -> new AddCommand(tasks, ui, storage, parseDeadline(argument));
