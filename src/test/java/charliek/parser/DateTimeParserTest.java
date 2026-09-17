@@ -156,5 +156,68 @@ class DateTimeParserTest {
         assertThrows(IllegalArgumentException.class, () -> new DateTimeParser.ParsedDateTime(null, null));
         assertThrows(IllegalArgumentException.class, () -> new DateTimeParser.ParsedDateTime(
                 LocalDate.of(2019, 12, 2), LocalDateTime.of(2019, 12, 2, 18, 0)));
+        assertThrows(IllegalArgumentException.class, () -> DateTimeParser.ParsedDateTime.ofDate(null));
+        assertThrows(IllegalArgumentException.class, () -> DateTimeParser.ParsedDateTime.ofDateTime(null));
+    }
+
+    /**
+     * Verifies all documented date-only input families resolve to the same date.
+     */
+    @Test
+    void parseUserInput_supportedDatePatterns_acceptEquivalentDates() {
+        String[] inputs = {
+            "2/12/2019", "2-12-2019", "2.12.2019", "2019-12-2", "2019/12/2", "2019.12.2",
+            "2/12/19", "2-12-19", "2.12.19", "2 Dec 2019", "2 December 2019", "2-Dec-2019",
+            "2-December-2019", "Dec 2 2019", "December 2 2019", "2019 Dec 2"
+        };
+
+        for (String input : inputs) {
+            DateTimeParser.ParsedDateTime result = DateTimeParser.parseUserInput(input);
+            assertEquals(LocalDate.of(2019, 12, 2), result.date(), input);
+            assertFalse(result.hasTime(), input);
+        }
+    }
+
+    /**
+     * Verifies all documented clock input families resolve to the expected time.
+     */
+    @Test
+    void parseUserInput_supportedTimePatterns_acceptEquivalentTimes() {
+        String[] inputs = {
+            "1830", "18:30", "8:30", "18:30:05", "8:30:05", "6pm", "6 pm", "6:30pm",
+            "6:30 pm", "6:30:05pm", "6:30:05 pm", "6.30pm", "6.30 pm"
+        };
+
+        for (String input : inputs) {
+            DateTimeParser.ParsedDateTime result =
+                    DateTimeParser.parseUserInput("2019-12-2 " + input);
+            int expectedHour = input.startsWith("8") ? 8 : 18;
+            int expectedMinute = input.equals("1830") || input.contains(":") || input.contains(".") ? 30 : 0;
+            assertEquals(LocalDateTime.of(2019, 12, 2, expectedHour, expectedMinute,
+                    input.contains(":05") ? 5 : 0),
+                    result.dateTime(), input);
+            assertTrue(result.hasTime(), input);
+        }
+    }
+
+    /**
+     * Verifies that each supported date/time separator is accepted.
+     */
+    @Test
+    void parseUserInput_supportedSeparators_acceptDateTime() {
+        assertEquals(LocalDateTime.of(2019, 12, 2, 18, 0),
+                DateTimeParser.parseUserInput("2019-12-2, 6pm").dateTime());
+        assertEquals(LocalDateTime.of(2019, 12, 2, 18, 0),
+                DateTimeParser.parseUserInput("2019-12-2T6pm").dateTime());
+    }
+
+    /**
+     * Verifies that stored values require canonical ISO date or date-time syntax.
+     */
+    @Test
+    void parseStored_emptyOrNonIsoValue_throwsDateTimeParseException() {
+        assertThrows(DateTimeParseException.class, () -> DateTimeParser.parseStored(""));
+        assertThrows(DateTimeParseException.class, () -> DateTimeParser.parseStored("2/12/2019"));
+        assertThrows(DateTimeParseException.class, () -> DateTimeParser.parseStored("2019-12-02 18:00"));
     }
 }

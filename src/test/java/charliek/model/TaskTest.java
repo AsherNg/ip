@@ -24,6 +24,8 @@ class TaskTest {
     void task_blankDescription_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> new ToDo("  "));
         assertThrows(IllegalArgumentException.class, () -> new ToDo(null));
+        assertThrows(IllegalArgumentException.class, () -> new ToDo("line\nbreak"));
+        assertThrows(IllegalArgumentException.class, () -> new ToDo("tab\tbreak"));
     }
 
     /**
@@ -142,6 +144,50 @@ class TaskTest {
 
         assertTrue(first.hasSameDetailsAs(second));
         assertFalse(first.hasSameDetailsAs(new ToDo("write book")));
+        assertFalse(first.hasSameDetailsAs(null));
+        assertFalse(first.hasSameDetailsAs(new Deadline("read book", LocalDate.of(2019, 12, 2))));
+    }
+
+    /**
+     * Verifies that repeated completion changes remain idempotent.
+     */
+    @Test
+    void task_repeatedCompletionChanges_remainConsistent() {
+        Task task = new ToDo("read book");
+
+        task.markAsDone();
+        task.markAsDone();
+        assertTrue(task.isDone());
+
+        task.markAsNotDone();
+        task.markAsNotDone();
+        assertFalse(task.isDone());
+    }
+
+    /**
+     * Verifies that an event can mix date-only and date-time endpoints.
+     */
+    @Test
+    void event_mixedDateEndpointTypes_formatsAndSortsCorrectly() {
+        Event event = new Event("project meeting",
+                DateTimeParser.ParsedDateTime.ofDate(LocalDate.of(2019, 12, 2)),
+                DateTimeParser.ParsedDateTime.ofDateTime(LocalDateTime.of(2019, 12, 2, 18, 0)));
+
+        assertEquals(List.of("project meeting", "2019-12-02", "2019-12-02T18:00:00"),
+                event.getStorageFields());
+        assertEquals(LocalDateTime.of(2019, 12, 2, 0, 0), event.getSortDateTime().orElseThrow());
+        assertEquals("[E][ ] project meeting (from: 2 Dec 2019 to: 2 Dec 2019, 18:00)", event.toString());
+    }
+
+    /**
+     * Verifies that string date constructors reject malformed values.
+     */
+    @Test
+    void datedTask_invalidStringDate_throwsDateTimeParseException() {
+        assertThrows(java.time.format.DateTimeParseException.class,
+                () -> new Deadline("submit report", "2019-02-30"));
+        assertThrows(java.time.format.DateTimeParseException.class,
+                () -> new Event("meeting", "2019-02-30", "2019-03-01"));
     }
 
 }

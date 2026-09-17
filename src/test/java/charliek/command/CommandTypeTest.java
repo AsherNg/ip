@@ -75,4 +75,30 @@ class CommandTypeTest {
         assertTrue(CommandType.getCommandFromKeyword("unknown").isEmpty());
         assertTrue(CommandType.getCommandFromKeyword(null).isEmpty());
     }
+
+    /**
+     * Verifies that every command definition exposes complete help metadata.
+     */
+    @Test
+    void commandMetadata_allCommands_containsNonBlankValues() {
+        for (CommandType command : CommandType.values()) {
+            assertTrue(!command.getKeyword().isBlank());
+            assertTrue(!command.getUsage().isBlank());
+            assertTrue(!command.getDescription().isBlank());
+            assertTrue(!command.getExample().isBlank());
+            assertEquals(command, CommandType.getCommandFromKeyword(command.getKeyword()).orElseThrow());
+        }
+    }
+
+    /**
+     * Verifies that separators and control characters invalidating a full input are rejected.
+     */
+    @Test
+    void getCommandFromInput_invalidSeparators_returnsEmptyOptional() {
+        assertTrue(CommandType.getCommandFromInput("list\n").isEmpty());
+        assertTrue(CommandType.getCommandFromInput("list\rtime").isEmpty());
+        assertTrue(CommandType.getCommandFromInput("list\u2003time").isEmpty());
+        assertTrue(CommandType.getCommandFromInput("list   time").isEmpty());
+        assertTrue(CommandType.getCommandFromInput("list time ").isEmpty());
+    }
 }

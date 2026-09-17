@@ -129,4 +129,58 @@ class TaskListTest {
         assertThrows(IllegalArgumentException.class, () -> tasks.replaceWith(List.of(
                 new ToDo("same"), new ToDo("same"))));
     }
+
+    /**
+     * Verifies that null task references are rejected by all public task-list entry points.
+     */
+    @Test
+    void taskList_nullTasks_areRejected() {
+        TaskList tasks = new TaskList(new ToDo("existing"));
+
+        assertThrows(IllegalArgumentException.class, () -> tasks.add(null));
+        assertThrows(IllegalArgumentException.class, () -> tasks.add(0, null));
+        assertThrows(IllegalArgumentException.class, () -> tasks.containsEquivalent(null));
+        assertEquals(1, tasks.size());
+    }
+
+    /**
+     * Verifies that an invalid replacement leaves the original list untouched.
+     */
+    @Test
+    void taskList_invalidReplacement_isAtomic() {
+        Task original = new ToDo("original");
+        TaskList tasks = new TaskList(original);
+
+        assertThrows(IllegalArgumentException.class, () -> tasks.replaceWith(List.of(
+                new ToDo("replacement"), new ToDo("replacement"))));
+
+        assertEquals(List.of(original), tasks.toList());
+    }
+
+    /**
+     * Verifies that indexed insertion detects duplicates before changing the list.
+     */
+    @Test
+    void taskList_indexedDuplicate_doesNotChangeOrder() {
+        Task first = new ToDo("first");
+        Task second = new ToDo("second");
+        TaskList tasks = new TaskList(first, second);
+
+        assertThrows(IllegalArgumentException.class, () -> tasks.add(1, new ToDo("first")));
+
+        assertEquals(List.of(first, second), tasks.toList());
+    }
+
+    /**
+     * Verifies that list indexing follows the underlying collection's boundary checks.
+     */
+    @Test
+    void taskList_invalidIndexes_throwIndexOutOfBoundsException() {
+        TaskList tasks = new TaskList(new ToDo("only"));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.get(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.get(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.remove(1));
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.add(2, new ToDo("too late")));
+    }
 }

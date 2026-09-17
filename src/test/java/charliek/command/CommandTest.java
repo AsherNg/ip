@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.OptionalInt;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -334,5 +335,98 @@ class CommandTest {
 
         String output = capturedOutput.toString();
         assertTrue(output.contains("Here are the matching tasks"));
+    }
+
+    /**
+     * Verifies that adding equivalent task details is rejected before mutation.
+     */
+    @Test
+    void addCommand_duplicateTask_throwsWithoutChangingList() {
+        Task existing = new ToDo("read book");
+        TaskList tasks = new TaskList(existing);
+
+        assertThrows(charliek.exception.DuplicateTaskException.class, () -> new AddCommand(
+                tasks, new Ui(), storageAt("tasks.csv"), new ToDo("read book")).execute());
+
+        assertEquals(List.of(existing), tasks.toList());
+    }
+
+    /**
+     * Verifies that find matching ignores letter case while preserving task order.
+     */
+    @Test
+    void findCommand_keywordMatching_isCaseInsensitive() {
+        TaskList tasks = new TaskList(new ToDo("Read BOOK"), new ToDo("buy food"));
+
+        new FindCommand(tasks, new Ui(), "book").execute();
+
+        String output = capturedOutput.toString();
+        assertTrue(output.contains("Read BOOK"));
+        assertFalse(output.contains("buy food"));
+    }
+
+    /**
+     * Verifies task-number parsing for valid, malformed, and out-of-range inputs.
+     */
+    @Test
+    void command_parseTaskIndex_validatesOneBasedNumber() {
+        TaskList tasks = new TaskList(new ToDo("first"), new ToDo("second"));
+        ExposedCommand command = new ExposedCommand();
+        Ui ui = new Ui();
+
+        assertEquals(OptionalInt.of(0), command.taskIndex("1", tasks, ui));
+        assertEquals(OptionalInt.of(1), command.taskIndex("2", tasks, ui));
+        assertTrue(command.taskIndex("0", tasks, ui).isEmpty());
+        assertTrue(command.taskIndex("3", tasks, ui).isEmpty());
+        assertTrue(command.taskIndex("-1", tasks, ui).isEmpty());
+        assertTrue(command.taskIndex(null, tasks, ui).isEmpty());
+        assertTrue(capturedOutput.toString().contains("valid task number"));
+        assertTrue(capturedOutput.toString().contains("does not exist"));
+    }
+
+    /**
+     * Verifies that a persistence failure triggers the supplied rollback and preserves the exception.
+     */
+    @Test
+    void command_saveTasksOrRollback_runtimeFailure_runsRollback() {
+        TaskList tasks = new TaskList(new ToDo("first"));
+        RuntimeFailingStorage storage = new RuntimeFailingStorage(tempDirectory.resolve("tasks.csv"));
+        int[] rollbackCount = {0};
+
+        assertThrows(IllegalStateException.class, () -> new ExposedCommand().save(
+                storage, tasks, () -> rollbackCount[0]++));
+
+        assertEquals(1, rollbackCount[0]);
+    }
+
+    /**
+     * Exposes protected command helpers for focused unit tests.
+     */
+    private static final class ExposedCommand extends Command {
+        @Override
+        public void execute() {
+        }
+
+        private OptionalInt taskIndex(String number, TaskList tasks, Ui ui) {
+            return parseTaskIndex(number, tasks, ui);
+        }
+
+        private void save(Storage storage, TaskList tasks, Runnable rollback) throws TaskStorageException {
+            saveTasksOrRollback(storage, tasks, rollback);
+        }
+    }
+
+    /**
+     * Storage test double that exercises rollback handling for unchecked failures.
+     */
+    private static final class RuntimeFailingStorage extends Storage {
+        private RuntimeFailingStorage(Path taskFile) {
+            super(taskFile);
+        }
+
+        @Override
+        public void save(List<Task> tasks) {
+            throw new IllegalStateException("save failed");
+        }
     }
 }

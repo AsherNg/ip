@@ -1,6 +1,8 @@
 package charliek.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -75,5 +77,26 @@ class HelpCommandTest {
 
         assertEquals("     I do not have help for 'unknown'. Try 'help' to see the available commands.\n",
                 output.toString().replace(System.lineSeparator(), "\n"));
+    }
+
+    /**
+     * Verifies that help treats surrounding whitespace as presentation noise.
+     */
+    @Test
+    void execute_withWhitespaceOnlyCommand_showsGeneralHelp() {
+        StringBuilder output = new StringBuilder();
+
+        new HelpCommand(new Ui(output::append), "   ").execute();
+
+        assertTrue(output.toString().contains("Available commands"));
+    }
+
+    /**
+     * Verifies that help requires both of its collaborators to be meaningful.
+     */
+    @Test
+    void constructor_nullCollaborator_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new HelpCommand(null, "list"));
+        assertThrows(NullPointerException.class, () -> new HelpCommand(new Ui(ignored -> { }), null));
     }
 }

@@ -42,6 +42,15 @@ class StorageTest {
     }
 
     /**
+     * Verifies that a storage service requires a path naming a file.
+     */
+    @Test
+    void storage_nullOrDirectoryPath_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> new Storage(null));
+        assertThrows(IllegalArgumentException.class, () -> new Storage(tempDirectory.getRoot()));
+    }
+
+    /**
      * Verifies that missing storage is initialized with and persists starter tasks.
      */
     @Test
@@ -73,6 +82,16 @@ class StorageTest {
 
         assertTrue(loaded.isEmpty());
         assertTrue(storage.load().isEmpty());
+    }
+
+    /**
+     * Verifies that null starter data is rejected before touching the file system.
+     */
+    @Test
+    void loadOrCreate_nullDefaults_throwsIllegalArgumentException() {
+        Storage storage = new Storage(tempDirectory.resolve("tasks.csv"));
+
+        assertThrows(IllegalArgumentException.class, () -> storage.loadOrCreate(null));
     }
 
     /**
@@ -190,6 +209,25 @@ class StorageTest {
         assertEquals(2, loaded.size());
         assertFalse(loaded.get(0).isDone());
         assertInstanceOf(Deadline.class, loaded.get(1));
+    }
+
+    /**
+     * Verifies CSV escaped quotes and whitespace after a quoted field are parsed safely.
+     */
+    @Test
+    void load_quotedFields_restoresEscapedContent() throws Exception {
+        Path taskFile = tempDirectory.resolve("tasks.csv");
+        Files.writeString(taskFile, String.join(System.lineSeparator(),
+                "T,0,\"quoted \"\"task\"\"\"",
+                "T,0,\"trailing quote\"   ",
+                "T,0,unquoted\"quote",
+                "T,0,\"unclosed"));
+
+        List<Task> loaded = new Storage(taskFile).load();
+
+        assertEquals(2, loaded.size());
+        assertEquals("quoted \"task\"", loaded.get(0).getDescription());
+        assertEquals("trailing quote   ", loaded.get(1).getDescription());
     }
 
     /**

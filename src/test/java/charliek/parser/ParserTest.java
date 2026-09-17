@@ -195,4 +195,79 @@ class ParserTest {
 
         assertThrows(DuplicateTaskException.class, () -> parser.parse("todo read book"));
     }
+
+    /**
+     * Verifies that parser collaborators are required for safe command construction.
+     */
+    @Test
+    void parser_nullCollaborator_throwsNullPointerException() {
+        Storage storage = new Storage(tempDirectory.resolve("tasks.csv"));
+        Ui ui = new Ui(ignored -> { });
+        TaskList tasks = new TaskList();
+
+        assertThrows(NullPointerException.class, () -> new Parser(null, ui, storage));
+        assertThrows(NullPointerException.class, () -> new Parser(tasks, null, storage));
+        assertThrows(NullPointerException.class, () -> new Parser(tasks, ui, null));
+    }
+
+    /**
+     * Verifies missing and malformed arguments for commands with numeric or single-word arguments.
+     */
+    @Test
+    void parse_missingOrMalformedSimpleArguments_throwsExpectedException() {
+        assertThrows(EmptyParameterException.class, () -> parser.parse("mark"));
+        assertThrows(EmptyParameterException.class, () -> parser.parse("delete"));
+        assertThrows(EmptyParameterException.class, () -> parser.parse("find"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("mark 1.0"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("delete -1"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("find two words"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("help two words"));
+    }
+
+    /**
+     * Verifies that every supported whitespace and control-character failure is rejected.
+     */
+    @Test
+    void parse_unexpectedWhitespaceAndControlCharacters_throwsFormatException() {
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("\tlist"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("list\u00a0time"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("list\u007ftime"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("list\u0001"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("   "));
+    }
+
+    /**
+     * Verifies that parameter markers embedded in words are not mistaken for syntax markers.
+     */
+    @Test
+    void parse_parameterTextInsideWords_isHandledAsTaskTextOrMissingParameter() throws Exception {
+        assertEquals("buy /bypass milk", parser.parseToDo("buy /bypass milk").getDescription());
+        assertThrows(EmptyParameterException.class, () -> parser.parseDeadline("submit /bypass report"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseEvent("meeting /fromage /today"));
+    }
+
+    /**
+     * Verifies event parsing reports each missing marker/value and rejects incompatible markers.
+     */
+    @Test
+    void parseEvent_missingOrIncompatibleParameters_throwsSpecificException() {
+        assertThrows(EmptyParameterException.class, () -> parser.parseEvent("meeting /from 2019-12-02"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseEvent("meeting /to 2019-12-03"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseEvent("meeting /from /to 2019-12-03"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parseEvent(
+                "meeting /from 2019-12-02 /to 2019-12-03 /by 2019-12-04"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parseEvent(
+                "meeting /to 2019-12-03 /from 2019-12-02"));
+    }
+
+    /**
+     * Verifies deadline parsing distinguishes unsupported event syntax from missing dates.
+     */
+    @Test
+    void parseDeadline_incompatibleOrMissingDate_throwsSpecificException() {
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parseDeadline(
+                "submit report /by 2019-12-02 /from 2019-12-01"));
+        assertThrows(EmptyParameterException.class, () -> parser.parseDeadline("submit report /by   "));
+        assertThrows(EmptyTaskDescriptionException.class, () -> parser.parseDeadline("/by 2019-12-02"));
+    }
 }
