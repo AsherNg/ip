@@ -62,6 +62,15 @@
     -fx-background-color: #ffffff;
 }
 
+.error-dialog .label {
+    -fx-background-color: #ffe1e1;
+    -fx-border-color: #d64545;
+    -fx-border-radius: 14px;
+    -fx-border-width: 2px;
+    -fx-text-fill: #8b1e1e;
+    -fx-font-weight: bold;
+}
+
 .avatar-container {
     -fx-alignment: center;
     -fx-background-color: #ffffff;

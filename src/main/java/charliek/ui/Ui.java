@@ -54,10 +54,15 @@ public class Ui {
     private final Consumer<String> output;
 
     /**
+     * Receives rendered error text so output-only clients can highlight it.
+     */
+    private final Consumer<String> errorOutput;
+
+    /**
      * Creates a UI connected to the standard console.
      */
     public Ui() {
-        this(new Scanner(System.in), System.out::print);
+        this(new Scanner(System.in), System.out::print, ignored -> { });
     }
 
     /**
@@ -68,15 +73,26 @@ public class Ui {
      * @param output the destination for rendered user-facing text.
      */
     public Ui(Consumer<String> output) {
-        this(null, output);
+        this(null, output, ignored -> { });
+    }
+
+    /**
+     * Creates an output-only UI with separate normal and error output sinks.
+     *
+     * @param output the destination for normal rendered text.
+     * @param errorOutput the destination notified when an error is rendered.
+     */
+    public Ui(Consumer<String> output, Consumer<String> errorOutput) {
+        this(null, output, errorOutput);
     }
 
     /**
      * Creates a UI with explicit input and output collaborators.
      */
-    private Ui(Scanner scanner, Consumer<String> output) {
+    private Ui(Scanner scanner, Consumer<String> output, Consumer<String> errorOutput) {
         this.scanner = scanner;
         this.output = Objects.requireNonNull(output);
+        this.errorOutput = Objects.requireNonNull(errorOutput);
     }
 
     /**
@@ -137,7 +153,9 @@ public class Ui {
      * @param message the message to display.
      */
     public void showError(String message) {
-        print("     " + message + System.lineSeparator());
+        String renderedMessage = "     " + message + System.lineSeparator();
+        print(renderedMessage);
+        errorOutput.accept(renderedMessage);
     }
 
     /**

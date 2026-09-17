@@ -93,6 +93,19 @@ public class DialogBox extends HBox {
     }
 
     /**
+     * Creates a left-aligned chatbot dialog styled as an error response.
+     *
+     * @param text the error message to display.
+     * @param image the chatbot's avatar, or {@code null} when no avatar is available.
+     * @return a left-aligned error dialog box.
+     */
+    public static DialogBox getErrorDialog(String text, Image image) {
+        DialogBox dialogBox = getChatbotDialog(text, image);
+        dialogBox.getStyleClass().add("error-dialog");
+        return dialogBox;
+    }
+
+    /**
      * Places the avatar before the text and aligns the message to the left.
      */
     private void flip() {

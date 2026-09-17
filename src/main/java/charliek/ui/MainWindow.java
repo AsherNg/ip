@@ -96,6 +96,11 @@ public class MainWindow {
     private StringBuilder responseBuffer;
 
     /**
+     * Tracks whether the current command response contains an error.
+     */
+    private boolean responseContainsError;
+
+    /**
      * Creates the controller's domain collaborators before FXML injection.
      */
     public MainWindow() {
@@ -103,7 +108,7 @@ public class MainWindow {
         storage = new Storage(Path.of("data/charliek.csv"));
         userImage = loadImage(USER_IMAGE_PATH);
         chatbotImage = loadImage(CHATBOT_IMAGE_PATH);
-        ui = new Ui(this::captureResponse);
+        ui = new Ui(this::captureResponse, ignored -> responseContainsError = true);
         parser = new Parser(tasks, ui, storage);
     }
 
@@ -144,8 +149,12 @@ public class MainWindow {
         } finally {
             String response = responseBuffer.toString().stripTrailing();
             responseBuffer = null;
+            boolean isErrorResponse = responseContainsError;
+            responseContainsError = false;
             if (!response.isBlank()) {
-                dialogContainer.getChildren().add(DialogBox.getChatbotDialog(response, chatbotImage));
+                dialogContainer.getChildren().add(isErrorResponse
+                        ? DialogBox.getErrorDialog(response, chatbotImage)
+                        : DialogBox.getChatbotDialog(response, chatbotImage));
             }
         }
 
@@ -161,15 +170,20 @@ public class MainWindow {
     private void showInitialMessage() {
         String message = "Hello! I'm CharlieK." + System.lineSeparator()
                 + "What can I do for you?";
+        boolean messageContainsError = false;
         try {
             tasks.replaceWith(storage.loadOrCreate(SampleData.create()));
         } catch (TaskStorageException exception) {
             message += System.lineSeparator() + System.lineSeparator() + exception.getMessage();
+            messageContainsError = true;
         } catch (RuntimeException exception) {
             message += System.lineSeparator() + System.lineSeparator()
                     + "I couldn't load saved tasks because the saved data is invalid.";
+            messageContainsError = true;
         }
-        dialogContainer.getChildren().add(DialogBox.getChatbotDialog(message, chatbotImage));
+        dialogContainer.getChildren().add(messageContainsError
+                ? DialogBox.getErrorDialog(message, chatbotImage)
+                : DialogBox.getChatbotDialog(message, chatbotImage));
     }
 
     /**

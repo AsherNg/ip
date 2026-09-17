@@ -47,4 +47,22 @@ class UiTest {
                 + "     Here are the matching tasks in your list:" + lineSeparator
                 + "     1.[T][ ] read book" + lineSeparator, output.toString());
     }
+
+    /**
+     * Verifies that errors are reported separately from ordinary rendered output.
+     */
+    @Test
+    void errorOutputSink_errorMessage_notifiesErrorSinkOnlyForErrors() {
+        StringBuilder output = new StringBuilder();
+        StringBuilder errors = new StringBuilder();
+        Ui ui = new Ui(output::append, errors::append);
+        String lineSeparator = System.lineSeparator();
+
+        ui.showTaskAdded(new ToDo("read book"), 1);
+        assertEquals("", errors.toString());
+
+        ui.showError("Unknown command.");
+
+        assertEquals("     Unknown command." + lineSeparator, errors.toString());
+    }
 }
