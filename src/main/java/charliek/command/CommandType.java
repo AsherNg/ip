@@ -68,7 +68,7 @@ public enum CommandType {
     /**
      * Whether this command may be followed by an argument.
      */
-    private final boolean acceptsArguments;
+    private final boolean canAcceptArguments;
 
     /**
      * The usage syntax shown to users.
@@ -89,14 +89,14 @@ public enum CommandType {
      * Creates a command definition.
      *
      * @param keyword the command keyword.
-     * @param acceptsArguments whether the command accepts an argument.
+     * @param canAcceptArguments whether the command accepts an argument.
      * @param usage the usage syntax shown to users.
      * @param description the brief explanation shown to users.
      * @param example an example input for this command.
      */
-    CommandType(String keyword, boolean acceptsArguments, String usage, String description, String example) {
+    CommandType(String keyword, boolean canAcceptArguments, String usage, String description, String example) {
         this.keyword = keyword;
-        this.acceptsArguments = acceptsArguments;
+        this.canAcceptArguments = canAcceptArguments;
         this.usage = usage;
         this.description = description;
         this.example = example;
@@ -114,7 +114,7 @@ public enum CommandType {
         }
         for (CommandType command : values()) {
             boolean isExactMatch = input.equals(command.keyword);
-            boolean isArgumentMatch = command.acceptsArguments
+            boolean isArgumentMatch = command.canAcceptArguments
                     && input.startsWith(command.keyword + " ");
             if (isExactMatch || isArgumentMatch) {
                 return Optional.of(command);

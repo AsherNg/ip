@@ -149,27 +149,9 @@ public class Storage {
             throw new IllegalArgumentException("The task list cannot be null.");
         }
 
-        ArrayList<String> lines = new ArrayList<>();
         Path temporaryFile = null;
         try {
-            for (Task task : tasks) {
-                if (task == null) {
-                    throw new IllegalArgumentException("The task list cannot contain null tasks.");
-                }
-                lines.add(toCsvLine(task));
-            }
-
-            Path parent = taskFile.getParent();
-            // The constructor normalizes to an absolute file path, so a parent directory must exist conceptually.
-            assert parent != null : "An absolute task-file path must have a parent directory.";
-            Files.createDirectories(parent);
-            if (Files.exists(taskFile) && !Files.isRegularFile(taskFile)) {
-                throw new IOException("The task path is not a regular file.");
-            }
-
-            temporaryFile = Files.createTempFile(parent, "charliek", ".tmp");
-            Files.write(temporaryFile, lines, StandardCharsets.UTF_8,
-                    StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            temporaryFile = writeTasksToTemporaryFile(tasks);
             moveIntoPlace(temporaryFile);
             temporaryFile = null;
         } catch (IOException exception) {
@@ -181,13 +163,58 @@ public class Storage {
                     "I couldn't save tasks. Please check that the data folder is writable.",
                     exception);
         } finally {
-            if (temporaryFile != null) {
-                try {
-                    Files.deleteIfExists(temporaryFile);
-                } catch (IOException | SecurityException ignored) {
-                    // The original save error is more useful to the user.
-                }
+            deleteTemporaryFile(temporaryFile);
+        }
+    }
+
+    /**
+     * Serializes tasks and writes them to a temporary file before replacement.
+     *
+     * @param tasks the tasks to serialize.
+     * @return the completed temporary file.
+     * @throws IOException when the temporary file cannot be created or written.
+     */
+    private Path writeTasksToTemporaryFile(List<Task> tasks) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task == null) {
+                throw new IllegalArgumentException("The task list cannot contain null tasks.");
             }
+            lines.add(toCsvLine(task));
+        }
+
+        Path parent = taskFile.getParent();
+        // The constructor normalizes to an absolute file path, so a parent directory must exist conceptually.
+        assert parent != null : "An absolute task-file path must have a parent directory.";
+        Files.createDirectories(parent);
+        if (Files.exists(taskFile) && !Files.isRegularFile(taskFile)) {
+            throw new IOException("The task path is not a regular file.");
+        }
+
+        Path temporaryFile = Files.createTempFile(parent, "charliek", ".tmp");
+        try {
+            Files.write(temporaryFile, lines, StandardCharsets.UTF_8,
+                    StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            return temporaryFile;
+        } catch (IOException | RuntimeException exception) {
+            deleteTemporaryFile(temporaryFile);
+            throw exception;
+        }
+    }
+
+    /**
+     * Removes a temporary file when it is no longer needed.
+     *
+     * @param temporaryFile the temporary file to remove, or {@code null}.
+     */
+    private void deleteTemporaryFile(Path temporaryFile) {
+        if (temporaryFile == null) {
+            return;
+        }
+        try {
+            Files.deleteIfExists(temporaryFile);
+        } catch (IOException | SecurityException ignored) {
+            // The original save error is more useful to the user.
         }
     }
 
@@ -302,47 +329,95 @@ public class Storage {
      * Parses one CSV row, including quoted fields containing commas or quotes.
      */
     private List<String> parseCsvLine(String line) {
-        ArrayList<String> fields = new ArrayList<>();
-        StringBuilder field = new StringBuilder();
-        boolean inQuotes = false;
-        boolean closedQuote = false;
-
+        CsvParserState state = new CsvParserState();
         for (int i = 0; i < line.length(); i++) {
-            char current = line.charAt(i);
-            if (inQuotes) {
-                if (current == '"') {
-                    if (i + 1 < line.length() && line.charAt(i + 1) == '"') {
-                        field.append('"');
-                        i++;
-                    } else {
-                        inQuotes = false;
-                        closedQuote = true;
-                    }
-                } else {
-                    field.append(current);
-                }
-            } else if (current == ',') {
+            i = state.consume(line, i);
+        }
+        return state.finish();
+    }
+
+    /**
+     * Holds mutable state while one CSV row is parsed.
+     */
+    private static final class CsvParserState {
+        private final ArrayList<String> fields = new ArrayList<>();
+        private final StringBuilder field = new StringBuilder();
+        private boolean isInQuotes;
+        private boolean hasClosedQuote;
+
+        /**
+         * Consumes the character at the given index.
+         *
+         * @param line the CSV row being parsed.
+         * @param index the current character index.
+         * @return the current index, or the index of a consumed escaped quote.
+         */
+        private int consume(String line, int index) {
+            char current = line.charAt(index);
+            if (isInQuotes) {
+                return consumeQuotedCharacter(line, index, current);
+            }
+            if (current == ',') {
                 fields.add(field.toString());
                 field.setLength(0);
-                closedQuote = false;
+                hasClosedQuote = false;
             } else if (current == '"') {
-                if (field.length() != 0 || closedQuote) {
-                    throw new IllegalArgumentException("Unexpected quote in CSV row.");
-                }
-                inQuotes = true;
+                startQuotedField();
             } else {
-                if (closedQuote && !Character.isWhitespace(current)) {
-                    throw new IllegalArgumentException("Unexpected content after quoted CSV field.");
-                }
-                field.append(current);
+                appendUnquotedCharacter(current);
             }
+            return index;
         }
 
-        if (inQuotes) {
-            throw new IllegalArgumentException("Unclosed quoted CSV field.");
+        /**
+         * Consumes a character from a quoted field.
+         */
+        private int consumeQuotedCharacter(String line, int index, char current) {
+            if (current != '"') {
+                field.append(current);
+                return index;
+            }
+            if (index + 1 < line.length() && line.charAt(index + 1) == '"') {
+                field.append('"');
+                return index + 1;
+            }
+            isInQuotes = false;
+            hasClosedQuote = true;
+            return index;
         }
-        fields.add(field.toString());
-        return fields;
+
+        /**
+         * Starts a quoted field after validating its position.
+         */
+        private void startQuotedField() {
+            if (field.length() != 0 || hasClosedQuote) {
+                throw new IllegalArgumentException("Unexpected quote in CSV row.");
+            }
+            isInQuotes = true;
+        }
+
+        /**
+         * Appends an unquoted character after validating content following a quoted field.
+         */
+        private void appendUnquotedCharacter(char current) {
+            if (hasClosedQuote && !Character.isWhitespace(current)) {
+                throw new IllegalArgumentException("Unexpected content after quoted CSV field.");
+            }
+            field.append(current);
+        }
+
+        /**
+         * Completes parsing and validates that all quoted fields are closed.
+         *
+         * @return the parsed fields.
+         */
+        private List<String> finish() {
+            if (isInQuotes) {
+                throw new IllegalArgumentException("Unclosed quoted CSV field.");
+            }
+            fields.add(field.toString());
+            return fields;
+        }
     }
 
     /**
