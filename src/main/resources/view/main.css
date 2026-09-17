@@ -50,6 +50,7 @@
     -fx-max-width: 390px;
     -fx-padding: 10px 14px;
     -fx-background-radius: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(23, 54, 93, 0.18), 8, 0.2, 0, 3);
     -fx-text-fill: #1f2933;
 }
 
