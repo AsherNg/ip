@@ -18,7 +18,7 @@ class HelpCommandTest {
         StringBuilder output = new StringBuilder();
         new HelpCommand(new Ui(output::append), "").execute();
 
-        assertEquals("     Available commands\n\n"
+        assertEquals("     Available commands - the winning playbook\n\n"
                 + "     todo <description>\n"
                 + "       Add an undated to-do task.\n"
                 + "       Example: todo buy milk\n\n"

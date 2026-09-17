@@ -8,7 +8,7 @@ public class EmptyParameterException extends CharlieKException {
      * The message displayed when a required task parameter is missing.
      */
     private static final String MESSAGE =
-            "The parameter is empty! Enter the required parameters or I will carry the flame!";
+            "The parameter is empty! Enter the required parameters and let's get this done!";
 
     /**
      * Creates an exception for a missing deadline or event parameter.

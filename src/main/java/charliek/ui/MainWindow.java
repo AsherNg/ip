@@ -169,7 +169,7 @@ public class MainWindow {
      */
     private void showInitialMessage() {
         String message = "Hello! I'm CharlieK." + System.lineSeparator()
-                + "What can I do for you?";
+                + "What can I do for you? Let's make this task list great again!";
         boolean messageContainsError = false;
         try {
             tasks.replaceWith(storage.loadOrCreate(SampleData.create()));

@@ -124,7 +124,7 @@ class CommandTest {
         new MarkCommand(tasks, new Ui(), storage, "not-a-number").execute();
 
         assertTrue(task.isDone());
-        assertTrue(capturedOutput.toString().contains("already marked"));
+        assertTrue(capturedOutput.toString().contains("already winning"));
         assertTrue(capturedOutput.toString().contains("valid task number"));
     }
 
@@ -174,7 +174,7 @@ class CommandTest {
         new UnmarkCommand(tasks, new Ui(), storage, "not-a-number").execute();
 
         assertFalse(task.isDone());
-        assertTrue(capturedOutput.toString().contains("already unmarked"));
+        assertTrue(capturedOutput.toString().contains("already not done"));
         assertTrue(capturedOutput.toString().contains("valid task number"));
     }
 
@@ -293,7 +293,7 @@ class CommandTest {
         command.execute();
 
         assertTrue(command.isExit());
-        assertTrue(capturedOutput.toString().contains("Bye. Hope to see you again soon!"));
+        assertTrue(capturedOutput.toString().contains("Bye. Keep carrying the flame!"));
     }
 
     /**

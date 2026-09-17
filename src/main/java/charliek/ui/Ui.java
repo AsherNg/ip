@@ -104,7 +104,7 @@ public class Ui {
         showLine();
         print(BANNER);
         print("Hello! I'm CharlieK." + System.lineSeparator());
-        print("What can I do for you?" + System.lineSeparator());
+        print("What can I do for you? Let's make this task list great again!" + System.lineSeparator());
         showLine();
         if (loadingError != null) {
             showError(loadingError);
@@ -143,7 +143,7 @@ public class Ui {
      * Shows the normal goodbye message and its trailing separator.
      */
     public void showGoodbye() {
-        print("     Bye. Hope to see you again soon!" + System.lineSeparator());
+        print("     Bye. Keep carrying the flame!" + System.lineSeparator());
         showLine();
     }
 
@@ -169,7 +169,7 @@ public class Ui {
      * Shows every available command with its usage, description, and example.
      */
     public void showAvailableCommands() {
-        print("     Available commands" + System.lineSeparator() + System.lineSeparator());
+        print("     Available commands - the winning playbook" + System.lineSeparator() + System.lineSeparator());
         for (int commandIndex = 0; commandIndex < HELP_COMMANDS.size(); commandIndex++) {
             CommandType command = HELP_COMMANDS.get(commandIndex);
             print("     " + command.getUsage() + System.lineSeparator());
@@ -213,7 +213,7 @@ public class Ui {
      * @param taskCount the number of tasks after adding it.
      */
     public void showTaskAdded(Task task, int taskCount) {
-        print("     Got it. I've added this task:" + System.lineSeparator());
+        print("     Big win! I've added this task:" + System.lineSeparator());
         print("       " + task + System.lineSeparator());
         print("     Now you have " + taskCount + " tasks in the list." + System.lineSeparator());
     }
@@ -222,14 +222,14 @@ public class Ui {
      * Shows that the requested task number does not exist.
      */
     public void showTaskDoesNotExist() {
-        showError("That task does not exist.");
+        showError("That task does not exist. Next time, choose a winner.");
     }
 
     /**
      * Shows that the supplied task number is not a valid number.
      */
     public void showInvalidTaskNumber() {
-        showError("Please provide a valid task number.");
+        showError("Please provide a valid task number. Precision wins.");
     }
 
     /**
@@ -238,7 +238,7 @@ public class Ui {
      * @param task the marked task.
      */
     public void showTaskMarked(Task task) {
-        print("     Nice! I've marked this task as done:" + System.lineSeparator());
+        print("     Another win! I've marked this task as done:" + System.lineSeparator());
         print("       " + task + System.lineSeparator());
     }
 
@@ -248,7 +248,7 @@ public class Ui {
      * @param task the already marked task.
      */
     public void showTaskAlreadyMarked(Task task) {
-        print("     This task is already marked:" + System.lineSeparator());
+        print("     This task is already winning:" + System.lineSeparator());
         print("       " + task + System.lineSeparator());
     }
 
@@ -258,7 +258,7 @@ public class Ui {
      * @param task the unmarked task.
      */
     public void showTaskUnmarked(Task task) {
-        print("     OK, I've marked this task as not done yet:" + System.lineSeparator());
+        print("     No surrender! I've marked this task as not done yet:" + System.lineSeparator());
         print("       " + task + System.lineSeparator());
     }
 
@@ -268,7 +268,7 @@ public class Ui {
      * @param task the already unmarked task.
      */
     public void showTaskAlreadyUnmarked(Task task) {
-        print("     This task is already unmarked:" + System.lineSeparator());
+        print("     This task is already not done - stay focused:" + System.lineSeparator());
         print("       " + task + System.lineSeparator());
     }
 
@@ -279,7 +279,7 @@ public class Ui {
      * @param taskCount the number of tasks after deleting it.
      */
     public void showTaskDeleted(Task task, int taskCount) {
-        print("     Noted. I've removed this task:" + System.lineSeparator());
+        print("     Strong move. I've removed this task:" + System.lineSeparator());
         print("       " + task + System.lineSeparator());
         print("     Now you have " + taskCount + " tasks in the list." + System.lineSeparator());
     }
@@ -290,7 +290,7 @@ public class Ui {
      * @param tasks the tasks to display.
      */
     public void showTasks(List<Task> tasks) {
-        showTaskList(tasks, "     Here are the tasks in your list:");
+        showTaskList(tasks, "     Here are the tasks in your winning list:");
     }
 
     /**
@@ -299,7 +299,7 @@ public class Ui {
      * @param tasks the matching tasks to display.
      */
     public void showMatchingTasks(List<Task> tasks) {
-        showTaskList(tasks, "     Here are the matching tasks in your list:");
+        showTaskList(tasks, "     Here are the matching tasks in your winning list:");
     }
 
     /**

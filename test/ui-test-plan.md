@@ -55,7 +55,7 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ```
 
@@ -87,10 +87,10 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -130,43 +130,43 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [T][ ] buy milk
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][ ] buy milk
 ____________________________________________________________
 ____________________________________________________________
-     Nice! I've marked this task as done:
+     Another win! I've marked this task as done:
        [T][X] buy milk
 ____________________________________________________________
 ____________________________________________________________
-     This task is already marked:
+     This task is already winning:
        [T][X] buy milk
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][X] buy milk
 ____________________________________________________________
 ____________________________________________________________
-     OK, I've marked this task as not done yet:
+     No surrender! I've marked this task as not done yet:
        [T][ ] buy milk
 ____________________________________________________________
 ____________________________________________________________
-     This task is already unmarked:
+     This task is already not done - stay focused:
        [T][ ] buy milk
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][ ] buy milk
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -201,19 +201,19 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     That task does not exist.
+     That task does not exist. Next time, choose a winner.
 ____________________________________________________________
 ____________________________________________________________
-     Please provide a valid task number.
+     Please provide a valid task number. Precision wins.
 ____________________________________________________________
 ____________________________________________________________
-     That task does not exist.
+     That task does not exist. Next time, choose a winner.
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -249,31 +249,31 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [T][ ] borrow book
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [D][ ] return book (by: 7 Jun 2026)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
      Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][ ] borrow book
      2.[D][ ] return book (by: 7 Jun 2026)
      3.[E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -309,31 +309,31 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [D][ ] review report (by: 2 Dec 2019, 18:00)
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [E][ ] orientation week (from: 2 Dec 2019, 18:00 to: 2 Dec 2019, 23:00)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [D][ ] holiday (by: 2 Dec 2019)
      Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[D][ ] review report (by: 2 Dec 2019, 18:00)
      2.[E][ ] orientation week (from: 2 Dec 2019, 18:00 to: 2 Dec 2019, 23:00)
      3.[D][ ] holiday (by: 2 Dec 2019)
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 ### UI-06 — Reject non-keyword task additions
@@ -366,16 +366,16 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     I do not know what that command means, but I know how to carry the flame!
+     That command is not winning, but I know how to carry the flame!
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -416,37 +416,37 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     The description is empty! Enter the description or I will carry the flame!
+     The description is empty! Bring the energy and enter it, or I will carry the flame!
 ____________________________________________________________
 ____________________________________________________________
-     The description is empty! Enter the description or I will carry the flame!
+     The description is empty! Bring the energy and enter it, or I will carry the flame!
 ____________________________________________________________
 ____________________________________________________________
-     The description is empty! Enter the description or I will carry the flame!
+     The description is empty! Bring the energy and enter it, or I will carry the flame!
 ____________________________________________________________
 ____________________________________________________________
-     The parameter is empty! Enter the required parameters or I will carry the flame!
+     The parameter is empty! Enter the required parameters and let's get this done!
 ____________________________________________________________
 ____________________________________________________________
-     The parameter is empty! Enter the required parameters or I will carry the flame!
+     The parameter is empty! Enter the required parameters and let's get this done!
 ____________________________________________________________
 ____________________________________________________________
-     The parameter is empty! Enter the required parameters or I will carry the flame!
+     The parameter is empty! Enter the required parameters and let's get this done!
 ____________________________________________________________
 ____________________________________________________________
-     The parameter is empty! Enter the required parameters or I will carry the flame!
+     The parameter is empty! Enter the required parameters and let's get this done!
 ____________________________________________________________
 ____________________________________________________________
-     The parameter is empty! Enter the required parameters or I will carry the flame!
+     The parameter is empty! Enter the required parameters and let's get this done!
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -489,47 +489,47 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [T][ ] read book
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Nice! I've marked this task as done:
+     Another win! I've marked this task as done:
        [T][X] read book
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [D][ ] return book (by: 6 Jun 2026)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Nice! I've marked this task as done:
+     Another win! I've marked this task as done:
        [D][X] return book (by: 6 Jun 2026)
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
      Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [T][ ] join sports club
      Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Nice! I've marked this task as done:
+     Another win! I've marked this task as done:
        [T][X] join sports club
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [T][ ] borrow book
      Now you have 5 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][X] read book
      2.[D][X] return book (by: 6 Jun 2026)
      3.[E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
@@ -537,19 +537,19 @@ ____________________________________________________________
      5.[T][ ] borrow book
 ____________________________________________________________
 ____________________________________________________________
-     Noted. I've removed this task:
+     Strong move. I've removed this task:
        [E][ ] project meeting (from: 6 Aug 2026, 14:00 to: 6 Aug 2026, 16:00)
      Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][X] read book
      2.[D][X] return book (by: 6 Jun 2026)
      3.[T][X] join sports club
      4.[T][ ] borrow book
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -587,37 +587,37 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [T][ ] save me
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [D][ ] keep me (by: 6 Jun 2026)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Nice! I've marked this task as done:
+     Another win! I've marked this task as done:
        [T][X] save me
 ____________________________________________________________
 ____________________________________________________________
-     OK, I've marked this task as not done yet:
+     No surrender! I've marked this task as not done yet:
        [T][ ] save me
 ____________________________________________________________
 ____________________________________________________________
-     Noted. I've removed this task:
+     Strong move. I've removed this task:
        [D][ ] keep me (by: 6 Jun 2026)
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][ ] save me
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -656,16 +656,16 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][X] persisted to-do
      2.[D][ ] persisted deadline (by: 2 Dec 2019)
      3.[E][ ] persisted event (from: 2 Dec 2019, 14:00 to: 2 Dec 2019, 15:00)
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -698,10 +698,10 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][X] Read the quick-start help
      2.[T][ ] Add your first personal task
      3.[D][ ] Plan the week's priorities (by: 15 Jan 2099)
@@ -711,7 +711,7 @@ ____________________________________________________________
      7.[T][ ] Drink water before another hot take
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -750,15 +750,15 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][X] valid saved task
      2.[D][ ] valid saved deadline (by: 2 Dec 2019)
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -792,7 +792,7 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
      I couldn't load saved tasks because the task file path is not a regular file.
 ____________________________________________________________
@@ -800,10 +800,10 @@ ____________________________________________________________
      I couldn't save tasks. Please check that the data folder is writable.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -842,16 +842,16 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][ ] buy, milk
      2.[D][X] return, book (by: 6 Jun 2019)
      3.[E][ ] project "sync" (from: 6 Aug 2019, 14:00 to: 6 Aug 2019, 16:00)
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -886,19 +886,19 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     I couldn't understand that date/time! Try 2/12/2019 or 2/12/2019 6pm.
+     I couldn't understand that date/time! Try 2/12/2019 or 2/12/2019 6pm. Keep it winning.
 ____________________________________________________________
 ____________________________________________________________
-     I couldn't understand that date/time! Try 2/12/2019 or 2/12/2019 6pm.
+     I couldn't understand that date/time! Try 2/12/2019 or 2/12/2019 6pm. Keep it winning.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -936,44 +936,44 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [T][ ] no date
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [D][ ] later (by: 31 Dec 2026)
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [E][ ] early (from: 1 Jan 2026 to: 2 Jan 2026)
      Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [D][ ] middle (by: 1 Jun 2026, 12:00)
      Now you have 4 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[E][ ] early (from: 1 Jan 2026 to: 2 Jan 2026)
      2.[D][ ] middle (by: 1 Jun 2026, 12:00)
      3.[D][ ] later (by: 31 Dec 2026)
      4.[T][ ] no date
 ____________________________________________________________
 ____________________________________________________________
-     Here are the tasks in your list:
+     Here are the tasks in your winning list:
      1.[T][ ] no date
      2.[D][ ] later (by: 31 Dec 2026)
      3.[E][ ] early (from: 1 Jan 2026 to: 2 Jan 2026)
      4.[D][ ] middle (by: 1 Jun 2026, 12:00)
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -1004,13 +1004,13 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     I do not know what that command means, but I know how to carry the flame!
+     That command is not winning, but I know how to carry the flame!
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -1046,27 +1046,27 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [T][ ] Read book
      Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Got it. I've added this task:
+     Big win! I've added this task:
        [T][ ] Buy milk
      Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-     Here are the matching tasks in your list:
+     Here are the matching tasks in your winning list:
      1.[T][ ] Read book
 ____________________________________________________________
 ____________________________________________________________
-     Here are the matching tasks in your list:
+     Here are the matching tasks in your winning list:
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -1097,10 +1097,10 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     Available commands
+     Available commands - the winning playbook
 
      todo <description>
        Add an undated to-do task.
@@ -1139,7 +1139,7 @@ ____________________________________________________________
        Example: bye
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```
 
@@ -1170,7 +1170,7 @@ ____________________________________________________________
 | |___| | | | (_| | |  | | |  __/ . \ 
  \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
 Hello! I'm CharlieK.
-What can I do for you?
+What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
      Help: deadline
@@ -1185,6 +1185,6 @@ ____________________________________________________________
        deadline submit report /by 2/12/2019
 ____________________________________________________________
 ____________________________________________________________
-     Bye. Hope to see you again soon!
+     Bye. Keep carrying the flame!
 ____________________________________________________________
 ```

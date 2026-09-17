@@ -24,7 +24,7 @@ class UiTest {
         ui.showTaskAdded(new ToDo("read book"), 1);
 
         String lineSeparator = System.lineSeparator();
-        assertEquals("     Got it. I've added this task:" + lineSeparator
+        assertEquals("     Big win! I've added this task:" + lineSeparator
                 + "       [T][ ] read book" + lineSeparator
                 + "     Now you have 1 tasks in the list." + lineSeparator, output.toString());
     }
@@ -42,9 +42,9 @@ class UiTest {
         ui.showTasks(tasks);
         ui.showMatchingTasks(tasks);
 
-        assertEquals("     Here are the tasks in your list:" + lineSeparator
+        assertEquals("     Here are the tasks in your winning list:" + lineSeparator
                 + "     1.[T][ ] read book" + lineSeparator
-                + "     Here are the matching tasks in your list:" + lineSeparator
+                + "     Here are the matching tasks in your winning list:" + lineSeparator
                 + "     1.[T][ ] read book" + lineSeparator, output.toString());
     }
 
