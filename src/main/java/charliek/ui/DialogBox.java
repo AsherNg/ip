@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -45,7 +46,23 @@ public class DialogBox extends HBox {
 
         dialog.setText(text);
         displayPicture.setImage(image);
+        setCenteredSquareViewport(image);
         getStyleClass().add("dialog-box");
+    }
+
+    /**
+     * Crops a portrait image to its centered square region before it is clipped to a circle.
+     *
+     * @param image the portrait image, or {@code null} when no image is available.
+     */
+    private void setCenteredSquareViewport(Image image) {
+        if (image == null) {
+            return;
+        }
+        double cropSize = Math.min(image.getWidth(), image.getHeight());
+        double cropX = (image.getWidth() - cropSize) / 2;
+        double cropY = (image.getHeight() - cropSize) / 2;
+        displayPicture.setViewport(new Rectangle2D(cropX, cropY, cropSize, cropSize));
     }
 
     /**
