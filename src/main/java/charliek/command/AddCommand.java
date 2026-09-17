@@ -1,6 +1,7 @@
 package charliek.command;
 
 import charliek.exception.TaskStorageException;
+import charliek.exception.DuplicateTaskException;
 import charliek.model.Task;
 import charliek.model.TaskList;
 import charliek.storage.Storage;
@@ -51,8 +52,10 @@ public class AddCommand extends Command {
      * @throws TaskStorageException if the updated task list cannot be saved.
      */
     @Override
-    public void execute() throws TaskStorageException {
-        int originalTaskCount = tasks.size();
+    public void execute() throws TaskStorageException, DuplicateTaskException {
+        if (tasks.containsEquivalent(task)) {
+            throw new DuplicateTaskException();
+        }
         tasks.add(task);
         saveTasksOrRollback(storage, tasks, () -> tasks.remove(tasks.size() - 1));
         ui.showTaskAdded(task, tasks.size());

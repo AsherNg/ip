@@ -37,6 +37,12 @@ public class MainWindow {
     private static final String CHATBOT_IMAGE_PATH = "/images/chatbot.png";
 
     /**
+     * Error shown when the user submits an empty GUI input field.
+     */
+    private static final String EMPTY_INPUT_ERROR =
+            "That command format is not winning. Use 'help' to check the playbook.";
+
+    /**
      * Scrolls through the conversation history.
      */
     @FXML
@@ -130,6 +136,8 @@ public class MainWindow {
     private void handleUserInput() {
         String input = userInput.getText();
         if (input == null || input.isBlank()) {
+            userInput.clear();
+            dialogContainer.getChildren().add(DialogBox.getErrorDialog(EMPTY_INPUT_ERROR, chatbotImage));
             return;
         }
 

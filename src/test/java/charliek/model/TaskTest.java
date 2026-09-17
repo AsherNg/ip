@@ -120,4 +120,28 @@ class TaskTest {
                 "meeting", DateTimeParser.ParsedDateTime.ofDate(LocalDate.of(2019, 12, 2)), null));
     }
 
+    /**
+     * Verifies that an event must have a strictly increasing time range.
+     */
+    @Test
+    void event_nonIncreasingRange_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> new Event(
+                "meeting", "2019-12-03", "2019-12-02"));
+        assertThrows(IllegalArgumentException.class, () -> new Event(
+                "meeting", "2019-12-02 14:00", "2019-12-02 14:00"));
+    }
+
+    /**
+     * Verifies that task details determine duplicate identity independently of status.
+     */
+    @Test
+    void task_sameDetails_returnsTrueRegardlessOfStatus() {
+        Task first = new ToDo("read book");
+        Task second = new ToDo("read book");
+        second.markAsDone();
+
+        assertTrue(first.hasSameDetailsAs(second));
+        assertFalse(first.hasSameDetailsAs(new ToDo("write book")));
+    }
+
 }

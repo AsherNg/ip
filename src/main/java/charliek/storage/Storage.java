@@ -95,7 +95,7 @@ public class Storage {
             ArrayList<Task> tasks = new ArrayList<>();
             for (String line : Files.readAllLines(taskFile, StandardCharsets.UTF_8)) {
                 Task task = parseTask(parseCsvLineSafely(line));
-                if (task != null) {
+                if (task != null && tasks.stream().noneMatch(existingTask -> existingTask.hasSameDetailsAs(task))) {
                     tasks.add(task);
                 }
             }
@@ -129,11 +129,18 @@ public class Storage {
         if (defaultTasks == null) {
             throw new IllegalArgumentException("The default task list cannot be null.");
         }
-        if (Files.notExists(taskFile)) {
-            save(defaultTasks);
-            return new ArrayList<>(defaultTasks);
+        try {
+            if (Files.notExists(taskFile)) {
+                save(defaultTasks);
+                return new ArrayList<>(defaultTasks);
+            }
+            return load();
+        } catch (TaskStorageException exception) {
+            throw exception;
+        } catch (RuntimeException exception) {
+            throw new TaskStorageException(
+                    "I couldn't inspect the task file. Please check that the data folder is accessible.", exception);
         }
-        return load();
     }
 
     /**

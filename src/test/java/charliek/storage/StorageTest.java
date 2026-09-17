@@ -175,6 +175,24 @@ class StorageTest {
     }
 
     /**
+     * Verifies duplicate persisted records do not create duplicate tasks in memory.
+     */
+    @Test
+    void load_duplicateRecords_keepsOneTask() throws Exception {
+        Path taskFile = tempDirectory.resolve("tasks.csv");
+        Files.writeString(taskFile, String.join(System.lineSeparator(),
+                "T,0,duplicate task",
+                "T,1,duplicate task",
+                "D,0,duplicate task,2019-12-02"));
+
+        List<Task> loaded = new Storage(taskFile).load();
+
+        assertEquals(2, loaded.size());
+        assertFalse(loaded.get(0).isDone());
+        assertInstanceOf(Deadline.class, loaded.get(1));
+    }
+
+    /**
      * Verifies that invalid file paths are reported as storage exceptions.
      */
     @Test

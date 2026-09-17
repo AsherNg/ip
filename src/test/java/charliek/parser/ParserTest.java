@@ -23,7 +23,11 @@ import charliek.command.MarkCommand;
 import charliek.command.UnmarkCommand;
 import charliek.exception.EmptyParameterException;
 import charliek.exception.EmptyTaskDescriptionException;
+import charliek.exception.DuplicateParameterException;
+import charliek.exception.DuplicateTaskException;
+import charliek.exception.InvalidCommandFormatException;
 import charliek.exception.InvalidDateTimeException;
+import charliek.exception.InvalidEventRangeException;
 import charliek.exception.UnknownCommandException;
 import charliek.model.Deadline;
 import charliek.model.Event;
@@ -82,7 +86,7 @@ class ParserTest {
         assertEquals("return book", deadline.getStorageFields().get(0));
         assertEquals("2019-12-02", deadline.getStorageFields().get(1));
         assertThrows(EmptyTaskDescriptionException.class, () -> parser.parseDeadline("   "));
-        assertThrows(EmptyParameterException.class, () -> parser.parseDeadline(" /by 2019-12-02"));
+        assertThrows(EmptyTaskDescriptionException.class, () -> parser.parseDeadline(" /by 2019-12-02"));
         assertThrows(EmptyParameterException.class, () -> parser.parseDeadline("return book"));
         assertThrows(EmptyParameterException.class, () -> parser.parseDeadline("return book /by"));
         assertThrows(InvalidDateTimeException.class, () -> parser.parseDeadline("return book /by not-a-date"));
@@ -100,7 +104,7 @@ class ParserTest {
         assertEquals("2019-12-02T14:00:00", event.getStorageFields().get(1));
         assertEquals("2019-12-02T15:00:00", event.getStorageFields().get(2));
         assertThrows(EmptyTaskDescriptionException.class, () -> parser.parseEvent("   "));
-        assertThrows(EmptyParameterException.class, () -> parser.parseEvent(
+        assertThrows(EmptyTaskDescriptionException.class, () -> parser.parseEvent(
                 " /from 2019-12-02 /to 2019-12-03"));
         assertThrows(EmptyParameterException.class, () -> parser.parseEvent("project meeting"));
         assertThrows(EmptyParameterException.class, () -> parser.parseEvent(
@@ -139,6 +143,56 @@ class ParserTest {
     @Test
     void parse_unknownCommand_throwsUnknownCommandException() {
         assertThrows(UnknownCommandException.class, () -> parser.parse("unknown"));
-        assertThrows(UnknownCommandException.class, () -> parser.parse(null));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse(null));
+    }
+
+    /**
+     * Verifies malformed command spacing and argument shapes are rejected early.
+     */
+    @Test
+    void parse_malformedSpacingAndArguments_throwsFormatException() {
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse(" todo read book"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("todo read book "));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("todo  read book"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("todo read\tbook"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("todo read\u00A0book"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("mark +1"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("find book now"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("list unsupported"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse("todo buy /by milk"));
+    }
+
+    /**
+     * Verifies duplicate parameters and reversed event parameters are rejected.
+     */
+    @Test
+    void parse_duplicateOrMisorderedParameters_throwsSpecificException() {
+        assertThrows(DuplicateParameterException.class, () -> parser.parse(
+                "deadline submit report /by 2019-12-02 /by 2019-12-03"));
+        assertThrows(DuplicateParameterException.class, () -> parser.parse(
+                "event meeting /from 2019-12-02 /from 2019-12-03 /to 2019-12-04"));
+        assertThrows(InvalidCommandFormatException.class, () -> parser.parse(
+                "event meeting /to 2019-12-03 /from 2019-12-02"));
+    }
+
+    /**
+     * Verifies events reject endpoints that do not form a forward time range.
+     */
+    @Test
+    void parse_eventWithInvalidRange_throwsRangeException() {
+        assertThrows(InvalidEventRangeException.class, () -> parser.parse(
+                "event meeting /from 2019-12-03 /to 2019-12-02"));
+        assertThrows(InvalidEventRangeException.class, () -> parser.parse(
+                "event meeting /from 2019-12-02 14:00 /to 2019-12-02 14:00"));
+    }
+
+    /**
+     * Verifies that adding a task with identical details is rejected.
+     */
+    @Test
+    void parse_duplicateTask_throwsDuplicateTaskException() throws Exception {
+        parser.parse("todo read book").execute();
+
+        assertThrows(DuplicateTaskException.class, () -> parser.parse("todo read book"));
     }
 }

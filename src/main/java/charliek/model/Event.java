@@ -61,6 +61,12 @@ public class Event extends Task {
         this.toDate = to.date();
         this.toDateTime = to.dateTime();
 
+        LocalDateTime start = toComparableDateTime(from);
+        LocalDateTime end = toComparableDateTime(to);
+        if (!start.isBefore(end)) {
+            throw new IllegalArgumentException("An event must end after it starts.");
+        }
+
         // Each endpoint must retain exactly one representation for display and chronological sorting.
         assert (fromDate == null) != (fromDateTime == null)
                 : "An event start must contain either a date or a date-time, but not both.";
@@ -119,5 +125,12 @@ public class Event extends Task {
      */
     private String format(LocalDate date, LocalDateTime dateTime) {
         return DateTimeParser.formatForDisplay(new DateTimeParser.ParsedDateTime(date, dateTime));
+    }
+
+    /**
+     * Converts either supported endpoint shape to a value suitable for ordering.
+     */
+    private static LocalDateTime toComparableDateTime(DateTimeParser.ParsedDateTime value) {
+        return value.hasTime() ? value.dateTime() : value.date().atStartOfDay();
     }
 }

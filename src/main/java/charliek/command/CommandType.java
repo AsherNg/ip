@@ -109,7 +109,7 @@ public enum CommandType {
      * @return the matching command, or an empty result for an unknown command.
      */
     public static Optional<CommandType> getCommandFromInput(String input) {
-        if (input == null) {
+        if (input == null || !hasValidSpacing(input)) {
             return Optional.empty();
         }
         for (CommandType command : values()) {
@@ -121,6 +121,18 @@ public enum CommandType {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * Checks the whitespace that separates a command from its arguments.
+     */
+    private static boolean hasValidSpacing(String input) {
+        return !input.isEmpty()
+                && input.equals(input.trim())
+                && input.chars().noneMatch(character -> (Character.isWhitespace(character)
+                        || Character.isSpaceChar(character)) && character != ' ')
+                && input.chars().noneMatch(character -> character < 32 || character == 127)
+                && !input.contains("  ");
     }
 
     /**

@@ -27,6 +27,9 @@ public abstract class Task {
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException("A task description must not be blank.");
         }
+        if (description.chars().anyMatch(Character::isISOControl)) {
+            throw new IllegalArgumentException("A task description must not contain control characters.");
+        }
         this.description = description;
         isDone = false;
 
@@ -80,6 +83,20 @@ public abstract class Task {
      */
     public List<String> getStorageFields() {
         return List.of(description);
+    }
+
+    /**
+     * Checks whether another task has the same type-specific details.
+     * Completion status is intentionally excluded because marking a task does
+     * not make it a different task.
+     *
+     * @param other the task to compare with.
+     * @return {@code true} when both tasks describe the same task.
+     */
+    public boolean hasSameDetailsAs(Task other) {
+        return other != null
+                && getStorageType().equals(other.getStorageType())
+                && getStorageFields().equals(other.getStorageFields());
     }
 
     /**

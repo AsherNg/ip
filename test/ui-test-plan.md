@@ -94,6 +94,72 @@ ____________________________________________________________
 ____________________________________________________________
 ```
 
+### UI-21 — Reject malformed and conflicting task commands
+
+**Aim:** Verify that duplicate tasks, repeated parameters, invalid event ranges, malformed task numbers, and ambiguous spacing are reported without corrupting the task list.
+
+**Setup:** Before starting the application, create an empty `data/charliek.csv` so the test starts without starter tasks.
+
+**Command:**
+
+```
+java -cp _temp/ui-test-classes charliek.CharlieK
+```
+
+**Inputs:**
+
+```
+todo buy milk
+todo buy milk
+deadline report /by 2026-06-01 /by 2026-06-02
+event meeting /from 2026-06-02 /to 2026-06-01
+mark +1
+todo  double
+list
+bye
+```
+
+**Expected output:**
+
+```
+____________________________________________________________
+  ____ _                _ _      _  __
+ / ___| |__   __ _ _ __| (_) ___| |/ /
+| |   | '_ \ / _` | '__| | |/ _ \ ' / 
+| |___| | | | (_| | |  | | |  __/ . \ 
+ \____|_| |_|\__,_|_|  |_|_|\___|_|\_\
+Hello! I'm CharlieK.
+What can I do for you? Let's make this task list great again!
+____________________________________________________________
+____________________________________________________________
+     Big win! I've added this task:
+       [T][ ] buy milk
+     Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+     That task is already on the list. Bring a new winner to the board.
+____________________________________________________________
+____________________________________________________________
+     The parameter /by was specified more than once. Use: deadline <description> /by <date/time>
+____________________________________________________________
+____________________________________________________________
+     An event must end after it starts. Keep the timeline winning.
+____________________________________________________________
+____________________________________________________________
+     That command format is not winning. Use: <number>, for example: mark 1
+____________________________________________________________
+____________________________________________________________
+     That command format is not winning. Use 'help' to check the playbook.
+____________________________________________________________
+____________________________________________________________
+     Here are the tasks in your winning list:
+     1.[T][ ] buy milk
+____________________________________________________________
+____________________________________________________________
+     Bye. Keep carrying the flame!
+____________________________________________________________
+```
+
 ### UI-02 — Add, list, mark, and unmark a task
 
 **Aim:** Verify task creation, listing, completion marking, and completion reversal in one session.
@@ -207,7 +273,7 @@ ____________________________________________________________
      That task does not exist. Next time, choose a winner.
 ____________________________________________________________
 ____________________________________________________________
-     Please provide a valid task number. Precision wins.
+     That command format is not winning. Use: <number>, for example: mark 1
 ____________________________________________________________
 ____________________________________________________________
      That task does not exist. Next time, choose a winner.
@@ -1007,7 +1073,7 @@ Hello! I'm CharlieK.
 What can I do for you? Let's make this task list great again!
 ____________________________________________________________
 ____________________________________________________________
-     That command is not winning, but I know how to carry the flame!
+     That command format is not winning. Use: list [time]
 ____________________________________________________________
 ____________________________________________________________
      Bye. Keep carrying the flame!

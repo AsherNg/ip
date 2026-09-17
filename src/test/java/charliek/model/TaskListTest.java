@@ -117,4 +117,16 @@ class TaskListTest {
         assertNotSame(snapshot, tasks.toList());
         assertEquals(1, tasks.size());
     }
+
+    /**
+     * Verifies that duplicate task details cannot be added to the list.
+     */
+    @Test
+    void taskList_duplicateDetails_throwsIllegalArgumentException() {
+        TaskList tasks = new TaskList(new ToDo("read book"));
+
+        assertThrows(IllegalArgumentException.class, () -> tasks.add(new ToDo("read book")));
+        assertThrows(IllegalArgumentException.class, () -> tasks.replaceWith(List.of(
+                new ToDo("same"), new ToDo("same"))));
+    }
 }

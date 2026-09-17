@@ -42,6 +42,9 @@ public class TaskList {
      */
     public void add(Task task) {
         validateTask(task);
+        if (containsEquivalent(task)) {
+            throw new IllegalArgumentException("A task with the same details already exists.");
+        }
         tasks.add(task);
 
         // Callers depend on add placing the validated task at the end of the list.
@@ -57,6 +60,9 @@ public class TaskList {
      */
     public void add(int index, Task task) {
         validateTask(task);
+        if (containsEquivalent(task)) {
+            throw new IllegalArgumentException("A task with the same details already exists.");
+        }
         tasks.add(index, task);
 
         // Rollback logic uses this positional contract to restore deleted tasks exactly.
@@ -93,11 +99,16 @@ public class TaskList {
         if (replacementTasks == null) {
             throw new IllegalArgumentException("The replacement task list cannot be null.");
         }
+        ArrayList<Task> validatedTasks = new ArrayList<>();
         for (Task task : replacementTasks) {
             validateTask(task);
+            if (validatedTasks.stream().anyMatch(existingTask -> existingTask.hasSameDetailsAs(task))) {
+                throw new IllegalArgumentException("A task with the same details already exists.");
+            }
+            validatedTasks.add(task);
         }
         tasks.clear();
-        tasks.addAll(replacementTasks);
+        tasks.addAll(validatedTasks);
 
         // Loading replaces the whole list, so its size must match the validated input exactly.
         assert tasks.size() == replacementTasks.size()
@@ -120,6 +131,17 @@ public class TaskList {
      */
     public List<Task> toList() {
         return new ArrayList<>(tasks);
+    }
+
+    /**
+     * Checks whether a task with the same details is already stored.
+     *
+     * @param task the task to find.
+     * @return {@code true} when an equivalent task exists.
+     */
+    public boolean containsEquivalent(Task task) {
+        validateTask(task);
+        return tasks.stream().anyMatch(existingTask -> existingTask.hasSameDetailsAs(task));
     }
 
     /**

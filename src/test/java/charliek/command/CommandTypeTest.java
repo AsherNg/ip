@@ -38,6 +38,9 @@ class CommandTypeTest {
     void getCommandFromInput_unknownOrInvalidInput_returnsEmptyOptional() {
         assertTrue(CommandType.getCommandFromInput(null).isEmpty());
         assertTrue(CommandType.getCommandFromInput("").isEmpty());
+        assertTrue(CommandType.getCommandFromInput(" todo read book").isEmpty());
+        assertTrue(CommandType.getCommandFromInput("todo  read book").isEmpty());
+        assertTrue(CommandType.getCommandFromInput("todo read\u0000book").isEmpty());
         assertTrue(CommandType.getCommandFromInput("unknown command").isEmpty());
         assertTrue(CommandType.getCommandFromInput("bye now").isEmpty());
         assertTrue(CommandType.getCommandFromInput("todoist something").isEmpty());

@@ -2,6 +2,8 @@ package charliek.parser;
 
 import java.time.DateTimeException;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import charliek.command.AddCommand;
 import charliek.command.Command;
@@ -14,12 +16,17 @@ import charliek.command.ListCommand;
 import charliek.command.MarkCommand;
 import charliek.command.UnmarkCommand;
 import charliek.exception.CharlieKException;
+import charliek.exception.DuplicateParameterException;
+import charliek.exception.DuplicateTaskException;
 import charliek.exception.EmptyParameterException;
 import charliek.exception.EmptyTaskDescriptionException;
+import charliek.exception.InvalidCommandFormatException;
 import charliek.exception.InvalidDateTimeException;
+import charliek.exception.InvalidEventRangeException;
 import charliek.exception.UnknownCommandException;
 import charliek.model.Deadline;
 import charliek.model.Event;
+import charliek.model.Task;
 import charliek.model.TaskList;
 import charliek.model.ToDo;
 import charliek.storage.Storage;
@@ -36,17 +43,32 @@ public class Parser {
     /**
      * Marker separating a deadline description from its date/time.
      */
-    private static final String DEADLINE_MARKER = " /by ";
+    private static final String DEADLINE_MARKER = "/by";
 
     /**
      * Marker separating an event description from its start date/time.
      */
-    private static final String EVENT_START_MARKER = " /from ";
+    private static final String EVENT_START_MARKER = "/from";
 
     /**
      * Marker separating an event start date/time from its end date/time.
      */
-    private static final String EVENT_END_MARKER = " /to ";
+    private static final String EVENT_END_MARKER = "/to";
+
+    /**
+     * Matches a parameter marker that is a complete whitespace-delimited token.
+     */
+    private static final Pattern PARAMETER_TOKEN = Pattern.compile("(?<!\\S)%s(?!\\S)");
+
+    /**
+     * Matches task-number arguments without signs, decimals, or other symbols.
+     */
+    private static final Pattern TASK_NUMBER = Pattern.compile("[0-9]+");
+
+    /**
+     * Matches single-word arguments accepted by search and help commands.
+     */
+    private static final Pattern SINGLE_WORD = Pattern.compile("[A-Za-z0-9_-]+");
 
     /**
      * The task list used by commands created by this parser.
@@ -84,20 +106,21 @@ public class Parser {
      * @throws CharlieKException when the command or its arguments are invalid.
      */
     public Command parse(String input) throws CharlieKException {
+        validateInputFormat(input);
         CommandType command = CommandType.getCommandFromInput(input)
                 .orElseThrow(UnknownCommandException::new);
         String argument = command.getArgumentFromInput(input);
         return switch (command) {
             case BYE -> new ExitCommand(ui);
-            case LIST -> new ListCommand(tasks, ui, argument.trim());
-            case MARK -> new MarkCommand(tasks, ui, storage, argument);
-            case UNMARK -> new UnmarkCommand(tasks, ui, storage, argument);
-            case FIND -> new FindCommand(tasks, ui, argument);
-            case HELP -> new HelpCommand(ui, argument);
-            case DELETE -> new DeleteCommand(tasks, ui, storage, argument);
-            case TODO -> new AddCommand(tasks, ui, storage, parseToDo(argument));
-            case DEADLINE -> new AddCommand(tasks, ui, storage, parseDeadline(argument));
-            case EVENT -> new AddCommand(tasks, ui, storage, parseEvent(argument));
+            case LIST -> new ListCommand(tasks, ui, validateListArgument(argument));
+            case MARK -> new MarkCommand(tasks, ui, storage, validateTaskNumberArgument(argument));
+            case UNMARK -> new UnmarkCommand(tasks, ui, storage, validateTaskNumberArgument(argument));
+            case FIND -> new FindCommand(tasks, ui, validateFindArgument(argument));
+            case HELP -> new HelpCommand(ui, validateHelpArgument(argument));
+            case DELETE -> new DeleteCommand(tasks, ui, storage, validateTaskNumberArgument(argument));
+            case TODO -> new AddCommand(tasks, ui, storage, ensureUnique(parseToDo(argument)));
+            case DEADLINE -> new AddCommand(tasks, ui, storage, ensureUnique(parseDeadline(argument)));
+            case EVENT -> new AddCommand(tasks, ui, storage, ensureUnique(parseEvent(argument)));
         };
     }
 
@@ -108,10 +131,15 @@ public class Parser {
      * @return the parsed to-do task.
      * @throws EmptyTaskDescriptionException when the description is blank.
      */
-    public ToDo parseToDo(String command) throws EmptyTaskDescriptionException {
-        String description = command.trim();
+    public ToDo parseToDo(String command) throws EmptyTaskDescriptionException, InvalidCommandFormatException {
+        String description = command == null ? "" : command.trim();
         if (description.isEmpty()) {
             throw new EmptyTaskDescriptionException();
+        }
+        if (containsParameterMarker(description, DEADLINE_MARKER)
+                || containsParameterMarker(description, EVENT_START_MARKER)
+                || containsParameterMarker(description, EVENT_END_MARKER)) {
+            throw new InvalidCommandFormatException(CommandType.TODO.getUsage());
         }
         return new ToDo(description);
     }
@@ -127,13 +155,22 @@ public class Parser {
      */
     public Deadline parseDeadline(String command)
             throws EmptyTaskDescriptionException, EmptyParameterException,
-            InvalidDateTimeException {
-        String commandText = command.trim();
+            InvalidDateTimeException, InvalidCommandFormatException, DuplicateParameterException {
+        String commandText = command == null ? "" : command.trim();
         if (commandText.isEmpty()) {
             throw new EmptyTaskDescriptionException();
         }
 
-        int markerIndex = commandText.indexOf(DEADLINE_MARKER);
+        Matcher markerMatcher = matcherFor(commandText, DEADLINE_MARKER);
+        int markerIndex = markerMatcher.find() ? markerMatcher.start() : -1;
+        if (countParameterMarkers(commandText, DEADLINE_MARKER) > 1) {
+            throw new DuplicateParameterException(DEADLINE_MARKER, CommandType.DEADLINE.getUsage());
+        }
+        if (containsParameterMarker(commandText, EVENT_START_MARKER)
+                || containsParameterMarker(commandText, EVENT_END_MARKER)) {
+            throw new InvalidCommandFormatException(CommandType.DEADLINE.getUsage());
+        }
+
         String description = markerIndex < 0
                 ? commandText
                 : commandText.substring(0, markerIndex).trim();
@@ -144,7 +181,7 @@ public class Parser {
             throw new EmptyParameterException();
         }
 
-        String deadline = commandText.substring(markerIndex + DEADLINE_MARKER.length()).trim();
+        String deadline = commandText.substring(markerMatcher.end()).trim();
         if (deadline.isEmpty()) {
             throw new EmptyParameterException();
         }
@@ -167,13 +204,28 @@ public class Parser {
      */
     public Event parseEvent(String command)
             throws EmptyTaskDescriptionException, EmptyParameterException,
-            InvalidDateTimeException {
-        String commandText = command.trim();
+            InvalidDateTimeException, InvalidCommandFormatException,
+            DuplicateParameterException, InvalidEventRangeException {
+        String commandText = command == null ? "" : command.trim();
         if (commandText.isEmpty()) {
             throw new EmptyTaskDescriptionException();
         }
 
-        int fromMarkerIndex = commandText.indexOf(EVENT_START_MARKER);
+        int fromMarkerCount = countParameterMarkers(commandText, EVENT_START_MARKER);
+        int toMarkerCount = countParameterMarkers(commandText, EVENT_END_MARKER);
+        if (fromMarkerCount > 1) {
+            throw new DuplicateParameterException(EVENT_START_MARKER, CommandType.EVENT.getUsage());
+        }
+        if (toMarkerCount > 1) {
+            throw new DuplicateParameterException(EVENT_END_MARKER, CommandType.EVENT.getUsage());
+        }
+        if (containsParameterMarker(commandText, DEADLINE_MARKER)) {
+            throw new InvalidCommandFormatException(CommandType.EVENT.getUsage());
+        }
+
+        Matcher fromMatcher = matcherFor(commandText, EVENT_START_MARKER);
+        Matcher toMatcher = matcherFor(commandText, EVENT_END_MARKER);
+        int fromMarkerIndex = fromMatcher.find() ? fromMatcher.start() : -1;
         String description = fromMarkerIndex < 0
                 ? commandText
                 : commandText.substring(0, fromMarkerIndex).trim();
@@ -181,18 +233,21 @@ public class Parser {
             throw new EmptyTaskDescriptionException();
         }
 
-        int toMarkerIndex = commandText.indexOf(EVENT_END_MARKER, fromMarkerIndex + 1);
+        int toMarkerIndex = toMatcher.find() ? toMatcher.start() : -1;
         if (fromMarkerIndex < 0 || toMarkerIndex < 0) {
             throw new EmptyParameterException();
         }
+        if (toMarkerIndex < fromMarkerIndex) {
+            throw new InvalidCommandFormatException(CommandType.EVENT.getUsage());
+        }
 
-        int fromValueStart = fromMarkerIndex + EVENT_START_MARKER.length();
+        int fromValueStart = fromMatcher.end();
         if (toMarkerIndex <= fromValueStart) {
             throw new EmptyParameterException();
         }
 
         String from = commandText.substring(fromValueStart, toMarkerIndex).trim();
-        String to = commandText.substring(toMarkerIndex + EVENT_END_MARKER.length()).trim();
+        String to = commandText.substring(toMatcher.end()).trim();
         if (from.isEmpty() || to.isEmpty()) {
             throw new EmptyParameterException();
         }
@@ -202,7 +257,114 @@ public class Parser {
                     DateTimeParser.parseUserInput(from), DateTimeParser.parseUserInput(to));
         } catch (DateTimeException exception) {
             throw new InvalidDateTimeException();
+        } catch (IllegalArgumentException exception) {
+            throw new InvalidEventRangeException();
         }
+    }
+
+    /**
+     * Rejects whitespace and control characters that make a command ambiguous.
+     */
+    private void validateInputFormat(String input) throws InvalidCommandFormatException {
+        if (input == null || input.isBlank()
+                || !input.equals(input.trim())
+                || input.chars().anyMatch(character -> isUnexpectedWhitespace((char) character))
+                || input.contains("  ")
+                || input.chars().anyMatch(character -> character < 32 || character == 127)) {
+            throw new InvalidCommandFormatException();
+        }
+    }
+
+    /**
+     * Validates the optional argument accepted by {@code list}.
+     */
+    private String validateListArgument(String argument) throws InvalidCommandFormatException {
+        if (argument.isEmpty() || "time".equals(argument)) {
+            return argument;
+        }
+        throw new InvalidCommandFormatException(CommandType.LIST.getUsage());
+    }
+
+    /**
+     * Validates a one-based task number before a command is constructed.
+     */
+    private String validateTaskNumberArgument(String argument)
+            throws EmptyParameterException, InvalidCommandFormatException {
+        if (argument.isEmpty()) {
+            throw new EmptyParameterException();
+        }
+        if (!TASK_NUMBER.matcher(argument).matches()) {
+            throw new InvalidCommandFormatException("<number>, for example: mark 1");
+        }
+        return argument;
+    }
+
+    /**
+     * Validates the single keyword accepted by {@code find}.
+     */
+    private String validateFindArgument(String argument)
+            throws EmptyParameterException, InvalidCommandFormatException {
+        if (argument.isEmpty()) {
+            throw new EmptyParameterException();
+        }
+        if (!SINGLE_WORD.matcher(argument).matches()) {
+            throw new InvalidCommandFormatException(CommandType.FIND.getUsage());
+        }
+        return argument;
+    }
+
+    /**
+     * Validates the optional command keyword accepted by {@code help}.
+     */
+    private String validateHelpArgument(String argument) throws InvalidCommandFormatException {
+        if (argument.isEmpty() || SINGLE_WORD.matcher(argument).matches()) {
+            return argument;
+        }
+        throw new InvalidCommandFormatException(CommandType.HELP.getUsage());
+    }
+
+    /**
+     * Rejects a duplicate task before an add command can mutate the list.
+     */
+    private Task ensureUnique(Task task) throws DuplicateTaskException {
+        if (tasks.containsEquivalent(task)) {
+            throw new DuplicateTaskException();
+        }
+        return task;
+    }
+
+    /**
+     * Creates a matcher for a complete parameter token.
+     */
+    private static Matcher matcherFor(String command, String parameter) {
+        String parameterPattern = String.format(PARAMETER_TOKEN.pattern(), Pattern.quote(parameter));
+        return Pattern.compile(parameterPattern).matcher(command);
+    }
+
+    /**
+     * Counts complete occurrences of a parameter marker.
+     */
+    private static int countParameterMarkers(String command, String parameter) {
+        Matcher matcher = matcherFor(command, parameter);
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * Checks whether a complete parameter marker occurs in a command.
+     */
+    private static boolean containsParameterMarker(String command, String parameter) {
+        return matcherFor(command, parameter).find();
+    }
+
+    /**
+     * Recognizes whitespace that is not the single ordinary space allowed in commands.
+     */
+    private static boolean isUnexpectedWhitespace(char character) {
+        return (Character.isWhitespace(character) || Character.isSpaceChar(character)) && character != ' ';
     }
 
 }
