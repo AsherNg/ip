@@ -54,7 +54,7 @@ class ExceptionTest {
      */
     @Test
     void taskStorageException_constructor_preservesCause() {
-        IOExceptionLikeCause cause = new IOExceptionLikeCause();
+        StorageFailureCause cause = new StorageFailureCause();
         TaskStorageException exception = new TaskStorageException("storage failed", cause);
 
         assertEquals("storage failed", exception.getMessage());
@@ -64,6 +64,6 @@ class ExceptionTest {
     /**
      * A small throwable used without depending on a particular file-system failure.
      */
-    private static final class IOExceptionLikeCause extends RuntimeException {
+    private static final class StorageFailureCause extends RuntimeException {
     }
 }

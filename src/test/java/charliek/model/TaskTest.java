@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -184,10 +185,8 @@ class TaskTest {
      */
     @Test
     void datedTask_invalidStringDate_throwsDateTimeParseException() {
-        assertThrows(java.time.format.DateTimeParseException.class,
-                () -> new Deadline("submit report", "2019-02-30"));
-        assertThrows(java.time.format.DateTimeParseException.class,
-                () -> new Event("meeting", "2019-02-30", "2019-03-01"));
+        assertThrows(DateTimeParseException.class, () -> new Deadline("submit report", "2019-02-30"));
+        assertThrows(DateTimeParseException.class, () -> new Event("meeting", "2019-02-30", "2019-03-01"));
     }
 
 }

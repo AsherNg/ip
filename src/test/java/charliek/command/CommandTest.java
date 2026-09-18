@@ -388,7 +388,7 @@ class CommandTest {
      * Verifies that a persistence failure triggers the supplied rollback and preserves the exception.
      */
     @Test
-    void command_saveTasksOrRollback_runtimeFailure_runsRollback() {
+    void saveTasksOrRollback_runtimeFailure_rollsBack() {
         TaskList tasks = new TaskList(new ToDo("first"));
         RuntimeFailingStorage storage = new RuntimeFailingStorage(tempDirectory.resolve("tasks.csv"));
         int[] rollbackCount = {0};
